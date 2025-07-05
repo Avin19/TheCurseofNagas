@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55f55580f89f8d44c8830392b9937deb, type: 3}
+  m_Name: Demo Envirnment
+  m_EditorClassIdentifier: 
+  level: {fileID: 11400000, guid: 6b446c616eb141a4f8bd2ccf58fe587e, type: 2}
+  trees:
+  - {fileID: 2933324096536124522, guid: b58d6d94d10fbd34085bbd892b41bdb0, type: 3}
+  - {fileID: 7181686972520188577, guid: 7668f10cf241d4b44a841958a47d1012, type: 3}
+  - {fileID: 6903905046018142115, guid: d07c272c86aa1014a9148a598fdcb3ce, type: 3}
+  - {fileID: 2011607000273769216, guid: fe493ed6139a6aa499a82bbb4c108690, type: 3}
+  - {fileID: 1027298445164014499, guid: 8dad693b0509ac14d9d2c72c73435389, type: 3}
+  - {fileID: 3290166400925900043, guid: 93ab554b54310bf49be26e8b51e32b18, type: 3}
+  - {fileID: 8436296995781168195, guid: 18618165e4647cf4b96b2cb1e2ecb839, type: 3}
+  - {fileID: 9053498773861179582, guid: 436f28ccef712dd46a0eb7127723cd84, type: 3}
+  - {fileID: 4389026707315229823, guid: 7bca55d7e10bf1a44aba769ebd14f252, type: 3}
+  brushs:
+  - {fileID: 7440546407916231575, guid: 6eebb9cd17078344c814c2bd789480b9, type: 3}
+  - {fileID: 8597231375144381545, guid: 0e83a7fe054ad954290cd31d8c58bf94, type: 3}
+  - {fileID: 8227125130843354898, guid: 92dfd034aa100e24aa37e3190e50fb06, type: 3}
+  - {fileID: 3927708583479691698, guid: 2b6f8458825dcf44488c64e760480dbc, type: 3}
+  - {fileID: 5480659001033044744, guid: 8ae57d4ac238fcb4589fa676ebea47e7, type: 3}
+  - {fileID: 7951030239045625135, guid: 3695e540a62b8604a8158077a421214d, type: 3}
+  - {fileID: 6115738431828511731, guid: 9e675a18856d9ee46928318c8a809dc7, type: 3}
+  - {fileID: 2785860169850633990, guid: 8e575e6e4b4ffad45a42fb29f3336b31, type: 3}
+  - {fileID: 1295243224855600520, guid: 943f3bce533a9764bb4321d2893c988d, type: 3}
+  rocks:
+  - {fileID: 7262725271054569411, guid: 8570915e4fce13b4d900de8bd9e7cbe4, type: 3}
+  - {fileID: 9063399994527673455, guid: db62186844b29a74c9d2d7e8b8522c8f, type: 3}
+  - {fileID: 8234054180381865748, guid: db401599df368ec43874420a778ac331, type: 3}
+  - {fileID: 346401449835062021, guid: 63033381d1cfc624c98b422aed64023e, type: 3}
