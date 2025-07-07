@@ -2,50 +2,53 @@
 using System;
 using UnityEngine;
 
-public class PlayerAnimation : MonoBehaviour
+namespace CurseOfNaga.Gameplay.Player
 {
-    [SerializeField] private GameInput gameInput;
-    private Vector2 inputVector;
-
-    private Animator animator;
-    private const string isWalking = "IsWalking";
-    void Start()
+    public class PlayerAnimation : MonoBehaviour
     {
-        animator = GetComponent<Animator>();
-    }
-    void Update()
-    {
-        inputVector = gameInput.GetMovementVector();
+        [SerializeField] private GameInput gameInput;
+        private Vector2 inputVector;
 
-        AnimationController(inputVector);
-
-
-    }
-
-    private void AnimationController(Vector2 input)
-    {
-        if (input != Vector2.zero)
+        private Animator animator;
+        private const string isWalking = "IsWalking";
+        void Start()
         {
-            animator.SetBool(isWalking, true);
-            if (input.x < 0)
-            {
+            animator = GetComponent<Animator>();
+        }
+        void Update()
+        {
+            inputVector = gameInput.GetMovementVector();
 
-                transform.rotation = Quaternion.Euler(new Vector3(0f, -180f, 0f));
+            AnimationController(inputVector);
+
+
+        }
+
+        private void AnimationController(Vector2 input)
+        {
+            if (input != Vector2.zero)
+            {
+                animator.SetBool(isWalking, true);
+                if (input.x < 0)
+                {
+
+                    transform.rotation = Quaternion.Euler(new Vector3(0f, -180f, 0f));
+                }
+                else
+                {
+
+                    transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
+
+                }
+
             }
             else
             {
-
-                transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
-
+                animator.SetBool(isWalking, false);
             }
+        }
 
-        }
-        else
-        {
-            animator.SetBool(isWalking, false);
-        }
+
+
     }
-
-
-
 }
