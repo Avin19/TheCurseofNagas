@@ -1,4 +1,4 @@
-#define TESTING
+// #define TESTING
 
 using System;
 using System.Collections.Generic;
@@ -25,29 +25,28 @@ namespace CurseOfNaga.Gameplay.Player
         [SerializeField] private GameInput gameInput;
         [SerializeField] private float _movSpeed = 7f;
         // [SerializeField] private float jumpMult = 2f;
-        [SerializeField] private float _rollSpeed = 2f;
+        [SerializeField] private float _rollSpeed = 5f;
 
         private PlayerStatus _playerStatus;
-        [SerializeField] private Transform _weaponPlacement;
+        // [SerializeField] private Transform _weaponPlacement;
         [SerializeField] private Transform _playerMain;
         [SerializeField] private BoxCollider _playerCollider;
 
-        private Animator _playerAC;
+        // private Animator _playerAC;
+        private PlayerAnimationController _animationController;
+
         // private Rigidbody _playerRb;
         private Vector3 inputVector;
 
-        private readonly Vector3 _LEFTFACING = new Vector3(-40f, 180f, 0f);
-        private readonly Vector3 _RIGHTFACING = new Vector3(40f, 0f, 0f);
+        // private readonly Vector3 _LEFTFACING = new Vector3(-40f, 180f, 0f);
+        // private readonly Vector3 _RIGHTFACING = new Vector3(40f, 0f, 0f);
         private const float _LEFT_FACING_WEAPON_PLACEMENT = 1.45f;
         private const float _RIGHT_FACING_WEAPON_PLACEMENT = -1.2f;
         private const int _ENEMY_LAYER = 7;
 
         #region AnimationValues
-        private const float _ROLL_Y_VALUE = -1.84f, _ROLL_COLLIDER_Y_POS = 1.25f, _ROLL_COLLIDER_Y_SIZE = 2.5f;
+        private const float _ROLL_COLLIDER_Y_POS = 1.25f, _ROLL_COLLIDER_Y_SIZE = 2.5f;
         private const float _ROLL_COLLIDER_Y_POS_OG = 3.1f, _ROLL_COLLIDER_Y_SIZE_OG = 6.19f;
-        private const string _PLAYER_STATUS = "PlayerStatus";
-        private const string _IDLE = "Player_Idle", _ROLL = "Player_Roll", _JUMP = "Player_Jump",
-             _INTERACT = "Player_Interact", _ATTACK = "Player_Attack";
         #endregion AnimationValues
 
         private void OnDisable()
@@ -63,7 +62,10 @@ namespace CurseOfNaga.Gameplay.Player
             _movSpeed = 25f;
 #endif
             // _playerRb = GetComponent<Rigidbody>();
-            _playerAC = GetComponent<Animator>();
+            // _playerAC = GetComponent<Animator>();
+
+            _animationController = new PlayerAnimationController();
+            _animationController.Initialize(transform.GetChild(0).GetComponent<Animator>(), transform.GetChild(0));
 
             MainGameplayManager.Instance.OnObjectiveVisible += UpdatePlayerStatus;
             gameInput.OnInputDone += HandleInput;
@@ -101,42 +103,6 @@ namespace CurseOfNaga.Gameplay.Player
             }
         }
 
-        private void PlayAnimation(PlayerStatus playerStatus)
-        {
-            switch (playerStatus)
-            {
-                case PlayerStatus.IDLE:
-                    _playerAC.SetInteger(_PLAYER_STATUS, 0);
-                    _playerAC.Play(_IDLE);
-
-                    break;
-
-                case PlayerStatus.JUMPING:
-                    _playerAC.SetInteger(_PLAYER_STATUS, (int)playerStatus);
-                    _playerAC.Play(_JUMP);
-
-                    break;
-
-                case PlayerStatus.ROLLING:
-                    _playerAC.SetInteger(_PLAYER_STATUS, (int)playerStatus);
-                    _playerAC.Play(_ROLL);
-
-                    break;
-
-                case PlayerStatus.ATTACKING:
-                    _playerAC.SetInteger(_PLAYER_STATUS, (int)playerStatus);
-                    _playerAC.Play(_ATTACK);
-
-                    break;
-
-                case PlayerStatus.INTERACTING:
-                    _playerAC.SetInteger(_PLAYER_STATUS, (int)playerStatus);
-                    _playerAC.Play(_INTERACT);
-
-                    break;
-            }
-        }
-
         private void HandleInput(PlayerStatus status, float value)
         {
             // Debug.Log($"Status: {status} | Value: {value}");
@@ -150,6 +116,7 @@ namespace CurseOfNaga.Gameplay.Player
                         _playerStatus |= PlayerStatus.PERFORMING_ACTION;
                         // _playerRb.AddForce(Vector3.up * jumpMult, ForceMode.Impulse);            //Does not feels/looks good
                         // PlayAnimation(PlayerStatus.JUMPING);
+                        _animationController.PlayAnimation(PlayerStatus.JUMPING);
                         UnsetAction_Async(PlayerStatus.JUMPING);
                     }
                     // else
@@ -179,11 +146,12 @@ namespace CurseOfNaga.Gameplay.Player
                         _playerCollider.transform.localPosition = finalVec;
 
                         //Player Main Pos = y(-1.84)
-                        finalVec = _playerMain.transform.localPosition;          //Maybe use ref for temp vec3
-                        finalVec.y = _ROLL_Y_VALUE;
-                        _playerMain.transform.localPosition = finalVec;
+                        // finalVec = _playerMain.transform.localPosition;          //Maybe use ref for temp vec3
+                        // finalVec.y = _ROLL_Y_VALUE;
+                        // _playerMain.transform.localPosition = finalVec;
 
                         // PlayAnimation(PlayerStatus.ROLLING);
+                        _animationController.PlayAnimation(PlayerStatus.ROLLING);
                         UnsetAction_Async(PlayerStatus.ROLLING);
                     }
                     // else
@@ -200,6 +168,7 @@ namespace CurseOfNaga.Gameplay.Player
                         _playerStatus |= PlayerStatus.ATTACKING;
                         _playerStatus |= PlayerStatus.PERFORMING_ADDITIVE_ACTION;
                         // PlayAnimation(PlayerStatus.ATTACKING);
+                        _animationController.PlayAnimation(PlayerStatus.ATTACKING);
                         UnsetAction_Async(PlayerStatus.ATTACKING);
 
                         // Check for Enemy-Hit
@@ -218,8 +187,10 @@ namespace CurseOfNaga.Gameplay.Player
                     {
                         _playerStatus |= PlayerStatus.INTERACTING;
                         _playerStatus |= PlayerStatus.PERFORMING_ACTION;
+
                         // PlayAnimation(PlayerStatus.INTERACTING);
-                        UnsetAction_Async(PlayerStatus.ROLLING);
+                        _animationController.PlayAnimation(PlayerStatus.INTERACTING);
+                        UnsetAction_Async(PlayerStatus.INTERACTING);
                     }
                     // else
                     // {
@@ -245,6 +216,7 @@ namespace CurseOfNaga.Gameplay.Player
             {
                 case PlayerStatus.IDLE:
                     // PlayAnimation(PlayerStatus.IDLE);
+                    _animationController.PlayAnimation(PlayerStatus.IDLE);
 
                     break;
 
@@ -266,9 +238,9 @@ namespace CurseOfNaga.Gameplay.Player
                         _playerCollider.transform.localPosition = finalVec;
 
                         //Player Main Pos = y(-1.84)
-                        finalVec = _playerMain.transform.localPosition;          //Maybe use ref for temp vec3
-                        finalVec.y = 0f;
-                        _playerMain.transform.localPosition = finalVec;
+                        // finalVec = _playerMain.transform.localPosition;          //Maybe use ref for temp vec3
+                        // finalVec.y = 0f;
+                        // _playerMain.transform.localPosition = finalVec;
 
                         _playerStatus &= ~PlayerStatus.ROLLING;
                         _playerStatus &= ~PlayerStatus.PERFORMING_ACTION;
@@ -311,6 +283,8 @@ namespace CurseOfNaga.Gameplay.Player
                     _playerStatus &= ~PlayerStatus.IDLE;
                     _playerStatus |= PlayerStatus.MOVING;
 
+                    _animationController.PlayAnimation(PlayerStatus.MOVING);
+
                     if (inputVector.x < 0f)
                     // && ((_playerStatus & PlayerStatus.FACING_RIGHT) != 0)
                     {
@@ -324,6 +298,7 @@ namespace CurseOfNaga.Gameplay.Player
                             // _weaponPlacement.localPosition = moveDir;
 
                             // _playerMain.localEulerAngles = _LEFTFACING;
+                            _animationController.RotatePlayer(false);
                             // Debug.Log($"Facing Left | inputVector: {inputVector}");
                         }
                     }
@@ -340,6 +315,7 @@ namespace CurseOfNaga.Gameplay.Player
                             // _weaponPlacement.localPosition = moveDir;
 
                             // _playerMain.localEulerAngles = _RIGHTFACING;
+                            _animationController.RotatePlayer(true);
                             // Debug.Log($"Facing Right | inputVector: {inputVector}");
                         }
                     }
@@ -349,6 +325,8 @@ namespace CurseOfNaga.Gameplay.Player
             {
                 _playerStatus &= ~PlayerStatus.MOVING;
                 _playerStatus |= PlayerStatus.IDLE;
+
+                _animationController.PlayAnimation(PlayerStatus.IDLE);
             }
 
             moveDir = new Vector3(inputVector.x, 0f, inputVector.y);

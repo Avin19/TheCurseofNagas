@@ -1,0 +1,198 @@
+--------------------------------------------------------------------------------------------------------
+                                                01 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Creating a separate scene for character mechanics testing
+
+- Scene
+    [=] MainMenu_CharacterMechanic
+        {+} Adding 3D colliders to Ground and Player
+
+- Scripts
+    [=] Player.cs
+        {+} 
+    [=] MainGameplayManager
+        {+} Central Singleton script to manage GameStatus
+        {+} Trying SDF to check for objective visibility | It will not work due to perspective
+
+--------------------------------------------------------------------------------------------------------
+                                                02 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] MainGameplayManager
+        {+} Using camera to check object visibility.
+        {+} Internal class for storing objective infos
+        {+} Separate array for inactive and active objectives
+        {+} Returning PlayerStatus via action for visible objects.
+    [=] Player
+        {+} ObjectiveVisible callback
+    [=] UniversalConstant
+        {+} Changing enum Objective to ObjectiveType and adding values
+        {+} Adding PlayerStatus enum
+
+- Scripts
+    [=] EnemyBaseController
+        {+} Basic enemy script for controlling Enemy
+        {+} Enum to check Enemy Status
+    [=] UniversalConstant
+        {+} Adding GameStatus enum
+    [=] MainGameplayManager
+        {+} set/get logic for GameStatus flag
+- Scene
+    [=] Making a basic enemy object
+
+- Scene
+    [=] Making colliders orthogonal to ground
+        {+} https://www.youtube.com/watch?v=2L7T2ujrXRQ&list=PPSV
+        {+} https://www.youtube.com/watch?v=wYulZiBKg-I&list=PPSV
+
+- Scene
+    [=] Making Weapon prefab
+
+- Scene
+    [=] Adding Weapon-Collider as trigger to detect collision
+- Scripts
+    [=] UniversalConstant
+        {+} Adding FACING_LEFT, FACING_RIGHT to PlayerStatus
+    [=] Player
+        {+} Facing left/right logic
+
+- Scritps
+    [=] Player
+        {+} Fixing facing left/right
+
+--------------------------------------------------------------------------------------------------------
+                                                03 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Project
+    [=] PlayerController
+        {+} Adding Jump | Roll | Attack | Interact
+- Scripts
+    [=] UniversalConstant
+        {+} Adding InputStatus enum
+        {+} Adding values to PlayerStatus enum
+
+- Scripts
+    [=] UniversalConstant
+        {+} Removing InputStatus | Having separate enums will make it redundant
+    [=] GameInput
+        {+} Other input logic
+        {+} Action for Input values
+    [=] Player
+        {+} OnInputDone callback
+            <~> Setting PlayerStatus flags
+
+- Scene
+    [=] Adding a player template animations | Idle | Roll
+- Scripts
+    [=] Player
+        {+} Animator reference
+        {+} Animation logic | Template animations
+        {+} Setting / Unsetting action
+        {+} Attack collision logic
+    [=] UniversalConstant
+        {+} Adding ENEMY_FOUND to PlayerStatus
+    [=] EnemyBaseController
+        {+} Damage logic
+
+--------------------------------------------------------------------------------------------------------
+                                                04 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] Player
+        {+} Adding struct HitInfo and enum HitStatus
+        {+} Keeping a list of HitInfo to check which collider was hit
+        {+} OnTriggerEnter and OnTriggerExit for checking contacts with the collider
+    [=] MainGameplayManager
+        {+} Adding action for EnemyHit
+    [=] EnemyBaseController
+        {+} OnEnemyHit callback logic
+
+- Scripts
+    [=] UniversalConstant
+        {+} Moving EnemeyStatus here and adding values
+    [=] MainGameplayManager
+        {+} Adding EnemyStatus to action OnEnemyStatusUpdate
+    [=] EnemyBaseController
+        {+} Changing callbacks to OnEnemyStatusUpdate
+            <~> Invoking action for death
+    [=] Player
+        {+} Callback logic for OnEnemyStatusUpdate
+            <~> Removing transform ID for dead enemy
+
+- Scripts
+    [=] EnemyBaseController
+        {+} Refactoring to store hit logic here
+    [=] Player
+        {+} Sending simple hit action invoke along with transform ID
+    [=] UniversalConstant
+        {+} Adding value to EnemyStatus
+
+- Scripts
+    [=] Player
+        {+} Fixing UnsetAction
+    [=] Enemy
+        {+} Adding Enemy Animator
+            <~> Making template animations
+        {+} Fixing Player detection logic
+        {+} Enemy animation logic
+
+- Scripts
+    [=] EnemyBaseController
+        {+} 
+    [=] UniversalConstant
+        {+} Adding INVESTIGATE_AREA to EnemyStatus
+
+--------------------------------------------------------------------------------------------------------
+                                                07 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Updating all the scripts
+
+- Scripts
+    [=] PlayerAnimationController
+        {+} Making this non-monobehaviour copy of PlayerAnimation
+        {+} Moving Animation logic here from Player
+    [=] Player
+        {+} Integrating PlayerAnimationController
+        {+} Commenting weapon placement as rotating the player now
+- Scene
+    [=] Changing enemy's proximity threshold
+    [=] New prefab/animator for making changes
+
+--------------------------------------------------------------------------------------------------------
+- [NOW] Basic combat, exploration, vision-triggered objectives
+- [FIX] WeaponPlacement for Player
+    [=] Dedicated animation for left/right facing?
+- [DO] Enemies
+    [=] Will enemies respawn on the same place?
+    [=] Pooled enemies?
+    [=] Have wait time specific to the action being taken
+    [=] Ref: GTA SA
+        {+} A hostile NPC will come running up, slow down a bit ahead and start approaching in fighting stance
+        {+} They do not directly attack the player.
+        {+} After attacking the player, once or maybe with a combo
+            <~> They will either stay at one place or try to rotate and get a different angle at the player
+- [DO] Will need to tweak enemies that have ranged weapons
+- [DO] Will there be i-frame for the whole roll
+- [DO] Check how many actions can be stacked.
+    [=] Maybe only 2 actions can be stacked on top.
+    [=] Eg: Attack + Move, Use Item + Move
+- Orientation does not seem to matter that much to when using weapon
+    [=] https://www.youtube.com/watch?v=nRsneTFqdz0&list=PPSV&t=26s
+    [=] 0:41 
+        {+} Player can strike upward without rotating the sprite towards the target
+        {+} The sprite is facing sideways and animation is happening while 
+            the hit-box might be facing upwards and hitting the target
+        {+} When hitting up or down, the sprite is rotated sideways.
+            <~> Left or right might depend on something maybe
+- [FIX] Find a way to make enemy not slide when IDLE and focusing on Camera
+- [NOW] [DONE]Vision-Triggered objectives
+    [=] Need to check if the obect is visible enough on the screen through the camera
+    [=] Placing mutiple transforms around the objective to check which objective has been reached.
+    [=] Basically a bounds check
+        {+} Rigidbody?
+            <~> Too costly, query every FixedUpdate unnecessarily
+        {+} Position Check
+            <~> This will also be called every Update
+            <~> At least not as expensive as Physics Query
+            <~> Who will trigger the event?
+        {+} Using Camera
