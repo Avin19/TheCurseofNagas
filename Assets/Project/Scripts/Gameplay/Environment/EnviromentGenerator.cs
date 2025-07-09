@@ -1,6 +1,7 @@
 // #define PERLIN_NOISE_1
 #define DEBUG_POISSON_DISC
-#define DEBUG_TERRAIN_GEN_1
+// #define DEBUG_TERRAIN_GEN_1
+#define DEBUG_TERRAIN_GEN_2
 
 using System.Collections.Generic;
 using System.Threading;
@@ -112,7 +113,8 @@ namespace CurseOfNaga.Gameplay.Environment
         [SerializeField] private int _kAttempts = 30;
         [SerializeField] private float _wCellSize;
         [SerializeField] private int _rows = 10, _cols = 10;
-        [SerializeField] private int _waitTimeInSec = 1;
+        [Range(0.001f, 1f)][SerializeField] private float _waitIntervalInSec = 0.01f;
+        private int _activeCount;
 
 
         // private readonly Vector2Int _GridDimensions = new Vector2Int(10, 10);
@@ -161,9 +163,9 @@ namespace CurseOfNaga.Gameplay.Environment
 
             xIndex = randIndex % _rows;
             yIndex = randIndex / _rows;
-            _poissonTex.SetPixel(xIndex, yIndex, Color.white);
-
+            _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
             // InstantitateDebugCube(xIndex, yIndex);
+
 
             // for (int i = 0; i < _grid.Length; i++)
             // {
@@ -187,7 +189,7 @@ namespace CurseOfNaga.Gameplay.Environment
             while (_activeGrid.Count > 0)
             {
                 emergencyBreak++;
-                if (emergencyBreak > 200)
+                if (emergencyBreak > 2000)
                 {
                     Debug.LogError($"Emergency Break: {emergencyBreak} | List count: {_activeGrid.Count}");
                     break;
@@ -195,6 +197,7 @@ namespace CurseOfNaga.Gameplay.Environment
 
                 //Choose a random point from active list
                 randIndex = Random.Range(0, _activeGrid.Count);
+                _activeCount = _activeGrid.Count;
                 // Debug.Log($"randIndex: {_activeGrid[randIndex]} | Count: {_activeGrid.Count}");
 
                 //Generate upto k points between r and 2r
@@ -246,16 +249,16 @@ namespace CurseOfNaga.Gameplay.Environment
 
                     // Check if the space(r) is enough between points and no neigbours are within it
                     // Also checking if the spot itself is valid or not
-                    for (int hor = -1; hor <= 1 && !withinDistance; hor++)              // TODO: Fix range as this should be between r and 2r for this index
+                    for (int hor = _radius * -1; hor <= _radius && !withinDistance; hor++)              // TODO: Fix range as this should be between r and 2r for this index
                     {
-                        for (int ver = -1; ver <= 1 && !withinDistance; ver++)              // TODO: Fix range as this should be between r and 2r for this index
+                        for (int ver = _radius * -1; ver <= _radius && !withinDistance; ver++)              // TODO: Fix range as this should be between r and 2r for this index
                         {
-                            //Bounds Check
 #if DEBUG_TERRAIN_GEN_1
                             debugStr.Append($"\nhor: {hor} | ver : {ver} | ");
                             // Debug.Log($"{debugStr}");               //Test
 #endif
 
+                            //Bounds Check
                             if ((xIndex + hor) < 0 || (yIndex + ver) < 0
                                 || (xIndex + hor) >= _GridDimensions.x || (yIndex + ver) >= _GridDimensions.y)
                                 continue;
@@ -281,11 +284,11 @@ namespace CurseOfNaga.Gameplay.Environment
 #if DEBUG_TERRAIN_GEN_1
                                 // Debug.Log($"CurrentVec: [{currentVec.x}, {currentVec.y}] | randomOffsetVec: [{randomOffsetVec.x}, {randomOffsetVec.y}]");
                                 debugStr.Append($" Dist: {distance} | ");
+                                // InstantitateDebugCube((xIndex + hor), (yIndex + ver), true);
 #endif
 
                                 withinDistance = true;
 
-                                // InstantitateDebugCube((xIndex + hor), (yIndex + ver), true);
                             }
                         }
                     }
@@ -298,7 +301,7 @@ namespace CurseOfNaga.Gameplay.Environment
                         _grid[xIndex + (yIndex * _GridDimensions.x)] = 1;
                         _activeGrid.Add(xIndex + (yIndex * _GridDimensions.x));
 
-                        _poissonTex.SetPixel(xIndex, yIndex, Color.white);
+                        _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
 
                         // InstantitateDebugCube(xIndex, yIndex);
                         // break;
@@ -317,14 +320,12 @@ namespace CurseOfNaga.Gameplay.Environment
                 }
                 foundCell = false;
 
-                await Task.Delay(_waitTimeInSec * 1000);
+                await Task.Delay((int)(_waitIntervalInSec * 1000));
 
                 if (_cts.IsCancellationRequested) return;
             }
 
-#if DEBUG_TERRAIN_GEN_1
             Debug.Log($"Emergency Break Count: {emergencyBreak}");
-#endif
 
             _poissonTex.Apply();
 
@@ -332,6 +333,7 @@ namespace CurseOfNaga.Gameplay.Environment
                     , new Vector2(0.5f, 0.5f));
         }
 
+#if DEBUG_TERRAIN_GEN_2
         private void InstantitateDebugCube(int xIndex, int yIndex, bool inValid = false)
         {
             Vector3 tempSpawnPos = Vector3.zero;
@@ -368,6 +370,7 @@ namespace CurseOfNaga.Gameplay.Environment
                 cube.transform.position = finalPos;
             }
         }
+#endif
 
 
 #if PERLIN_NOISE_1

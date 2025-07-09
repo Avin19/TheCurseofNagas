@@ -179,6 +179,12 @@
 
 - Environment Generation Fixing 1
 
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Environment Generation Fixing
+        {+} Checking for the whole neighbouring radius instead of just 1 block in every direction
+
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest

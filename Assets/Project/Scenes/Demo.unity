@@ -992,12 +992,12 @@ MonoBehaviour:
     prefab: {fileID: 0}
   poissonMapPreview: {fileID: 106571406}
   UpdatePoissonMap: 0
-  _radius: 12
+  _radius: 6
   _kAttempts: 30
   _wCellSize: 1
-  _rows: 20
-  _cols: 20
-  _waitTimeInSec: 1
+  _rows: 150
+  _cols: 150
+  _waitIntervalInSec: 0.001
   _randomSeed: 0
   RandomSeed_2: Hello2
 --- !u!1 &555562250
