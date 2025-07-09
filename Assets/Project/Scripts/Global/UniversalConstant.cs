@@ -4,7 +4,13 @@ namespace CurseOfNaga.Global
 {
     public class UniversalConstant
     {
-        public enum GameStatus { DEFAULT, LOADED }
+        public enum GameStatus
+        {
+            NOT_LOADED = 0,
+            LOADED_ENVIRONMENT = 1 << 0,
+            LOADED_ENEMIES = 1 << 1,
+            LOAD_COMPLETE = 1 << 2,
+        }
 
         public enum ObjectiveType { ACTIVE, INACTIVE, CURRENT, INVOKE_CUTSCENE }
 
@@ -41,5 +47,6 @@ namespace CurseOfNaga.Global
             PLAYER_ATTACKING = 1 << 10,
             DEAD = 1 << 11,
         }
+
     }
 }

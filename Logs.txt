@@ -159,7 +159,28 @@
     [=] New prefab/animator for making changes
 
 --------------------------------------------------------------------------------------------------------
+                                                08 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] UniversalConstant
+        {+} Adding values to GameStatus enum
+    [=] MainGameplayManager
+        {+} Adding OnGameStatusChange action
+    [=] EnvironmentGenerator
+        {+} Adding prefab field for objects | Might later move to prefab pooling
+        {+} Adding enums for Environment Types
+
+--------------------------------------------------------------------------------------------------------
+                                                09 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Environment Generation
+
+--------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
+- [NOW] Enivronment spawning around point of interest
+    [=] Predefined point of interest
+    [=] Environment generation around point of interest.
+    [=] Spawn trees/bushes on the basis of pearl noise
 - [FIX] WeaponPlacement for Player
     [=] Dedicated animation for left/right facing?
 - [DO] Enemies

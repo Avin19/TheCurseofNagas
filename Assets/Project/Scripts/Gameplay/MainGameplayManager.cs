@@ -156,8 +156,8 @@ namespace CurseOfNaga.Gameplay
             await Task.Delay(2000);
             if (_cts.IsCancellationRequested) return;
 
-            _gameStatus &= ~GameStatus.LOADED;
-            _gameStatus |= GameStatus.LOADED;
+            _gameStatus &= ~GameStatus.LOAD_COMPLETE;
+            _gameStatus |= GameStatus.LOAD_COMPLETE;
         }
 #endif
 

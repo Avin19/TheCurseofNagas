@@ -51,7 +51,7 @@ namespace CurseOfNaga.Gameplay.Enemies
 
         private void Update()
         {
-            if ((MainGameplayManager.Instance.GameStatus & GameStatus.LOADED) == 0)
+            if ((MainGameplayManager.Instance.GameStatus & GameStatus.LOAD_COMPLETE) == 0)
                 return;
 
             Vector3 tempVec = transform.position - MainGameplayManager.Instance.PlayerTransform.position;
@@ -163,6 +163,9 @@ namespace CurseOfNaga.Gameplay.Enemies
             //  [=] Follow point to point? Designated paths for enemy to follow
             //      {+} Would need to store the paths for different enemies then
             //  [=] Select any random point and go there?
+            //  [=] Can use navmesh to guide arount the world.
+            //      {+} Would still need specified points to navigate to the area
+            //      {+} Find some way to access points from the navmesh which can be walked?
             PlayAnimation(EnemyStatus.MOVING);
         }
 
