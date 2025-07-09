@@ -175,6 +175,8 @@
 --------------------------------------------------------------------------------------------------------
 - Environment Generation
 
+- Environment Generation Debugging Continue
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest

@@ -112,7 +112,10 @@ namespace CurseOfNaga.Gameplay.Environment
         [SerializeField] private float _wCellSize;
         [SerializeField] private int _rows = 10, _cols = 10;
         [SerializeField] private int _waitTimeInSec = 1;
-        private readonly Vector2Int _GridDimensions = new Vector2Int(10, 10);
+
+
+        // private readonly Vector2Int _GridDimensions = new Vector2Int(10, 10);
+        private Vector2Int _GridDimensions;
 
         [SerializeField] private bool _randomSeed = false;
         [SerializeField] private string RandomSeed_2 = "135653245";             //135653245
@@ -127,6 +130,7 @@ namespace CurseOfNaga.Gameplay.Environment
 
             _grid = new byte[_rows * _cols];
             _activeGrid = new List<int>();
+            _GridDimensions = new Vector2Int(_rows, _cols);
 
             // Set up the texture
             _poissonTex = new Texture2D(_rows, _cols);
@@ -158,14 +162,7 @@ namespace CurseOfNaga.Gameplay.Environment
             yIndex = randIndex / _rows;
             _poissonTex.SetPixel(xIndex, yIndex, Color.white);
 
-            Vector3 tempSpawnPos = Vector3.zero;
-            GameObject tempObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            tempObject.transform.localScale = Vector3.one * 1f;
-            tempSpawnPos.x = xIndex;
-            tempSpawnPos.y = 0.5f;
-            tempSpawnPos.z = yIndex;
-            tempObject.transform.localPosition = tempSpawnPos;
-            tempObject.name = $"PoissonObj_{randIndex}";
+            InstantitateDebugCube(xIndex, yIndex);
 
             // for (int i = 0; i < _grid.Length; i++)
             // {
@@ -189,7 +186,7 @@ namespace CurseOfNaga.Gameplay.Environment
             while (_activeGrid.Count > 0)
             {
                 emergencyBreak++;
-                if (emergencyBreak > 100)
+                if (emergencyBreak > 40)
                 {
                     Debug.LogError($"Emergency Break: {emergencyBreak}");
                     break;
@@ -209,8 +206,11 @@ namespace CurseOfNaga.Gameplay.Environment
                     randomOffsetVec.x = Mathf.Cos(randomAngle);
                     randomOffsetVec.y = Mathf.Sin(randomAngle);
 
+                    debugStr.Clear();
+                    debugStr.Append($"Initial Vec: {randomOffsetVec} | ");
+
                     // Offset more to be between r and 2r
-                    additionalOffset = Random.Range(_radius, 2 * _radius);
+                    additionalOffset = Random.Range(_radius, (2 * _radius) + 1);
                     randomOffsetVec *= additionalOffset;
 
                     // https://www.desmos.com/calculator/fshadmxjaa - Checking
@@ -218,11 +218,11 @@ namespace CurseOfNaga.Gameplay.Environment
                     // yIndex = _activeGrid[randIndex] / _rows + Mathf.FloorToInt(randomOffsetVec.y / _wCellSize);
 
                     //_wCellSize will only be needed to calculate the position afterwards, not now
-                    xIndex = _activeGrid[randIndex] % _rows + Mathf.FloorToInt(randomOffsetVec.x);
-                    yIndex = _activeGrid[randIndex] / _rows + Mathf.FloorToInt(randomOffsetVec.y);
+                    xIndex = (_activeGrid[randIndex] % _rows) + Mathf.FloorToInt(randomOffsetVec.x);
+                    yIndex = (_activeGrid[randIndex] / _rows) + Mathf.FloorToInt(randomOffsetVec.y);
 
-                    debugStr.Clear();
-                    debugStr.Append($"Random Vec: {randomOffsetVec} | additionalOffset: {additionalOffset} | ");
+                    debugStr.Append($"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | ");
+                    debugStr.Append($"Floor X: {Mathf.FloorToInt(randomOffsetVec.x)} | Floor Y: {Mathf.FloorToInt(randomOffsetVec.y)} | ");
                     debugStr.Append($"xIndex: {xIndex} | yIndex: {yIndex} | ");
                     // Debug.Log($"Random Vec: {randomOffsetVec} | additionalOffset: {additionalOffset}"
                     //         + $" | xIndex: {xIndex} | yIndex: {yIndex}");
@@ -230,7 +230,7 @@ namespace CurseOfNaga.Gameplay.Environment
                     //Bounds Check
                     if (xIndex < 0 || yIndex < 0 || xIndex >= _GridDimensions.x || yIndex >= _GridDimensions.y)
                     {
-                        Debug.Log($"{debugStr}");
+                        // Debug.Log($"Outside Bounds: {debugStr}");
                         continue;
                     }
 
@@ -245,7 +245,9 @@ namespace CurseOfNaga.Gameplay.Environment
                         for (int ver = -1; ver < 1 && !withinDistance; ver++)
                         {
                             //Bounds Check
-                            debugStr.Append($"xIndex: {xIndex} | yIndex: {yIndex} | hor: {hor} | ver : {ver} | ");
+                            debugStr.Append($"\nhor: {hor} | ver : {ver} | ");
+                            // Debug.Log($"{debugStr}");               //Test
+
                             if ((xIndex + hor) < 0 || (yIndex + ver) < 0
                                 || (xIndex + hor) >= _GridDimensions.x || (yIndex + ver) >= _GridDimensions.y)
                                 continue;
@@ -256,29 +258,36 @@ namespace CurseOfNaga.Gameplay.Environment
                             // Debug.Log($"neighbourIndex: {neighbourIndex} | xIndex: {xIndex} | yIndex: {yIndex}"
                             //         + $" | hor: {hor} | ver : {ver} | _GridDimensions: {_GridDimensions}");
 
-                            if (_grid[neighbourIndex] == 1) continue;
+                            if (_grid[neighbourIndex] == 255) continue;
 
                             //Checking the distance
-                            currentVec.x = xIndex;
-                            currentVec.y = yIndex;
+                            currentVec.x = xIndex + hor;
+                            currentVec.y = yIndex + ver;
                             // float distance = _grid[neighbourIndex] - _grid[xIndex + (yIndex * _GridDimensions.x)];
                             float distance = Vector2.SqrMagnitude(randomOffsetVec - currentVec);
 
                             if (distance < _radius * _radius)
+                            {
+                                // Debug.Log($"CurrentVec: [{currentVec.x}, {currentVec.y}] | randomOffsetVec: [{randomOffsetVec.x}, {randomOffsetVec.y}]");
+                                debugStr.Append($" Dist: {distance} | ");
                                 withinDistance = true;
+
+                                // InstantitateDebugCube((xIndex + hor), (yIndex + ver), true);
+                            }
                         }
                     }
 
                     if (!withinDistance)
                     {
-                        // Debug.Log($"Adding index: {xIndex + (yIndex * _GridDimensions.x)}| xIndex {xIndex} | yIndex: {yIndex}");
-                        debugStr.Append($"Added");
+                        Debug.Log($"Adding index: {xIndex + (yIndex * _GridDimensions.x)}| xIndex {xIndex} | yIndex: {yIndex}");
+                        // debugStr.Append($"Added");
                         foundCell = true;
                         _grid[xIndex + (yIndex * _GridDimensions.x)] = 1;
                         _activeGrid.Add(xIndex + (yIndex * _GridDimensions.x));
 
                         _poissonTex.SetPixel(xIndex, yIndex, Color.white);
 
+                        InstantitateDebugCube(xIndex, yIndex);
                         // break;
                     }
                     Debug.Log($"{debugStr}");
@@ -286,6 +295,7 @@ namespace CurseOfNaga.Gameplay.Environment
 
                 if (!foundCell)
                 {
+                    Debug.Log($"Removing from active | index: {randIndex} | Val: {_activeGrid[randIndex]}");
                     _activeGrid.RemoveAt(randIndex);
                 }
                 foundCell = false;
@@ -299,6 +309,24 @@ namespace CurseOfNaga.Gameplay.Environment
 
             poissonMapPreview.sprite = Sprite.Create(_poissonTex, new Rect(0f, 0f, _rows, _cols)
                     , new Vector2(0.5f, 0.5f));
+        }
+
+        private void InstantitateDebugCube(int xIndex, int yIndex, bool inValid = false)
+        {
+            Vector3 tempSpawnPos = Vector3.zero;
+
+            GameObject tempObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            tempObject.transform.localScale = Vector3.one * 1f;
+
+            tempSpawnPos.x = xIndex;
+            tempSpawnPos.y = 0.5f;
+            tempSpawnPos.z = yIndex;
+
+            tempObject.transform.localPosition = tempSpawnPos;
+            if (inValid)
+                tempObject.name = $"Inv_PoissonObj_{xIndex + (yIndex * _GridDimensions.x)}";
+            else
+                tempObject.name = $"PoissonObj_{xIndex + (yIndex * _GridDimensions.x)}";
         }
 
         private void DebugPoissonSampleThroughCubes()
