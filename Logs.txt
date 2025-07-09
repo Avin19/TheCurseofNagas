@@ -184,7 +184,9 @@
         {+} Environment Generation Fixing
         {+} Checking for the whole neighbouring radius instead of just 1 block in every direction
 
-
+- Scripts
+    [=] PerlinNoiseGenerator
+        {+} Separate script for PerlinNoise
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest

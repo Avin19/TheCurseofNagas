@@ -1,4 +1,5 @@
 // #define PERLIN_NOISE_1
+
 #define DEBUG_POISSON_DISC
 // #define DEBUG_TERRAIN_GEN_1
 #define DEBUG_TERRAIN_GEN_2
@@ -6,6 +7,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CurseOfNaga.Utils;
 using UnityEngine;
 
 using static CurseOfNaga.Global.UniversalConstant;
@@ -55,7 +57,7 @@ namespace CurseOfNaga.Gameplay.Environment
             MainGameplayManager.Instance.SetGameStatus(GameStatus.LOADED_ENVIRONMENT);
 
 #if PERLIN_NOISE_1
-            CreateSpriteRenderer();
+            InitializePerlinValues();
 #endif
         }
 
@@ -81,10 +83,10 @@ namespace CurseOfNaga.Gameplay.Environment
 #endif
 
 #if PERLIN_NOISE_1
-            if (GenerateNewMap)
+            if (GenerateNewPerlinMap)
             {
-                GenerateNewMap = false;
-                Generatemap();
+                GenerateNewPerlinMap = false;
+                GeneratePerlinMap();
             }
 #endif
         }
@@ -154,7 +156,12 @@ namespace CurseOfNaga.Gameplay.Environment
             Debug.Log($"Seed: {RandomSeed_2}");
 
             //Select a random point from the grid
-            int randIndex = Random.Range(0, _rows * _cols);
+            // int randIndex = Random.Range(0, _rows * _cols);
+            // _grid[randIndex] = 1;
+            // _activeGrid.Add(randIndex);
+
+            //Selecting a center point from rows/cols
+            int randIndex = (_rows / 2) + ((_cols / 2) * _GridDimensions.x);
             _grid[randIndex] = 1;
             _activeGrid.Add(randIndex);
 
@@ -374,80 +381,33 @@ namespace CurseOfNaga.Gameplay.Environment
 
 
 #if PERLIN_NOISE_1
-        public bool GenerateNewMap = false;
+        [Space(10)]
+        [Header("Perlin Values")]
+        public bool GenerateNewPerlinMap = false;
+        private PerlinNoiseGenerator _perlinNoiseGenerator;
 
-        public int pixWidth = 128, pixHeight = 128, scale = 2;
-        public string RandomSeed = "";
-        private Texture2D noiseTex;
-        private SpriteRenderer mapPreview;
-
-        [HideInInspector] private Color[] pix;
         [SerializeField]
-        private Color water = Color.blue, sand = Color.white,
-            grass = Color.green, forest = Color.green,
-            mountains = Color.gray;
+        private Color _water = new Color(0, 0.7933049f, 1f, 1f), _sand = new Color(0, 0.9490887f, 0.3726415f, 1f),
+                _grass = new Color(0.4009434f, 1f, 0.4009434f, 1f), _forest = new Color(0f, 0.6698113f, 0f, 1f),
+                _mountains = new Color(0.5f, 0.5f, 0.5f, 1f);
 
-        private void CreateSpriteRenderer()
+        [SerializeField] private SpriteRenderer _perlinPreview;
+        [SerializeField] private int _pixWidth = 256, _pixHeight = 256, _scale = 8;
+
+        private void InitializePerlinValues()
         {
-            GameObject spriteRenderer = new GameObject("DebugPerlinNoiseRenderer");
-            spriteRenderer.transform.parent = transform;
-            spriteRenderer.transform.localPosition = Vector3.zero;
-
-            mapPreview = spriteRenderer.AddComponent<SpriteRenderer>();
-            mapPreview.sortingLayerID = SortingLayer.NameToID("Environment");
-            Debug.Log($"{mapPreview.sortingLayerName}");
+            _perlinNoiseGenerator = new PerlinNoiseGenerator(_pixWidth, _pixHeight, _scale, "",
+                    _water, _sand, _grass, _forest, _mountains);
+            GeneratePerlinMap();
         }
 
-        void Generatemap()
+        private void GeneratePerlinMap()
         {
+            _perlinNoiseGenerator.SetValues(_pixWidth, _pixHeight, _scale);
+            Texture2D noiseTex = _perlinNoiseGenerator.GenerateMap();
 
-            // Set up the texture and a Color array to hold pixels during processing.
-            noiseTex = new Texture2D(pixWidth, pixHeight);
-            pix = new Color[noiseTex.width * noiseTex.height];
-            float randomorg = Random.Range(0, 100);
-
-            // For each pixel in the texture...
-            float y = 0.0F;
-
-            while (y < noiseTex.height)
-            {
-                float x = 0.0F;
-                while (x < noiseTex.width)
-                {
-
-                    float xCoord = randomorg + x / noiseTex.width * scale;
-                    float yCoord = randomorg + y / noiseTex.height * scale;
-                    float sample = Mathf.PerlinNoise(xCoord, yCoord);
-
-                    if (sample == Mathf.Clamp(sample, 0, 0.5f))
-                        pix[(int)y * noiseTex.width + (int)x] = water;
-                    else if (sample == Mathf.Clamp(sample, 0.5f, 0.6f))
-                        pix[(int)y * noiseTex.width + (int)x] = sand;
-
-
-                    else if (sample == Mathf.Clamp(sample, 0.6f, 0.7f))
-                        pix[(int)y * noiseTex.width + (int)x] = grass;
-                    else if (sample == Mathf.Clamp(sample, 0.7f, 0.8f))
-                        pix[(int)y * noiseTex.width + (int)x] = forest;
-                    else if (sample == Mathf.Clamp(sample, 0.8f, 1f))
-                        pix[(int)y * noiseTex.width + (int)x] = mountains;
-                    else
-                        pix[(int)y * noiseTex.width + (int)x] = water;
-
-
-                    x++;
-                }
-                y++;
-            }
-
-
-            // Copy the pixel data to the texture and load it into the GPU.
-            noiseTex.SetPixels(pix);
-            noiseTex.Apply();
-
-            mapPreview.sprite = Sprite.Create(noiseTex, new Rect(0f, 0f, pixWidth, pixHeight), new Vector2(0.5f, 0.5f));
-            // mapPreview.texture = noiseTex;
-            // worldmap = noiseTex;
+            _perlinPreview.sprite = Sprite.Create(noiseTex,
+                    new Rect(0f, 0f, _pixWidth, _pixHeight), new Vector2(0.5f, 0.5f));
         }
 #endif
     }
