@@ -117,6 +117,7 @@ namespace CurseOfNaga.Gameplay.Environment
             [Range(1f, 20f)] public int CellRadius;
             public Color CellColor;                                 // For Texture Preview
             public LayerType CellType;
+            public bool SpawnRandomCluster;
         }
 
         [SerializeField] private LayerData[] _layerDatas;
@@ -321,7 +322,11 @@ namespace CurseOfNaga.Gameplay.Environment
                                 //         + $" | hor: {hor} | ver : {ver} | _GridDimensions: {_GridDimensions}");
 #endif
 
-                                if (_grid[neighbourIndex] != 255) withinDistance = true;
+                                if (_grid[neighbourIndex] != 255
+                                    && _grid[neighbourIndex] == (byte)_layerDatas[layerId].CellType)
+                                {
+                                    withinDistance = true;
+                                }
 
                                 /*
                                 if (_grid[neighbourIndex] == 255) continue;
@@ -357,8 +362,33 @@ namespace CurseOfNaga.Gameplay.Environment
 
                             // _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
                             _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[layerId].CellColor);
-
                             // InstantitateDebugCube(xIndex, yIndex);
+
+                            // Random chance to spawn cluster of objects
+                            if (_layerDatas[layerId].SpawnRandomCluster)
+                            {
+                                int randomCluster = Random.Range(0, 10);
+
+                                if (randomCluster > 2 && randomCluster < 5)
+                                {
+                                    //Cover the 1-cell radius fully or randomly some cells only?
+                                    for (int hor = -1; hor <= 1; hor++)
+                                    {
+                                        for (int ver = -1; ver <= 1; ver++)
+                                        {
+                                            //Bounds Check
+                                            if ((xIndex + hor) < 0 || (yIndex + ver) < 0
+                                                || (xIndex + hor) >= _GridDimensions.x || (yIndex + ver) >= _GridDimensions.y
+                                                || _grid[(xIndex + hor) + ((yIndex + ver) * _GridDimensions.y)] != 255)             //Check if cell is occupied or not
+                                                continue;
+
+                                            _grid[(xIndex + hor) + ((yIndex + ver) * _GridDimensions.y)] = (byte)_layerDatas[layerId].CellType;
+                                            _poissonTex.SetPixel((xIndex + hor), (yIndex + ver), _layerDatas[layerId].CellColor);
+                                        }
+                                    }
+                                }
+                            }
+
                             // break;
                         }
 #if DEBUG_TERRAIN_GEN_1

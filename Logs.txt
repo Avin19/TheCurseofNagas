@@ -207,6 +207,12 @@
         {+} LayerData struct to contain layer data
         {+} Not checking squared distance, instead simply setting withinDistance to true if within cell radius/range
             <~> For small range, upto 50, the results are almost identical
+
+- Scripts
+    [=] EnvironmentGenerator
+        {+} During Radius check, checking also if the neighbour cell does not contain the same object being placed
+        {+} Adding field for random cluster spawn of objects
+            <~> Cluster cell with 1-cell boundary
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest

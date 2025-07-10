@@ -994,18 +994,20 @@ MonoBehaviour:
   poissonMapPreview: {fileID: 106571406}
   UpdatePoissonMap: 0
   _layerDatas:
-  - CellRadius: 3
+  - CellRadius: 6
     CellColor: {r: 0.044811275, g: 0.4433962, b: 0, a: 1}
     CellType: 0
-  - CellRadius: 2
+    SpawnRandomCluster: 0
+  - CellRadius: 4
     CellColor: {r: 0, g: 0.8396226, b: 0, a: 1}
     CellType: 1
+    SpawnRandomCluster: 1
   _radius: 10
   _kAttempts: 30
   _wCellSize: 1
   _rows: 100
   _cols: 100
-  _waitIntervalInSec: 0.05
+  _waitIntervalInSec: 0.01
   _poiRadius: 8
   _randomSeed: 0
   RandomSeed_2: Hello2
