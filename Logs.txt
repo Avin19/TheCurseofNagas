@@ -187,6 +187,16 @@
 - Scripts
     [=] PerlinNoiseGenerator
         {+} Separate script for PerlinNoise
+
+--------------------------------------------------------------------------------------------------------
+                                                10 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Adding radius check for spawning out the circle of POI
+        {+} Starting spawning from one corner
+        {+} Replacing x with y for index calculation
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest
@@ -229,3 +239,7 @@
             <~> At least not as expensive as Physics Query
             <~> Who will trigger the event?
         {+} Using Camera
+
+- Work on main menu:     Template only + logic
+- 2d rigging for attack animations of player
+- Work on colliders

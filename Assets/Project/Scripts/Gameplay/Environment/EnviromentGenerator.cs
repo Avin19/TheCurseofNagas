@@ -4,12 +4,15 @@
 // #define DEBUG_TERRAIN_GEN_1
 #define DEBUG_TERRAIN_GEN_2
 
+// #define POISSON_EMERGENCY_BREAK_1
+
+using UnityEngine;
+
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CurseOfNaga.Utils;
-using UnityEngine;
 
+using CurseOfNaga.Utils;
 using static CurseOfNaga.Global.UniversalConstant;
 
 namespace CurseOfNaga.Gameplay.Environment
@@ -114,8 +117,9 @@ namespace CurseOfNaga.Gameplay.Environment
         [SerializeField] private int _radius = 4;
         [SerializeField] private int _kAttempts = 30;
         [SerializeField] private float _wCellSize;
-        [SerializeField] private int _rows = 10, _cols = 10;
+        [Range(5f, 150f)][SerializeField] private int _rows = 10, _cols = 10;
         [Range(0.001f, 1f)][SerializeField] private float _waitIntervalInSec = 0.01f;
+        [Range(1f, 100f)][SerializeField] private float _poiRadius = 2f;
         private int _activeCount;
 
 
@@ -161,9 +165,19 @@ namespace CurseOfNaga.Gameplay.Environment
             // _activeGrid.Add(randIndex);
 
             //Selecting a center point from rows/cols
-            int randIndex = (_rows / 2) + ((_cols / 2) * _GridDimensions.x);
+            // If row * col is even, then need to subtract a row, else not equal            //Wrong
+            // If row * col is odd, then can get half                                       //Wrong
+            // int randIndex = (_rows * _cols / 2) - ((_rows % 2) * _cols);                 //Wrong
+
+            // This wont work as the middle is to be exlcuded, it needs to be clear
+            // int randIndex = (_rows / 2) + ((_cols / 2) * _GridDimensions.x);
+
+            // Starting from 2nd last row
+            Vector2 midPointVec = new Vector3(_rows / 2, _cols / 2);
+            int randIndex = 3 + _GridDimensions.y;
             _grid[randIndex] = 1;
             _activeGrid.Add(randIndex);
+            // Debug.Log($"Selected randIndex: {randIndex}");
 
             // Display on Sprite Renderer
             int xIndex = 0, yIndex = 0;
@@ -172,7 +186,6 @@ namespace CurseOfNaga.Gameplay.Environment
             yIndex = randIndex / _rows;
             _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
             // InstantitateDebugCube(xIndex, yIndex);
-
 
             // for (int i = 0; i < _grid.Length; i++)
             // {
@@ -192,15 +205,20 @@ namespace CurseOfNaga.Gameplay.Environment
 
             System.Text.StringBuilder debugStr = new System.Text.StringBuilder();
 
+#if POISSON_EMERGENCY_BREAK_1
             int emergencyBreak = 0;
+#endif
             while (_activeGrid.Count > 0)
             {
+#if POISSON_EMERGENCY_BREAK_1
                 emergencyBreak++;
                 if (emergencyBreak > 2000)
                 {
                     Debug.LogError($"Emergency Break: {emergencyBreak} | List count: {_activeGrid.Count}");
                     break;
                 }
+
+#endif
 
                 //Choose a random point from active list
                 randIndex = Random.Range(0, _activeGrid.Count);
@@ -241,18 +259,19 @@ namespace CurseOfNaga.Gameplay.Environment
                     //         + $" | xIndex: {xIndex} | yIndex: {yIndex}");
 #endif
 
+                    // Updating offset co-ords to current active cell
+                    randomOffsetVec.x = xIndex;
+                    randomOffsetVec.y = yIndex;
+
                     //Bounds Check
-                    if (xIndex < 0 || yIndex < 0 || xIndex >= _GridDimensions.x || yIndex >= _GridDimensions.y)
+                    if (xIndex < 0 || yIndex < 0 || xIndex >= _GridDimensions.x || yIndex >= _GridDimensions.y
+                        || (Vector3.SqrMagnitude(randomOffsetVec - midPointVec) - (_poiRadius * _poiRadius)) <= 0)            // Also check if it does not comes into the point of interest
                     {
 #if DEBUG_TERRAIN_GEN_1
                         // Debug.Log($"Outside Bounds: {debugStr}");
 #endif
                         continue;
                     }
-
-                    // Adding offset according to current active cell
-                    randomOffsetVec.x = xIndex;
-                    randomOffsetVec.y = yIndex;
 
                     // Check if the space(r) is enough between points and no neigbours are within it
                     // Also checking if the spot itself is valid or not
@@ -270,7 +289,7 @@ namespace CurseOfNaga.Gameplay.Environment
                                 || (xIndex + hor) >= _GridDimensions.x || (yIndex + ver) >= _GridDimensions.y)
                                 continue;
 
-                            int neighbourIndex = (xIndex + hor) + ((yIndex + ver) * _GridDimensions.x);
+                            int neighbourIndex = (xIndex + hor) + ((yIndex + ver) * _GridDimensions.y);
 
 #if DEBUG_TERRAIN_GEN_1
                             debugStr.Append($"neighbourIndex: {neighbourIndex} | _GridDimensions: {_GridDimensions} | _grid Val: {_grid[neighbourIndex]} | ");
@@ -305,8 +324,8 @@ namespace CurseOfNaga.Gameplay.Environment
                         // Debug.Log($"Adding index: {xIndex + (yIndex * _GridDimensions.x)}| xIndex {xIndex} | yIndex: {yIndex}");
                         // debugStr.Append($"Added");
                         foundCell = true;
-                        _grid[xIndex + (yIndex * _GridDimensions.x)] = 1;
-                        _activeGrid.Add(xIndex + (yIndex * _GridDimensions.x));
+                        _grid[xIndex + (yIndex * _GridDimensions.y)] = 1;
+                        _activeGrid.Add(xIndex + (yIndex * _GridDimensions.y));
 
                         _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
 
@@ -331,8 +350,9 @@ namespace CurseOfNaga.Gameplay.Environment
 
                 if (_cts.IsCancellationRequested) return;
             }
-
-            Debug.Log($"Emergency Break Count: {emergencyBreak}");
+#if POISSON_EMERGENCY_BREAK_1
+            Debug.Log($"Emergency Break Count: {emergencyBreak}");               //FOR DEBUG
+#endif
 
             _poissonTex.Apply();
 
@@ -354,9 +374,9 @@ namespace CurseOfNaga.Gameplay.Environment
 
             tempObject.transform.localPosition = tempSpawnPos;
             if (inValid)
-                tempObject.name = $"Inv_PoissonObj_{xIndex + (yIndex * _GridDimensions.x)}_[{xIndex},{yIndex}]";
+                tempObject.name = $"Inv_PoissonObj_{xIndex + (yIndex * _GridDimensions.y)}_[{xIndex},{yIndex}]";
             else
-                tempObject.name = $"PoissonObj_{xIndex + (yIndex * _GridDimensions.x)}_[{xIndex},{yIndex}]";
+                tempObject.name = $"PoissonObj_{xIndex + (yIndex * _GridDimensions.y)}_[{xIndex},{yIndex}]";
         }
 
         private void DebugPoissonSampleThroughCubes()
