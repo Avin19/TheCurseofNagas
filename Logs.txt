@@ -201,6 +201,12 @@
     [=] EnvironmentData.json
         {+} File to contain data about environment objects
 
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Bush generation on top of existing grid of trees in-between
+        {+} LayerData struct to contain layer data
+        {+} Not checking squared distance, instead simply setting withinDistance to true if within cell radius/range
+            <~> For small range, upto 50, the results are almost identical
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest
@@ -212,6 +218,7 @@
         {+} Would need more space between trees so as to fit bushes to look natural, or no?
             <~> Trees and bushes would look too much separated
         {+} Might need to overlap bushes, to some extent, not fully
+            <~> Will need to clump bushes together, space between bushes look unnatural
         {+} Will there be grass everywhere?                                 -   Performance Issue
 - [FIX] WeaponPlacement for Player
     [=] Dedicated animation for left/right facing?
@@ -253,3 +260,15 @@
 - Work on main menu:     Template only + logic
 - 2d rigging for attack animations of player
 - Work on colliders
+
+- Poisson Radius Check | Simple
+    [=] Async | Start: 1m 52s 533ms 638877709125334669 | End: 2m 0s 592ms 638877709205926455
+    [=] Non-Async 50 | Start: 5m 54s 992ms 638877711549923489 | End: 5m 54s 995ms 638877711549953674       | 30,185
+
+    [=] Non-Async 100 | Start: 11m 44s 532ms 638877715045328844 | End: 11m 44s 541ms 638877715045414116       | 30,185
+
+- Poisson Radius Check | DistSqr
+    [=] Async | Start: 3m 33s 696ms 638877710136965023 | End: 3m 41s 786ms 638877710217869093
+    [=] Non-Async 50 | Start: 7m 13s 697ms 638877712336972752 | End: 7m 13s 699ms 638877712336997780       | 25,028
+
+    [=] Non-Async 100 | Start: 10m 24s 506ms 638877714245066834 | End: 10m 24s 517ms 638877714245177378       | 25,028

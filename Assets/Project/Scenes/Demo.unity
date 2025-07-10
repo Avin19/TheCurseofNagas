@@ -993,13 +993,20 @@ MonoBehaviour:
     prefab: {fileID: 0}
   poissonMapPreview: {fileID: 106571406}
   UpdatePoissonMap: 0
+  _layerDatas:
+  - CellRadius: 3
+    CellColor: {r: 0.044811275, g: 0.4433962, b: 0, a: 1}
+    CellType: 0
+  - CellRadius: 2
+    CellColor: {r: 0, g: 0.8396226, b: 0, a: 1}
+    CellType: 1
   _radius: 10
   _kAttempts: 30
   _wCellSize: 1
-  _rows: 150
-  _cols: 150
-  _waitIntervalInSec: 0.001
-  _poiRadius: 40
+  _rows: 100
+  _cols: 100
+  _waitIntervalInSec: 0.05
+  _poiRadius: 8
   _randomSeed: 0
   RandomSeed_2: Hello2
 --- !u!1 &555562250

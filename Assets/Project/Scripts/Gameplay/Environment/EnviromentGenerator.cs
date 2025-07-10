@@ -4,7 +4,7 @@
 // #define DEBUG_TERRAIN_GEN_1
 #define DEBUG_TERRAIN_GEN_2
 
-// #define POISSON_EMERGENCY_BREAK_1
+#define POISSON_EMERGENCY_BREAK_1
 
 using UnityEngine;
 
@@ -109,6 +109,17 @@ namespace CurseOfNaga.Gameplay.Environment
         public bool UpdatePoissonMap = false;
 #endif
 
+        internal enum LayerType { TREE = 0, BUSH, GRASS, FLOWER, ROCK }
+
+        [System.Serializable]
+        internal struct LayerData
+        {
+            [Range(1f, 20f)] public int CellRadius;
+            public Color CellColor;                                 // For Texture Preview
+            public LayerType CellType;
+        }
+
+        [SerializeField] private LayerData[] _layerDatas;
         [SerializeField] private int _radius = 4;
         [SerializeField] private int _kAttempts = 30;
         [SerializeField] private float _wCellSize;
@@ -168,175 +179,213 @@ namespace CurseOfNaga.Gameplay.Environment
             // int randIndex = (_rows / 2) + ((_cols / 2) * _GridDimensions.x);
 
             // Starting from 2nd last row
-            Vector2 midPointVec = new Vector3(_rows / 2, _cols / 2);
-            int randIndex = 3 + _GridDimensions.y;
-            _grid[randIndex] = 1;
-            _activeGrid.Add(randIndex);
+            Vector2 midPointVec;
+            int randIndex;
+
+            // _grid[randIndex] = 1;
+            // _activeGrid.Add(randIndex);
             // Debug.Log($"Selected randIndex: {randIndex}");
 
             // Display on Sprite Renderer
-            int xIndex = 0, yIndex = 0;
+            int xIndex, yIndex;
 
-            xIndex = randIndex % _rows;
-            yIndex = randIndex / _rows;
-            _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
+            // xIndex = randIndex % _rows;
+            // yIndex = randIndex / _rows;
+            // _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
             // InstantitateDebugCube(xIndex, yIndex);
 
             // Loop active list | Check valid neighbour | Add List | Remove if not valid
-            Vector2 randomOffsetVec = Vector2.zero;
-            Vector2 currentVec = Vector2.zero;
-            bool withinDistance = false, foundCell = false;
-            int randomAngle = -1, additionalOffset = -1;
+            Vector2 randomOffsetVec, currentVec;
+            bool withinDistance, foundCell;
+            int randomAngle, additionalOffset;
 
             System.Text.StringBuilder debugStr = new System.Text.StringBuilder();
 
-#if POISSON_EMERGENCY_BREAK_1
-            int emergencyBreak = 0;
-#endif
-            while (_activeGrid.Count > 0)
+            //Layer 0: For trees | Layer 1: For Bushes
+            for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
             {
+                // Starting from 2nd last row
+                midPointVec = new Vector3(_rows / 2, _cols / 2);
+                randIndex = 3 + layerId + _GridDimensions.y;
+                _grid[randIndex] = (byte)_layerDatas[layerId].CellType;
+                _activeGrid.Add(randIndex);
+
+                // Display on Sprite Renderer
+                xIndex = yIndex = 0;
+
+                xIndex = randIndex % _rows;
+                yIndex = randIndex / _rows;
+                // _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
+                _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[layerId].CellColor);
+
+                randomOffsetVec = currentVec = Vector2.zero;
+
+                withinDistance = foundCell = false;
+                randomAngle = additionalOffset = -1;
+
 #if POISSON_EMERGENCY_BREAK_1
-                emergencyBreak++;
-                if (emergencyBreak > 2000)
+                int emergencyBreak = 0;
+#endif
+
+                // Debug.Log($"Starting Check | Time: {System.DateTime.Now.Minute}m {System.DateTime.Now.Second}s "
+                //     + $"{System.DateTime.Now.Millisecond}ms {System.DateTime.Now.Ticks}");
+                while (_activeGrid.Count > 0)
                 {
-                    Debug.LogError($"Emergency Break: {emergencyBreak} | List count: {_activeGrid.Count}");
-                    break;
-                }
-#endif
-
-                //Choose a random point from active list
-                randIndex = Random.Range(0, _activeGrid.Count);
-                _activeCount = _activeGrid.Count;
-                // Debug.Log($"randIndex: {_activeGrid[randIndex]} | Count: {_activeGrid.Count}");
-
-                //Generate upto k points between r and 2r
-                for (int i = 0; i < _kAttempts; i++)
-                {
-                    withinDistance = false;
-
-                    // Get a random point
-                    randomAngle = Random.Range(0, 360);
-                    randomOffsetVec.x = Mathf.Cos(randomAngle);
-                    randomOffsetVec.y = Mathf.Sin(randomAngle);
-
-#if DEBUG_TERRAIN_GEN_1
-                    debugStr.Clear();
-                    debugStr.Append($"Initial Vec: {randomOffsetVec} | ");
-#endif
-
-                    // Offset more to be between r and 2r
-                    additionalOffset = Random.Range(_radius, (2 * _radius) + 1);
-                    randomOffsetVec *= additionalOffset;
-
-                    // https://www.desmos.com/calculator/fshadmxjaa - Checking
-                    // xIndex = _activeGrid[randIndex] % _rows + Mathf.FloorToInt(randomOffsetVec.x / _wCellSize);
-                    // yIndex = _activeGrid[randIndex] / _rows + Mathf.FloorToInt(randomOffsetVec.y / _wCellSize);
-
-                    //_wCellSize will only be needed to calculate the position afterwards, not now
-                    xIndex = (_activeGrid[randIndex] % _rows) + Mathf.FloorToInt(randomOffsetVec.x);
-                    yIndex = (_activeGrid[randIndex] / _rows) + Mathf.FloorToInt(randomOffsetVec.y);
-#if DEBUG_TERRAIN_GEN_1
-                    debugStr.Append($"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | ");
-                    debugStr.Append($"Floor X: {Mathf.FloorToInt(randomOffsetVec.x)} | Floor Y: {Mathf.FloorToInt(randomOffsetVec.y)} | ");
-                    debugStr.Append($"xIndex: {xIndex} | yIndex: {yIndex} | ");
-                    // Debug.Log($"Random Vec: {randomOffsetVec} | additionalOffset: {additionalOffset}"
-                    //         + $" | xIndex: {xIndex} | yIndex: {yIndex}");
-#endif
-
-                    // Updating offset co-ords to current active cell
-                    randomOffsetVec.x = xIndex;
-                    randomOffsetVec.y = yIndex;
-
-                    //Bounds Check
-                    if (xIndex < 0 || yIndex < 0 || xIndex >= _GridDimensions.x || yIndex >= _GridDimensions.y
-                        || (Vector3.SqrMagnitude(randomOffsetVec - midPointVec) - (_poiRadius * _poiRadius)) <= 0)            // Also check if it does not comes into the point of interest
+#if POISSON_EMERGENCY_BREAK_1
+                    emergencyBreak++;
+                    if (emergencyBreak > 2000)
                     {
-#if DEBUG_TERRAIN_GEN_1
-                        // Debug.Log($"Outside Bounds: {debugStr}");
-#endif
-                        continue;
+                        Debug.LogError($"Emergency Break: {emergencyBreak} | List count: {_activeGrid.Count}");
+                        break;
                     }
+#endif
 
-                    // Check if the space(r) is enough between points and no neigbours are within it
-                    // Also checking if the spot itself is valid or not
-                    for (int hor = _radius * -1; hor <= _radius && !withinDistance; hor++)              // TODO: Fix range as this should be between r and 2r for this index
+                    //Choose a random point from active list
+                    randIndex = Random.Range(0, _activeGrid.Count);
+                    _activeCount = _activeGrid.Count;
+                    // Debug.Log($"randIndex: {_activeGrid[randIndex]} | Count: {_activeGrid.Count}");
+
+                    //Generate upto k points between r and 2r
+                    for (int i = 0; i < _kAttempts; i++)
                     {
-                        for (int ver = _radius * -1; ver <= _radius && !withinDistance; ver++)              // TODO: Fix range as this should be between r and 2r for this index
+                        withinDistance = false;
+
+                        // Get a random point
+                        randomAngle = Random.Range(0, 360);
+                        randomOffsetVec.x = Mathf.Cos(randomAngle);
+                        randomOffsetVec.y = Mathf.Sin(randomAngle);
+
+#if DEBUG_TERRAIN_GEN_1
+                        debugStr.Clear();
+                        debugStr.Append($"Initial Vec: {randomOffsetVec} | ");
+#endif
+
+                        // Offset more to be between r and 2r
+                        additionalOffset = Random.Range(_radius, (2 * _radius) + 1);
+                        randomOffsetVec *= additionalOffset;
+
+                        // https://www.desmos.com/calculator/fshadmxjaa - Checking
+                        // xIndex = _activeGrid[randIndex] % _rows + Mathf.FloorToInt(randomOffsetVec.x / _wCellSize);
+                        // yIndex = _activeGrid[randIndex] / _rows + Mathf.FloorToInt(randomOffsetVec.y / _wCellSize);
+
+                        //_wCellSize will only be needed to calculate the position afterwards, not now
+                        xIndex = (_activeGrid[randIndex] % _rows) + Mathf.FloorToInt(randomOffsetVec.x);
+                        yIndex = (_activeGrid[randIndex] / _rows) + Mathf.FloorToInt(randomOffsetVec.y);
+#if DEBUG_TERRAIN_GEN_1
+                        debugStr.Append($"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | ");
+                        debugStr.Append($"Floor X: {Mathf.FloorToInt(randomOffsetVec.x)} | Floor Y: {Mathf.FloorToInt(randomOffsetVec.y)} | ");
+                        debugStr.Append($"xIndex: {xIndex} | yIndex: {yIndex} | ");
+                        // Debug.Log($"Random Vec: {randomOffsetVec} | additionalOffset: {additionalOffset}"
+                        //         + $" | xIndex: {xIndex} | yIndex: {yIndex}");
+#endif
+
+                        // Updating offset co-ords to current active cell
+                        randomOffsetVec.x = xIndex;
+                        randomOffsetVec.y = yIndex;
+
+                        //Bounds Check
+                        if (xIndex < 0 || yIndex < 0 || xIndex >= _GridDimensions.x || yIndex >= _GridDimensions.y
+                            || (Vector3.SqrMagnitude(randomOffsetVec - midPointVec) - (_poiRadius * _poiRadius)) <= 0           // Also check if it is not inside the point of interest
+                            || _grid[xIndex + (yIndex * _GridDimensions.y)] != 255)             //Cell occupied by something
                         {
 #if DEBUG_TERRAIN_GEN_1
-                            debugStr.Append($"\nhor: {hor} | ver : {ver} | ");
-                            // Debug.Log($"{debugStr}");               //Test
+                            debugStr.Append($"Outside Bounds");
+                            // Debug.Log($"Outside Bounds: {debugStr}");
 #endif
+                            continue;
+                        }
 
-                            //Bounds Check
-                            if ((xIndex + hor) < 0 || (yIndex + ver) < 0
-                                || (xIndex + hor) >= _GridDimensions.x || (yIndex + ver) >= _GridDimensions.y)
-                                continue;
-
-                            int neighbourIndex = (xIndex + hor) + ((yIndex + ver) * _GridDimensions.y);
-
-#if DEBUG_TERRAIN_GEN_1
-                            debugStr.Append($"neighbourIndex: {neighbourIndex} | _GridDimensions: {_GridDimensions} | _grid Val: {_grid[neighbourIndex]} | ");
-                            // Debug.Log($"neighbourIndex: {neighbourIndex} | xIndex: {xIndex} | yIndex: {yIndex}"
-                            //         + $" | hor: {hor} | ver : {ver} | _GridDimensions: {_GridDimensions}");
-#endif
-
-                            if (_grid[neighbourIndex] == 255) continue;
-
-                            //Checking the distance
-                            currentVec.x = xIndex + hor;
-                            currentVec.y = yIndex + ver;
-                            // float distance = _grid[neighbourIndex] - _grid[xIndex + (yIndex * _GridDimensions.x)];
-                            float distance = Vector2.SqrMagnitude(randomOffsetVec - currentVec);
-
-                            if (distance < _radius * _radius)
+                        // Check if the space(r) is enough between points and no neigbours are within it
+                        // Also checking if the spot itself is valid or not
+                        for (int hor = _layerDatas[layerId].CellRadius * -1;
+                            hor <= _layerDatas[layerId].CellRadius && !withinDistance; hor++)              // TODONE: Fix range as this should check to r
+                        {
+                            for (int ver = _layerDatas[layerId].CellRadius * -1;
+                                ver <= _layerDatas[layerId].CellRadius && !withinDistance; ver++)              // TODONE: Fix range as this should check to r
                             {
 #if DEBUG_TERRAIN_GEN_1
-                                // Debug.Log($"CurrentVec: [{currentVec.x}, {currentVec.y}] | randomOffsetVec: [{randomOffsetVec.x}, {randomOffsetVec.y}]");
-                                debugStr.Append($" Dist: {distance} | ");
-                                // InstantitateDebugCube((xIndex + hor), (yIndex + ver), true);
+                                debugStr.Append($"\nhor: {hor} | ver : {ver} | ");
+                                // Debug.Log($"{debugStr}");               //Test
 #endif
 
-                                withinDistance = true;
+                                //Bounds Check
+                                if ((xIndex + hor) < 0 || (yIndex + ver) < 0
+                                    || (xIndex + hor) >= _GridDimensions.x || (yIndex + ver) >= _GridDimensions.y)
+                                    continue;
 
+                                int neighbourIndex = (xIndex + hor) + ((yIndex + ver) * _GridDimensions.y);
+
+#if DEBUG_TERRAIN_GEN_1
+                                debugStr.Append($"neighbourIndex: {neighbourIndex} | _GridDimensions: {_GridDimensions} | _grid Val: {_grid[neighbourIndex]} | ");
+                                // Debug.Log($"neighbourIndex: {neighbourIndex} | xIndex: {xIndex} | yIndex: {yIndex}"
+                                //         + $" | hor: {hor} | ver : {ver} | _GridDimensions: {_GridDimensions}");
+#endif
+
+                                if (_grid[neighbourIndex] != 255) withinDistance = true;
+
+                                /*
+                                if (_grid[neighbourIndex] == 255) continue;
+
+                                //Checking the distance
+                                currentVec.x = xIndex + hor;
+                                currentVec.y = yIndex + ver;
+                                // float distance = _grid[neighbourIndex] - _grid[xIndex + (yIndex * _GridDimensions.x)];
+                                float distance = Vector2.SqrMagnitude(randomOffsetVec - currentVec);
+
+                                if (distance < _radius * _radius)
+                                {
+#if DEBUG_TERRAIN_GEN_1
+                                    // Debug.Log($"CurrentVec: [{currentVec.x}, {currentVec.y}] | randomOffsetVec: [{randomOffsetVec.x}, {randomOffsetVec.y}]");
+                                    debugStr.Append($" Dist: {distance} | ");
+                                    // InstantitateDebugCube((xIndex + hor), (yIndex + ver), true);
+#endif
+
+                                    withinDistance = true;
+
+                                }
+                                */
                             }
                         }
+
+                        if (!withinDistance)
+                        {
+                            // Debug.Log($"Adding index: {xIndex + (yIndex * _GridDimensions.x)}| xIndex {xIndex} | yIndex: {yIndex}");
+                            // debugStr.Append($"Added");
+                            foundCell = true;
+                            _grid[xIndex + (yIndex * _GridDimensions.y)] = (byte)_layerDatas[layerId].CellType;
+                            _activeGrid.Add(xIndex + (yIndex * _GridDimensions.y));
+
+                            // _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
+                            _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[layerId].CellColor);
+
+                            // InstantitateDebugCube(xIndex, yIndex);
+                            // break;
+                        }
+#if DEBUG_TERRAIN_GEN_1
+                        // Debug.Log($"{debugStr}");
+#endif
                     }
 
-                    if (!withinDistance)
+                    if (!foundCell)
                     {
-                        // Debug.Log($"Adding index: {xIndex + (yIndex * _GridDimensions.x)}| xIndex {xIndex} | yIndex: {yIndex}");
-                        // debugStr.Append($"Added");
-                        foundCell = true;
-                        _grid[xIndex + (yIndex * _GridDimensions.y)] = 1;
-                        _activeGrid.Add(xIndex + (yIndex * _GridDimensions.y));
-
-                        _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
-
-                        // InstantitateDebugCube(xIndex, yIndex);
-                        // break;
+#if DEBUG_TERRAIN_GEN_1
+                        // Debug.Log($"Removing from active | index: {randIndex} | Val: {_activeGrid[randIndex]}");
+#endif
+                        _activeGrid.RemoveAt(randIndex);
                     }
-#if DEBUG_TERRAIN_GEN_1
-                    // Debug.Log($"{debugStr}");
-#endif
+                    foundCell = false;
+
+                    await Task.Delay((int)(_waitIntervalInSec * 1000));
+
+                    if (_cts.IsCancellationRequested) return;
                 }
+                // Debug.Log($"Finish Check | Time: {System.DateTime.Now.Minute}m {System.DateTime.Now.Second}s "
+                //     + $"{System.DateTime.Now.Millisecond}ms {System.DateTime.Now.Ticks}");
 
-                if (!foundCell)
-                {
-#if DEBUG_TERRAIN_GEN_1
-                    // Debug.Log($"Removing from active | index: {randIndex} | Val: {_activeGrid[randIndex]}");
-#endif
-                    _activeGrid.RemoveAt(randIndex);
-                }
-                foundCell = false;
-
-                await Task.Delay((int)(_waitIntervalInSec * 1000));
-
-                if (_cts.IsCancellationRequested) return;
-            }
 #if POISSON_EMERGENCY_BREAK_1
-            Debug.Log($"Emergency Break Count: {emergencyBreak}");               //FOR DEBUG
+                Debug.Log($"Emergency Break Count: {emergencyBreak}");               //FOR DEBUG
 #endif
+            }
 
             _poissonTex.Apply();
 
