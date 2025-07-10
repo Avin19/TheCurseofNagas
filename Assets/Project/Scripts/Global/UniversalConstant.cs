@@ -48,5 +48,13 @@ namespace CurseOfNaga.Global
             DEAD = 1 << 11,
         }
 
+        public enum EnvironmentType
+        {
+            TREE_0 = 0, TREE_1, TREE_2, TREE_3, TREE_4, TREE_5, TREE_6, TREE_7, TREE_8,
+            BUSH_0,
+            GRASS_0, GRASS_1, GRASS_2, GRASS_3,
+            FLOWER_0, FLOWER_1, FLOWER_2, FLOWER_3,
+            ROCK_0
+        }
     }
 }

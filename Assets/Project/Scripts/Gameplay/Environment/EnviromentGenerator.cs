@@ -12,7 +12,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+#if PERLIN_NOISE_1
 using CurseOfNaga.Utils;
+#endif
+
 using static CurseOfNaga.Global.UniversalConstant;
 
 namespace CurseOfNaga.Gameplay.Environment
@@ -23,14 +26,6 @@ namespace CurseOfNaga.Gameplay.Environment
         // Randomly spawn the tree asset , brush ,and rock using noise 
         // some point to trigger cutsense  -> waypoints to ruined village where the main chacter will see the cut sence
 
-        internal enum EnvironmentType
-        {
-            TREE_1 = 0, TREE_2, TREE_3, TREE_4, TREE_5, TREE_6, TREE_7, TREE_8, TREE_9,
-            BUSH_1,
-            GRASS_1, GRASS_2, GRASS_3, GRASS_4,
-            FLOWER_1, FLOWER_2, FLOWER_3, FLOWER_4,
-            ROCK_1
-        }
 
         [System.Serializable]
         internal class EnvironmentObj
@@ -187,16 +182,6 @@ namespace CurseOfNaga.Gameplay.Environment
             _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
             // InstantitateDebugCube(xIndex, yIndex);
 
-            // for (int i = 0; i < _grid.Length; i++)
-            // {
-            //     if (_grid[i] == 255) continue;
-
-            //     xIndex = i % _rows;
-            //     // yIndex = (_activeGrid[i] / _rows) * _rows;
-            //     yIndex = i / _rows;
-            //     _poissonTex.SetPixel(xIndex, yIndex, Color.white);
-            // }
-
             // Loop active list | Check valid neighbour | Add List | Remove if not valid
             Vector2 randomOffsetVec = Vector2.zero;
             Vector2 currentVec = Vector2.zero;
@@ -217,7 +202,6 @@ namespace CurseOfNaga.Gameplay.Environment
                     Debug.LogError($"Emergency Break: {emergencyBreak} | List count: {_activeGrid.Count}");
                     break;
                 }
-
 #endif
 
                 //Choose a random point from active list

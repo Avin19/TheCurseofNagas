@@ -197,12 +197,22 @@
         {+} Starting spawning from one corner
         {+} Replacing x with y for index calculation
 
+- Scripts
+    [=] EnvironmentData.json
+        {+} File to contain data about environment objects
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest
     [=] Predefined point of interest
     [=] Environment generation around point of interest.
     [=] Spawn trees/bushes on the basis of pearl noise
+    [=] [DO] Additonal spawning after trees
+        {+} Can use the initial map to spawn grass  or something else in-between the trees
+        {+} Would need more space between trees so as to fit bushes to look natural, or no?
+            <~> Trees and bushes would look too much separated
+        {+} Might need to overlap bushes, to some extent, not fully
+        {+} Will there be grass everywhere?                                 -   Performance Issue
 - [FIX] WeaponPlacement for Player
     [=] Dedicated animation for left/right facing?
 - [DO] Enemies

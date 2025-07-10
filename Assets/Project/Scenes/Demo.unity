@@ -993,13 +993,13 @@ MonoBehaviour:
     prefab: {fileID: 0}
   poissonMapPreview: {fileID: 106571406}
   UpdatePoissonMap: 0
-  _radius: 6
+  _radius: 10
   _kAttempts: 30
   _wCellSize: 1
   _rows: 150
   _cols: 150
   _waitIntervalInSec: 0.001
-  _poiRadius: 61.9
+  _poiRadius: 40
   _randomSeed: 0
   RandomSeed_2: Hello2
 --- !u!1 &555562250
