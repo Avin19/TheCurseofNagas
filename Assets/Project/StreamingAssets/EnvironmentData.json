@@ -1,0 +1,129 @@
+{
+    "environment_objects": [
+        {
+            "identity": 0,
+            "type": "Trees",
+            "variants": [
+                {
+                    "parent_id": 0,
+                    "name": "TREE_0",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 0,
+                    "name": "TREE_1",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 0,
+                    "name": "TREE_2",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 0,
+                    "name": "TREE_3",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 0,
+                    "name": "TREE_4",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 0,
+                    "name": "TREE_5",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 0,
+                    "name": "TREE_6",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 0,
+                    "name": "TREE_7",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 0,
+                    "name": "TREE_8",
+                    "weightage": 1
+                }
+            ]
+        },
+        {
+            "identity": 1,
+            "type": "Bushes",
+            "variants": [
+                {
+                    "parent_id": 1,
+                    "name": "BUSH_0",
+                    "weightage": 1
+                }
+            ]
+        },
+        {
+            "identity": 2,
+            "type": "Grass",
+            "variants": [
+                {
+                    "parent_id": 2,
+                    "name": "GRASS_0",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 2,
+                    "name": "GRASS_1",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 2,
+                    "name": "GRASS_2",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 2,
+                    "name": "GRASS_3",
+                    "weightage": 1
+                }
+            ]
+        },
+        {
+            "identity": 3,
+            "type": "Flower",
+            "variants": [
+                {
+                    "parent_id": 3,
+                    "name": "FLOWER_0",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 3,
+                    "name": "FLOWER_1",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 3,
+                    "name": "FLOWER_2",
+                    "weightage": 1
+                },
+                {
+                    "parent_id": 3,
+                    "name": "FLOWER_3",
+                    "weightage": 1
+                }
+            ]
+        },
+        {
+            "identity": 4,
+            "name": "Rock",
+            "variants": [
+                {
+                    "parent_id": 4,
+                    "name": "ROCK_0",
+                    "weightage": 1
+                }
+            ]
+        }
+    ]
+}

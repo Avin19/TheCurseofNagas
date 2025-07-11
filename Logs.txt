@@ -1,0 +1,292 @@
+--------------------------------------------------------------------------------------------------------
+                                                01 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Creating a separate scene for character mechanics testing
+
+- Scene
+    [=] MainMenu_CharacterMechanic
+        {+} Adding 3D colliders to Ground and Player
+
+- Scripts
+    [=] Player.cs
+        {+} 
+    [=] MainGameplayManager
+        {+} Central Singleton script to manage GameStatus
+        {+} Trying SDF to check for objective visibility | It will not work due to perspective
+
+--------------------------------------------------------------------------------------------------------
+                                                02 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] MainGameplayManager
+        {+} Using camera to check object visibility.
+        {+} Internal class for storing objective infos
+        {+} Separate array for inactive and active objectives
+        {+} Returning PlayerStatus via action for visible objects.
+    [=] Player
+        {+} ObjectiveVisible callback
+    [=] UniversalConstant
+        {+} Changing enum Objective to ObjectiveType and adding values
+        {+} Adding PlayerStatus enum
+
+- Scripts
+    [=] EnemyBaseController
+        {+} Basic enemy script for controlling Enemy
+        {+} Enum to check Enemy Status
+    [=] UniversalConstant
+        {+} Adding GameStatus enum
+    [=] MainGameplayManager
+        {+} set/get logic for GameStatus flag
+- Scene
+    [=] Making a basic enemy object
+
+- Scene
+    [=] Making colliders orthogonal to ground
+        {+} https://www.youtube.com/watch?v=2L7T2ujrXRQ&list=PPSV
+        {+} https://www.youtube.com/watch?v=wYulZiBKg-I&list=PPSV
+
+- Scene
+    [=] Making Weapon prefab
+
+- Scene
+    [=] Adding Weapon-Collider as trigger to detect collision
+- Scripts
+    [=] UniversalConstant
+        {+} Adding FACING_LEFT, FACING_RIGHT to PlayerStatus
+    [=] Player
+        {+} Facing left/right logic
+
+- Scritps
+    [=] Player
+        {+} Fixing facing left/right
+
+--------------------------------------------------------------------------------------------------------
+                                                03 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Project
+    [=] PlayerController
+        {+} Adding Jump | Roll | Attack | Interact
+- Scripts
+    [=] UniversalConstant
+        {+} Adding InputStatus enum
+        {+} Adding values to PlayerStatus enum
+
+- Scripts
+    [=] UniversalConstant
+        {+} Removing InputStatus | Having separate enums will make it redundant
+    [=] GameInput
+        {+} Other input logic
+        {+} Action for Input values
+    [=] Player
+        {+} OnInputDone callback
+            <~> Setting PlayerStatus flags
+
+- Scene
+    [=] Adding a player template animations | Idle | Roll
+- Scripts
+    [=] Player
+        {+} Animator reference
+        {+} Animation logic | Template animations
+        {+} Setting / Unsetting action
+        {+} Attack collision logic
+    [=] UniversalConstant
+        {+} Adding ENEMY_FOUND to PlayerStatus
+    [=] EnemyBaseController
+        {+} Damage logic
+
+--------------------------------------------------------------------------------------------------------
+                                                04 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] Player
+        {+} Adding struct HitInfo and enum HitStatus
+        {+} Keeping a list of HitInfo to check which collider was hit
+        {+} OnTriggerEnter and OnTriggerExit for checking contacts with the collider
+    [=] MainGameplayManager
+        {+} Adding action for EnemyHit
+    [=] EnemyBaseController
+        {+} OnEnemyHit callback logic
+
+- Scripts
+    [=] UniversalConstant
+        {+} Moving EnemeyStatus here and adding values
+    [=] MainGameplayManager
+        {+} Adding EnemyStatus to action OnEnemyStatusUpdate
+    [=] EnemyBaseController
+        {+} Changing callbacks to OnEnemyStatusUpdate
+            <~> Invoking action for death
+    [=] Player
+        {+} Callback logic for OnEnemyStatusUpdate
+            <~> Removing transform ID for dead enemy
+
+- Scripts
+    [=] EnemyBaseController
+        {+} Refactoring to store hit logic here
+    [=] Player
+        {+} Sending simple hit action invoke along with transform ID
+    [=] UniversalConstant
+        {+} Adding value to EnemyStatus
+
+- Scripts
+    [=] Player
+        {+} Fixing UnsetAction
+    [=] Enemy
+        {+} Adding Enemy Animator
+            <~> Making template animations
+        {+} Fixing Player detection logic
+        {+} Enemy animation logic
+
+- Scripts
+    [=] EnemyBaseController
+        {+} 
+    [=] UniversalConstant
+        {+} Adding INVESTIGATE_AREA to EnemyStatus
+
+--------------------------------------------------------------------------------------------------------
+                                                07 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Updating all the scripts
+
+- Scripts
+    [=] PlayerAnimationController
+        {+} Making this non-monobehaviour copy of PlayerAnimation
+        {+} Moving Animation logic here from Player
+    [=] Player
+        {+} Integrating PlayerAnimationController
+        {+} Commenting weapon placement as rotating the player now
+- Scene
+    [=] Changing enemy's proximity threshold
+    [=] New prefab/animator for making changes
+
+--------------------------------------------------------------------------------------------------------
+                                                08 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] UniversalConstant
+        {+} Adding values to GameStatus enum
+    [=] MainGameplayManager
+        {+} Adding OnGameStatusChange action
+    [=] EnvironmentGenerator
+        {+} Adding prefab field for objects | Might later move to prefab pooling
+        {+} Adding enums for Environment Types
+
+--------------------------------------------------------------------------------------------------------
+                                                09 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Environment Generation
+
+- Environment Generation Debugging Continue
+
+- Environment Generation Fixing 1
+
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Environment Generation Fixing
+        {+} Checking for the whole neighbouring radius instead of just 1 block in every direction
+
+- Scripts
+    [=] PerlinNoiseGenerator
+        {+} Separate script for PerlinNoise
+
+--------------------------------------------------------------------------------------------------------
+                                                10 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Adding radius check for spawning out the circle of POI
+        {+} Starting spawning from one corner
+        {+} Replacing x with y for index calculation
+
+- Scripts
+    [=] EnvironmentData.json
+        {+} File to contain data about environment objects
+
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Bush generation on top of existing grid of trees in-between
+        {+} LayerData struct to contain layer data
+        {+} Not checking squared distance, instead simply setting withinDistance to true if within cell radius/range
+            <~> For small range, upto 50, the results are almost identical
+
+- Scripts
+    [=] EnvironmentGenerator
+        {+} During Radius check, checking also if the neighbour cell does not contain the same object being placed
+        {+} Adding field for random cluster spawn of objects
+            <~> Cluster cell with 1-cell boundary
+
+--------------------------------------------------------------------------------------------------------
+                                                11 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Generating environment from grid data
+        {+} Offsetting grid according to point-of-interest position
+- Project
+    [=] Changing Sorting Layer of environment prefabs
+
+
+--------------------------------------------------------------------------------------------------------
+- [NOW] Basic combat, exploration, vision-triggered objectives
+- [NOW] Enivronment spawning around point of interest
+    [=] Predefined point of interest
+    [=] Environment generation around point of interest.
+    [=] Spawn trees/bushes on the basis of pearl noise
+    [=] [DO] Additonal spawning after trees
+        {+} Can use the initial map to spawn grass  or something else in-between the trees
+        {+} Would need more space between trees so as to fit bushes to look natural, or no?
+            <~> Trees and bushes would look too much separated
+        {+} Might need to overlap bushes, to some extent, not fully
+            <~> Will need to clump bushes together, space between bushes look unnatural
+        {+} Will there be grass everywhere?                                 -   Performance Issue
+- [FIX] WeaponPlacement for Player
+    [=] Dedicated animation for left/right facing?
+- [DO] Enemies
+    [=] Will enemies respawn on the same place?
+    [=] Pooled enemies?
+    [=] Have wait time specific to the action being taken
+    [=] Ref: GTA SA
+        {+} A hostile NPC will come running up, slow down a bit ahead and start approaching in fighting stance
+        {+} They do not directly attack the player.
+        {+} After attacking the player, once or maybe with a combo
+            <~> They will either stay at one place or try to rotate and get a different angle at the player
+- [DO] Will need to tweak enemies that have ranged weapons
+- [DO] Will there be i-frame for the whole roll
+- [DO] Check how many actions can be stacked.
+    [=] Maybe only 2 actions can be stacked on top.
+    [=] Eg: Attack + Move, Use Item + Move
+- Orientation does not seem to matter that much to when using weapon
+    [=] https://www.youtube.com/watch?v=nRsneTFqdz0&list=PPSV&t=26s
+    [=] 0:41 
+        {+} Player can strike upward without rotating the sprite towards the target
+        {+} The sprite is facing sideways and animation is happening while 
+            the hit-box might be facing upwards and hitting the target
+        {+} When hitting up or down, the sprite is rotated sideways.
+            <~> Left or right might depend on something maybe
+- [FIX] Find a way to make enemy not slide when IDLE and focusing on Camera
+- [NOW] [DONE]Vision-Triggered objectives
+    [=] Need to check if the obect is visible enough on the screen through the camera
+    [=] Placing mutiple transforms around the objective to check which objective has been reached.
+    [=] Basically a bounds check
+        {+} Rigidbody?
+            <~> Too costly, query every FixedUpdate unnecessarily
+        {+} Position Check
+            <~> This will also be called every Update
+            <~> At least not as expensive as Physics Query
+            <~> Who will trigger the event?
+        {+} Using Camera
+
+- Work on main menu:     Template only + logic
+- 2d rigging for attack animations of player
+- Work on colliders
+
+- Poisson Radius Check | Simple
+    [=] Async | Start: 1m 52s 533ms 638877709125334669 | End: 2m 0s 592ms 638877709205926455
+    [=] Non-Async 50 | Start: 5m 54s 992ms 638877711549923489 | End: 5m 54s 995ms 638877711549953674       | 30,185
+
+    [=] Non-Async 100 | Start: 11m 44s 532ms 638877715045328844 | End: 11m 44s 541ms 638877715045414116       | 30,185
+
+- Poisson Radius Check | DistSqr
+    [=] Async | Start: 3m 33s 696ms 638877710136965023 | End: 3m 41s 786ms 638877710217869093
+    [=] Non-Async 50 | Start: 7m 13s 697ms 638877712336972752 | End: 7m 13s 699ms 638877712336997780       | 25,028
+
+    [=] Non-Async 100 | Start: 10m 24s 506ms 638877714245066834 | End: 10m 24s 517ms 638877714245177378       | 25,028
