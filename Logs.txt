@@ -213,6 +213,18 @@
         {+} During Radius check, checking also if the neighbour cell does not contain the same object being placed
         {+} Adding field for random cluster spawn of objects
             <~> Cluster cell with 1-cell boundary
+
+--------------------------------------------------------------------------------------------------------
+                                                11 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Generating environment from grid data
+        {+} Offsetting grid according to point-of-interest position
+- Project
+    [=] Changing Sorting Layer of environment prefabs
+
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest

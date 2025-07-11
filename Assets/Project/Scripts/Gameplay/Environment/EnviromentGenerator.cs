@@ -2,7 +2,7 @@
 
 #define DEBUG_POISSON_DISC
 // #define DEBUG_TERRAIN_GEN_1
-#define DEBUG_TERRAIN_GEN_2
+// #define DEBUG_TERRAIN_GEN_2
 
 #define POISSON_EMERGENCY_BREAK_1
 
@@ -43,14 +43,16 @@ namespace CurseOfNaga.Gameplay.Environment
             if (_cts != null) _cts.Cancel();
         }
 
-        private void Start()
+        private async void Start()
         {
             _cts = new CancellationTokenSource();
 
             // GenerateEnvironment();
 
             InitializePoissonData();
-            GeneratePoissonDiscSamples();
+            await GeneratePoissonDiscSamples();
+            if (_cts.IsCancellationRequested) return;
+            GenerateGrid();
 
             MainGameplayManager.Instance.SetGameStatus(GameStatus.LOADED_ENVIRONMENT);
 
@@ -76,7 +78,7 @@ namespace CurseOfNaga.Gameplay.Environment
                 _poissonTex.Apply();
 
                 UpdatePoissonMap = false;
-                GeneratePoissonDiscSamples();
+                _ = GeneratePoissonDiscSamples();
             }
 #endif
 
@@ -109,7 +111,7 @@ namespace CurseOfNaga.Gameplay.Environment
         public bool UpdatePoissonMap = false;
 #endif
 
-        internal enum LayerType { TREE = 0, BUSH, GRASS, FLOWER, ROCK }
+        internal enum LayerType { EMPTY = 255, TREE = 0, BUSH = 1, GRASS = 2, FLOWER = 3, ROCK = 4 }
 
         [System.Serializable]
         internal struct LayerData
@@ -121,7 +123,7 @@ namespace CurseOfNaga.Gameplay.Environment
         }
 
         [SerializeField] private LayerData[] _layerDatas;
-        [SerializeField] private int _radius = 4;
+        // [SerializeField] private int _radius = 4;
         [SerializeField] private int _kAttempts = 30;
         [SerializeField] private float _wCellSize;
         [Range(5f, 150f)][SerializeField] private int _rows = 10, _cols = 10;
@@ -137,7 +139,8 @@ namespace CurseOfNaga.Gameplay.Environment
         [SerializeField] private string RandomSeed_2 = "135653245";             //135653245
 
         private List<int> _activeGrid;
-        [HideInInspector] private byte[] _grid;
+        private byte[] _grid;
+        // [HideInInspector] private byte[] _grid;
 
         private void InitializePoissonData()
         {
@@ -152,7 +155,7 @@ namespace CurseOfNaga.Gameplay.Environment
             _poissonTex = new Texture2D(_rows, _cols);
         }
 
-        private async void GeneratePoissonDiscSamples()
+        private async Task<int> GeneratePoissonDiscSamples()
         {
             //Intialize all value to default
             for (int i = 0; i < _rows * _cols; i++)
@@ -207,7 +210,7 @@ namespace CurseOfNaga.Gameplay.Environment
             {
                 // Starting from 2nd last row
                 midPointVec = new Vector3(_rows / 2, _cols / 2);
-                randIndex = 3 + layerId + _GridDimensions.y;
+                randIndex = 3 + layerId;        // + _GridDimensions.y;
                 _grid[randIndex] = (byte)_layerDatas[layerId].CellType;
                 _activeGrid.Add(randIndex);
 
@@ -262,7 +265,7 @@ namespace CurseOfNaga.Gameplay.Environment
 #endif
 
                         // Offset more to be between r and 2r
-                        additionalOffset = Random.Range(_radius, (2 * _radius) + 1);
+                        additionalOffset = Random.Range(_layerDatas[layerId].CellRadius, (2 * _layerDatas[layerId].CellRadius) + 1);
                         randomOffsetVec *= additionalOffset;
 
                         // https://www.desmos.com/calculator/fshadmxjaa - Checking
@@ -295,6 +298,10 @@ namespace CurseOfNaga.Gameplay.Environment
 #endif
                             continue;
                         }
+
+#if DEBUG_TERRAIN_GEN_1
+                        debugStr.Append($"SqrDist: {Vector3.SqrMagnitude(randomOffsetVec - midPointVec)} | ");
+#endif
 
                         // Check if the space(r) is enough between points and no neigbours are within it
                         // Also checking if the spot itself is valid or not
@@ -392,7 +399,7 @@ namespace CurseOfNaga.Gameplay.Environment
                             // break;
                         }
 #if DEBUG_TERRAIN_GEN_1
-                        // Debug.Log($"{debugStr}");
+                        Debug.Log($"{debugStr}");
 #endif
                     }
 
@@ -407,7 +414,7 @@ namespace CurseOfNaga.Gameplay.Environment
 
                     await Task.Delay((int)(_waitIntervalInSec * 1000));
 
-                    if (_cts.IsCancellationRequested) return;
+                    if (_cts.IsCancellationRequested) return 0;
                 }
                 // Debug.Log($"Finish Check | Time: {System.DateTime.Now.Minute}m {System.DateTime.Now.Second}s "
                 //     + $"{System.DateTime.Now.Millisecond}ms {System.DateTime.Now.Ticks}");
@@ -421,6 +428,72 @@ namespace CurseOfNaga.Gameplay.Environment
 
             poissonMapPreview.sprite = Sprite.Create(_poissonTex, new Rect(0f, 0f, _rows, _cols)
                     , new Vector2(0.5f, 0.5f));
+
+            return 1;
+        }
+
+        [SerializeField] private float xOrigin, zOrigin;
+        private void GenerateGrid()
+        {
+            GameObject objToCreate = null;
+            Vector3 finalPos = Vector3.zero;
+            for (int i = 0; i < _grid.Length; i++)
+            {
+
+                switch (_grid[i])
+                {
+                    //Do Nothing
+                    case (byte)LayerType.EMPTY:
+                        continue;
+
+                    case (byte)LayerType.TREE:
+                        objToCreate = Instantiate(_environmentPrefabs[0].prefab, transform);
+                        finalPos.y = 1.55f;
+                        objToCreate.name = $"{LayerType.TREE}_{i}";
+
+                        break;
+
+                    case (byte)LayerType.BUSH:
+                        objToCreate = Instantiate(_environmentPrefabs[9].prefab, transform);
+                        finalPos.y = 0.8f;
+                        objToCreate.name = $"{LayerType.BUSH}_{i}";
+
+                        break;
+
+                    case (byte)LayerType.GRASS:
+                        objToCreate = Instantiate(_environmentPrefabs[10].prefab, transform);
+                        finalPos.y = 0.8f;
+                        objToCreate.name = $"{LayerType.GRASS}_{i}";
+
+                        break;
+
+                    case (byte)LayerType.FLOWER:
+                        objToCreate = Instantiate(_environmentPrefabs[14].prefab, transform);
+                        finalPos.y = 0.8f;
+                        objToCreate.name = $"{LayerType.FLOWER}_{i}";
+
+                        break;
+
+                    case (byte)LayerType.ROCK:
+                        objToCreate = Instantiate(_environmentPrefabs[(byte)LayerType.ROCK].prefab, transform);
+                        objToCreate.name = $"{LayerType.ROCK}_{i}";
+
+                        break;
+
+                    default:
+                        Debug.LogError($"Unknown object: {(LayerType)_grid[i]} | i: {i}");
+                        continue;
+                }
+
+                // Shift the grid towards lower left, so that it centers on the point-of-interest
+                // Offset original Pos and also by grid mid row and col     | (Ver)Row is y, (Hor)Col is x
+                finalPos.x = xOrigin - (_GridDimensions.y / 2) + (i % _GridDimensions.y);
+                finalPos.z = zOrigin - (_GridDimensions.x / 2) + (i / _GridDimensions.y);
+                // Debug.Log($"zVal: {i / _GridDimensions.y} | zOrigin: {zOrigin} | _grid: {_grid[i]} | i: {i}");
+
+                objToCreate.transform.localPosition = finalPos;
+                objToCreate.transform.localRotation = Quaternion.identity;
+            }
         }
 
 #if DEBUG_TERRAIN_GEN_2

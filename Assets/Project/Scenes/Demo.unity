@@ -220,7 +220,7 @@ Transform:
   m_GameObject: {fileID: 106571404}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -723,7 +723,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7141827935370072424, guid: b58d6d94d10fbd34085bbd892b41bdb0, type: 3}
       propertyPath: m_SortingLayer
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7141827935370072424, guid: b58d6d94d10fbd34085bbd892b41bdb0, type: 3}
       propertyPath: m_SortingLayerID
@@ -998,19 +998,24 @@ MonoBehaviour:
     CellColor: {r: 0.044811275, g: 0.4433962, b: 0, a: 1}
     CellType: 0
     SpawnRandomCluster: 0
-  - CellRadius: 4
+  - CellRadius: 8
     CellColor: {r: 0, g: 0.8396226, b: 0, a: 1}
     CellType: 1
     SpawnRandomCluster: 1
-  _radius: 10
+  - CellRadius: 6
+    CellColor: {r: 1, g: 1, b: 0.2688679, a: 1}
+    CellType: 3
+    SpawnRandomCluster: 1
   _kAttempts: 30
   _wCellSize: 1
-  _rows: 100
-  _cols: 100
+  _rows: 40
+  _cols: 40
   _waitIntervalInSec: 0.01
-  _poiRadius: 8
-  _randomSeed: 0
+  _poiRadius: 9
+  _randomSeed: 1
   RandomSeed_2: Hello2
+  xOrigin: -71
+  zOrigin: 0
 --- !u!1 &555562250
 GameObject:
   m_ObjectHideFlags: 0
@@ -1377,7 +1382,7 @@ Transform:
   m_GameObject: {fileID: 777012612}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
