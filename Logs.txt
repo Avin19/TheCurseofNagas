@@ -224,6 +224,18 @@
 - Project
     [=] Changing Sorting Layer of environment prefabs
 
+--------------------------------------------------------------------------------------------------------
+                                                14 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Randomisng object types to be placed
+        {+} Adding parent transforms for holding objects
+        {+} Adding subgrid logic
+        {+} Integrating PoissonDiscSampler
+    [=] PoissonDiscSampler
+        {+} Separating PoissonDiscSampler logic to here
+
 
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives

@@ -11,12 +11,16 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
+
 
 #if PERLIN_NOISE_1
 using CurseOfNaga.Utils;
 #endif
 
+using Random = UnityEngine.Random;
 using static CurseOfNaga.Global.UniversalConstant;
+using CurseOfNaga.Utils;
 
 namespace CurseOfNaga.Gameplay.Environment
 {
@@ -36,6 +40,7 @@ namespace CurseOfNaga.Gameplay.Environment
 
         [SerializeField] private EnvironmentObj[] _environmentPrefabs;
 
+        private PoissonDiscSampler _poissonDiscSampler;
         private CancellationTokenSource _cts;
 
         private void OnDestroy()
@@ -50,7 +55,17 @@ namespace CurseOfNaga.Gameplay.Environment
             // GenerateEnvironment();
 
             InitializePoissonData();
-            await GeneratePoissonDiscSamples();
+            try
+            {
+                _poissonDiscSampler = new PoissonDiscSampler(ref _grid);
+                await GeneratePoissonDiscSamples_2();
+                // GeneratePoissonDiscSamples_2();              //TEST
+                // await GeneratePoissonDiscSamples();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Caught Exception: {ex.Message}");
+            }
             if (_cts.IsCancellationRequested) return;
             GenerateGrid();
 
@@ -78,7 +93,8 @@ namespace CurseOfNaga.Gameplay.Environment
                 _poissonTex.Apply();
 
                 UpdatePoissonMap = false;
-                _ = GeneratePoissonDiscSamples();
+                // _ = GeneratePoissonDiscSamples();
+                _ = GeneratePoissonDiscSamples_2();
             }
 #endif
 
@@ -432,11 +448,63 @@ namespace CurseOfNaga.Gameplay.Environment
             return 1;
         }
 
+        // private int GeneratePoissonDiscSamples_2()              //TEST
+        private async Task<int> GeneratePoissonDiscSamples_2()
+        {
+            //Intialize all value to default 
+            for (int i = 0; i < _rows * _cols; i++)
+                _grid[i] = 255;
+
+            if (_randomSeed)
+            {
+                RandomSeed_2 = $"{System.DateTime.Now.Hour}{System.DateTime.Now.Minute}" +
+                                $"{System.DateTime.Now.Second}{System.DateTime.Now.Millisecond}";
+            }
+
+            Debug.Log($"Seed: {RandomSeed_2}");
+
+            for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
+            {
+                // _poissonTex = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[0].CellType,
+                _poissonTex = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,
+                        _layerDatas[layerId].CellColor, layerId, _layerDatas[layerId].CellRadius,
+                        _layerDatas[layerId].SpawnRandomCluster, _kAttempts, _poiRadius, _waitIntervalInSec, RandomSeed_2);
+
+                if (_poissonTex == null) return 0;
+
+                /*
+                int xIndex = 0, yIndex = 0;
+                for (int i = 0; i < _grid.Length; i++)
+                {
+                    xIndex = i % _cols;
+                    yIndex = i / _cols;
+                    if (_grid[i] == (byte)_layerDatas[0].CellType)
+                        _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[0].CellColor);
+                }
+                */
+
+                _poissonTex.Apply();
+            }
+
+            poissonMapPreview.sprite = Sprite.Create(_poissonTex, new Rect(0f, 0f, _rows, _cols)
+                    , new Vector2(0.5f, 0.5f));
+
+            return 1;
+        }
+
         [SerializeField] private float xOrigin, zOrigin;
         private void GenerateGrid()
         {
+            Transform[] objHolders = new Transform[5];
+            for (int i = 0; i < 5; i++)
+            {
+                objHolders[i] = new GameObject($"{(LayerType)i}").transform;
+                objHolders[i].parent = transform;
+            }
+
             GameObject objToCreate = null;
             Vector3 finalPos = Vector3.zero;
+            int randomObjIndex = 0;
             for (int i = 0; i < _grid.Length; i++)
             {
 
@@ -447,36 +515,46 @@ namespace CurseOfNaga.Gameplay.Environment
                         continue;
 
                     case (byte)LayerType.TREE:
-                        objToCreate = Instantiate(_environmentPrefabs[0].prefab, transform);
+                        randomObjIndex = Random.Range(0, 9);
+                        objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 1.55f;
                         objToCreate.name = $"{LayerType.TREE}_{i}";
+                        objToCreate.transform.parent = objHolders[(int)LayerType.TREE];
 
                         break;
 
                     case (byte)LayerType.BUSH:
+                        // randomObjIndex = Random.Range(0, 9);
                         objToCreate = Instantiate(_environmentPrefabs[9].prefab, transform);
                         finalPos.y = 0.8f;
                         objToCreate.name = $"{LayerType.BUSH}_{i}";
+                        objToCreate.transform.parent = objHolders[(int)LayerType.BUSH];
 
                         break;
 
                     case (byte)LayerType.GRASS:
-                        objToCreate = Instantiate(_environmentPrefabs[10].prefab, transform);
+                        randomObjIndex = Random.Range(10, 14);
+                        objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 0.8f;
                         objToCreate.name = $"{LayerType.GRASS}_{i}";
+                        objToCreate.transform.parent = objHolders[(int)LayerType.GRASS];
 
                         break;
 
                     case (byte)LayerType.FLOWER:
-                        objToCreate = Instantiate(_environmentPrefabs[14].prefab, transform);
+                        randomObjIndex = Random.Range(14, 18);
+                        objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 0.8f;
                         objToCreate.name = $"{LayerType.FLOWER}_{i}";
+                        objToCreate.transform.parent = objHolders[(int)LayerType.FLOWER];
 
                         break;
 
                     case (byte)LayerType.ROCK:
+                        // randomObjIndex = Random.Range(14, 18);
                         objToCreate = Instantiate(_environmentPrefabs[(byte)LayerType.ROCK].prefab, transform);
                         objToCreate.name = $"{LayerType.ROCK}_{i}";
+                        objToCreate.transform.parent = objHolders[(int)LayerType.ROCK];
 
                         break;
 
