@@ -236,6 +236,12 @@
     [=] PoissonDiscSampler
         {+} Separating PoissonDiscSampler logic to here
 
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Additional dividing of layers through samples
+    [=] PoissonDiscSampler
+        {+} Localizing samples to given start-index instead of middle of the grid
+        {+} Fixing logic
 
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives

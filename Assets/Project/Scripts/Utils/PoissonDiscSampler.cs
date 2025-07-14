@@ -48,9 +48,10 @@ namespace CurseOfNaga.Utils
         }
 
         // public int GeneratePoissonDiscSamples(int rows, int cols, byte cellType, int layerId = 0, int cellRadius = 2,              //TEST
-        public async Task<Texture2D> GeneratePoissonDiscSamples(int rows, int cols, byte cellType, Color cellColor, int layerId = 0,
-                int cellRadius = 2, bool spawnRandomCluster = false, int kAttempts = 30, float poiRadius = 0f,
-                float waitIntervalInSec = 0.001f, string randomSeed = "")
+        public async Task<int> GeneratePoissonDiscSamples(int ogRows, int ogCols, byte cellType, //Color cellColor,
+                int subRows = 0, int subCols = 0, int randOffset = 0, int startOffset = 0,
+                int cellRadius = 2, bool spawnRandomCluster = false, int kAttempts = 30,
+                float poiRadius = 0f, float waitIntervalInSec = 0.001f, string randomSeed = "")
         {
             //Intialize all value to default
             // for (int i = 0; i < _rows * _cols; i++)
@@ -66,18 +67,18 @@ namespace CurseOfNaga.Utils
             Random.InitState(randomSeed.GetHashCode());
             // Debug.Log($"Seed: {randomSeed}");
 
-            Vector2 midPointVec;
+            Vector2Int midPointVec;
             int randIndex;
 
             // Display on Sprite Renderer
             int xIndex = 0, yIndex = 0;
 
             // Loop active list | Check valid neighbour | Add List | Remove if not valid
-            Vector2 randomOffsetVec = Vector3.zero, currentVec = Vector3.zero;
+            Vector2 randomOffsetVec = Vector2.zero, currentVec = Vector2.zero;
             bool withinDistance = false, foundCell = false;
             int randomAngle = -1, additionalOffset = -1;
 
-            Texture2D poissonTex = new Texture2D(rows, cols);
+            // Texture2D poissonTex = new Texture2D(rows, cols);
 
 #if DEBUG_TERRAIN_GEN_1
             System.Text.StringBuilder debugStr = new System.Text.StringBuilder();
@@ -87,8 +88,12 @@ namespace CurseOfNaga.Utils
             // for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
             {
                 // Starting from last row + offset
-                midPointVec = new Vector3(rows / 2, cols / 2);
-                randIndex = 3 + layerId;        // + _GridDimensions.y;
+                if (startOffset == 0)
+                    midPointVec = new Vector2Int(ogRows / 2, ogCols / 2);
+                else
+                    midPointVec = new Vector2Int(startOffset % ogCols, startOffset / ogCols);
+
+                randIndex = 3 + randOffset + startOffset;        // + _GridDimensions.y;
                 _grid[randIndex] = cellType;
                 _activeGrid.Add(randIndex);
 
@@ -98,9 +103,9 @@ namespace CurseOfNaga.Utils
                 // randomAngle = additionalOffset = -1;
 
                 // Display on Sprite Renderer
-                xIndex = randIndex % cols;
-                yIndex = randIndex / cols;
-                poissonTex.SetPixel(xIndex, yIndex, cellColor);
+                // xIndex = randIndex % cols;
+                // yIndex = randIndex / cols;
+                // poissonTex.SetPixel(xIndex, yIndex, cellColor);
 
 
 #if POISSON_EMERGENCY_BREAK_1
@@ -145,12 +150,12 @@ namespace CurseOfNaga.Utils
                         randomOffsetVec *= additionalOffset;
 
                         // https://www.desmos.com/calculator/fshadmxjaa - Checking
-                        // xIndex = _activeGrid[randIndex] % _rows + Mathf.FloorToInt(randomOffsetVec.x / _wCellSize);
-                        // yIndex = _activeGrid[randIndex] / _rows + Mathf.FloorToInt(randomOffsetVec.y / _wCellSize);
+                        // xIndex = _activeGrid[randIndex] % cols + Mathf.FloorToInt(randomOffsetVec.x / _wCellSize);
+                        // yIndex = _activeGrid[randIndex] / cols + Mathf.FloorToInt(randomOffsetVec.y / _wCellSize);
 
                         //_wCellSize will only be needed to calculate the position afterwards, not now
-                        xIndex = (_activeGrid[randIndex] % rows) + Mathf.FloorToInt(randomOffsetVec.x);
-                        yIndex = (_activeGrid[randIndex] / rows) + Mathf.FloorToInt(randomOffsetVec.y);
+                        xIndex = (_activeGrid[randIndex] % ogCols) + Mathf.FloorToInt(randomOffsetVec.x);
+                        yIndex = (_activeGrid[randIndex] / ogCols) + Mathf.FloorToInt(randomOffsetVec.y);
 #if DEBUG_TERRAIN_GEN_1
                         debugStr.Append($"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | ");
                         debugStr.Append($"Floor X: {Mathf.FloorToInt(randomOffsetVec.x)} | Floor Y: {Mathf.FloorToInt(randomOffsetVec.y)} | ");
@@ -164,9 +169,19 @@ namespace CurseOfNaga.Utils
                         randomOffsetVec.y = yIndex;
 
                         //Bounds Check
-                        if (xIndex < 0 || yIndex < 0 || xIndex >= rows || yIndex >= cols
-                            || (Vector3.SqrMagnitude(randomOffsetVec - midPointVec) - (poiRadius * poiRadius)) <= 0           // Also check if it is not inside the point of interest
-                            || _grid[xIndex + (yIndex * cols)] != 255)             //Cell occupied by something
+                        //        Normal-Layer Lower-X Bound + Sub-Layer Lower-X Bound
+                        if (xIndex < (0 + (midPointVec.x - (subCols / 2)) * Mathf.Clamp01(startOffset))
+                            || yIndex < (0 + (midPointVec.x - (subRows / 2)) * Mathf.Clamp01(startOffset))
+
+                        //      Normal-Layer Upper-X Bound  * Invert of startOffset
+                            || xIndex >= (ogRows * ((byte)Mathf.Clamp01(startOffset) ^ (1 << 0)))
+                        //      Sub-Layer Upper-X Bound * startOffset
+                                + ((midPointVec.x + (subCols / 2)) * Mathf.Clamp01(startOffset))
+                            || yIndex >= (ogCols * ((byte)Mathf.Clamp01(startOffset) ^ (1 << 0)))
+                                + ((midPointVec.x + (subCols / 2)) * Mathf.Clamp01(startOffset))
+
+                            || _grid[xIndex + (yIndex * ogCols)] != 255                                         //Cell occupied by something
+                            || (Vector2.SqrMagnitude(randomOffsetVec - midPointVec) - (poiRadius * poiRadius)) <= 0)        // Also check if it is not inside the point of interest
                         {
 #if DEBUG_TERRAIN_GEN_1
                             debugStr.Append($"Outside Bounds");
@@ -174,6 +189,8 @@ namespace CurseOfNaga.Utils
 #endif
                             continue;
                         }
+
+
 
 #if DEBUG_TERRAIN_GEN_1
                         debugStr.Append($"SqrDist: {Vector3.SqrMagnitude(randomOffsetVec - midPointVec)} | ");
@@ -194,10 +211,10 @@ namespace CurseOfNaga.Utils
 
                                 //Bounds Check
                                 if ((xIndex + hor) < 0 || (yIndex + ver) < 0
-                                    || (xIndex + hor) >= rows || (yIndex + ver) >= cols)
+                                    || (xIndex + hor) >= ogRows || (yIndex + ver) >= ogCols)
                                     continue;
 
-                                int neighbourIndex = (xIndex + hor) + ((yIndex + ver) * cols);
+                                int neighbourIndex = (xIndex + hor) + ((yIndex + ver) * ogCols);
 
 #if DEBUG_TERRAIN_GEN_1
                                 debugStr.Append($"neighbourIndex: {neighbourIndex} | _GridDimensions: {_GridDimensions} | _grid Val: {_grid[neighbourIndex]} | ");
@@ -222,11 +239,11 @@ namespace CurseOfNaga.Utils
 
                                 if (distance < _radius * _radius)
                                 {
-#if DEBUG_TERRAIN_GEN_1
+    #if DEBUG_TERRAIN_GEN_1
                                     // Debug.Log($"CurrentVec: [{currentVec.x}, {currentVec.y}] | randomOffsetVec: [{randomOffsetVec.x}, {randomOffsetVec.y}]");
                                     debugStr.Append($" Dist: {distance} | ");
                                     // InstantitateDebugCube((xIndex + hor), (yIndex + ver), true);
-#endif
+    #endif
 
                                     withinDistance = true;
 
@@ -240,10 +257,10 @@ namespace CurseOfNaga.Utils
                             // Debug.Log($"Adding index: {xIndex + (yIndex * _GridDimensions.x)}| xIndex {xIndex} | yIndex: {yIndex}");
                             // debugStr.Append($"Added");
                             foundCell = true;
-                            _grid[xIndex + (yIndex * cols)] = cellType;
-                            _activeGrid.Add(xIndex + (yIndex * cols));
+                            _grid[xIndex + (yIndex * ogCols)] = cellType;
+                            _activeGrid.Add(xIndex + (yIndex * ogCols));
 
-                            poissonTex.SetPixel(xIndex, yIndex, cellColor);
+                            // poissonTex.SetPixel(xIndex, yIndex, cellColor);
                             // InstantitateDebugCube(xIndex, yIndex);
 
                             // Random chance to spawn cluster of objects
@@ -260,12 +277,12 @@ namespace CurseOfNaga.Utils
                                         {
                                             //Bounds Check
                                             if ((xIndex + hor) < 0 || (yIndex + ver) < 0
-                                                || (xIndex + hor) >= rows || (yIndex + ver) >= cols
-                                                || _grid[(xIndex + hor) + ((yIndex + ver) * cols)] != 255)             //Check if cell is occupied or not
+                                                || (xIndex + hor) >= ogRows || (yIndex + ver) >= ogCols
+                                                || _grid[(xIndex + hor) + ((yIndex + ver) * ogCols)] != 255)             //Check if cell is occupied or not
                                                 continue;
 
-                                            _grid[(xIndex + hor) + ((yIndex + ver) * cols)] = cellType;
-                                            poissonTex.SetPixel((xIndex + hor), (yIndex + ver), cellColor);
+                                            _grid[(xIndex + hor) + ((yIndex + ver) * ogCols)] = cellType;
+                                            // poissonTex.SetPixel((xIndex + hor), (yIndex + ver), cellColor);
                                         }
                                     }
                                 }
@@ -289,7 +306,8 @@ namespace CurseOfNaga.Utils
 
                     await Task.Delay((int)(waitIntervalInSec * 1000));
 
-                    if (_cts.IsCancellationRequested) return null;
+                    // if (_cts.IsCancellationRequested) return null;
+                    if (_cts.IsCancellationRequested) return 0;
                 }
                 // Debug.Log($"Finish Check | Time: {System.DateTime.Now.Minute}m {System.DateTime.Now.Second}s "
                 //     + $"{System.DateTime.Now.Millisecond}ms {System.DateTime.Now.Ticks}");
@@ -299,11 +317,12 @@ namespace CurseOfNaga.Utils
 #endif
             }
 
-            poissonTex.Apply();
+            // poissonTex.Apply();
             // poissonMapPreview.sprite = Sprite.Create(_poissonTex, new Rect(0f, 0f, _rows, _cols)
             //         , new Vector2(0.5f, 0.5f));
 
-            return poissonTex;
+            // return poissonTex;
+            return 1;
         }
 
     }
