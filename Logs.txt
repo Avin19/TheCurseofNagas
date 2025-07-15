@@ -261,6 +261,14 @@
     [=] PoissonDiscSampler
         {+} Taking subRows/subCols as radius and not total rows/cols for sub-layers
         {+} Using randomRadius instead of cellRadius for checking neighbours for Sub-Layers
+
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Adding sub-layer info to LayerData stuct and using it for sub-layer samples
+    [=] PoissonDiscSampler
+        {+} Adding currentVec to keep track of current point for sub-layers
+        {+} Doing poiRadius check for sub-layers also
+        {+} Setting Random at time of creation or updating-values, not everytime
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest

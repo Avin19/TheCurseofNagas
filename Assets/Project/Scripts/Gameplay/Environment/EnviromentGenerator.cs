@@ -130,12 +130,17 @@ namespace CurseOfNaga.Gameplay.Environment
         [System.Serializable]
         internal struct LayerData
         {
-            [Range(1f, 20f)] public int CellRadius;
+            [Range(1, 20)] public int CellRadius;
             public Color CellColor;                                 // For Texture Preview
             public LayerType CellType;
-            public bool SpawnRandomCluster;
+
+            public bool SL_SpawnRandom;
+            [Range(1, 5)] public int SL_CellRadius;
+            [Range(1, 10)] public int SL_KAttempts;
+            [Range(1, 5)] public int SL_Rows, SL_Cols;
         }
 
+        // [IMPORTANT] Array needs to be filled according to LayerType enum.
         [SerializeField] private LayerData[] _layerDatas;
         // [SerializeField] private int _radius = 4;
         [SerializeField] private int _kAttempts = 30;
@@ -180,9 +185,11 @@ namespace CurseOfNaga.Gameplay.Environment
                 RandomSeed_2 = $"{System.DateTime.Now.Hour}{System.DateTime.Now.Minute}" +
                                 $"{System.DateTime.Now.Second}{System.DateTime.Now.Millisecond}";
             }
+            _poissonDiscSampler.UpdateValues(ref _grid, RandomSeed_2);
 
             int runResult;
             const int START_OFFSET = 0, START_SUB_ROWS = 0, START_SUB_COLS = 0;
+            const bool START_SPAWN_RANDOM_CLUSTER = false;          //If this is not there, then the whole grid will fill up
 
             Debug.Log($"Seed: {RandomSeed_2} | startOffset: {(byte)Mathf.Clamp01(START_OFFSET) ^ (1 << 0)}");
             for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
@@ -191,8 +198,8 @@ namespace CurseOfNaga.Gameplay.Environment
                 // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
                 runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
                         START_SUB_ROWS, START_SUB_COLS, layerId, START_OFFSET,
-                        _layerDatas[layerId].CellRadius, _layerDatas[layerId].SpawnRandomCluster, _kAttempts,
-                        _poiRadius, _waitIntervalInSec, RandomSeed_2);
+                        _layerDatas[layerId].CellRadius, START_SPAWN_RANDOM_CLUSTER, _kAttempts,
+                        _poiRadius, _waitIntervalInSec);
 
                 if (runResult == 0)
                 {
@@ -203,11 +210,12 @@ namespace CurseOfNaga.Gameplay.Environment
             // /*
             int tempRunCount = 0;
             const int RAND_OFFSET = 0;
-            const float POI_RADIUS = 0f;
-            const int CELL_RADIUS = 1;
-            const bool SPAWN_RANDOM_CLUSTER = true;
-            int subLayerRows = 4, subLayerCols = 4;
-            for (int gridIndex = 0; gridIndex < _grid.Length && tempRunCount < 1; gridIndex++)
+            // const float POI_RADIUS = 0f;
+            // const int CELL_RADIUS = 1;
+            // const bool SPAWN_RANDOM_CLUSTER = true;
+            // int subLayerRows = 4, subLayerCols = 4;
+            for (int gridIndex = 0; gridIndex < _grid.Length;// && tempRunCount < 1;
+                gridIndex++)
             {
                 //[IMPORTANT] This needs to be according to the layer data
                 switch (_grid[gridIndex])
@@ -221,13 +229,16 @@ namespace CurseOfNaga.Gameplay.Environment
                     case (byte)LayerType.BUSH:
                         tempRunCount++;
 
-                        Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]}");
+                        Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
+                        + $"CellRadius: {_layerDatas[(int)LayerType.BUSH].SL_CellRadius}");
+
                         // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
                         runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
-                                (byte)_layerDatas[1].CellType,    // _layerDatas[layerId].CellColor,
-                                subLayerRows, subLayerCols, RAND_OFFSET, gridIndex,
-                                CELL_RADIUS, SPAWN_RANDOM_CLUSTER, _kAttempts,
-                                POI_RADIUS, _waitIntervalInSec, RandomSeed_2);
+                                (byte)_layerDatas[(int)LayerType.BUSH].CellType,    // _layerDatas[layerId].CellColor,
+                                _layerDatas[(int)LayerType.BUSH].SL_Rows, _layerDatas[(int)LayerType.BUSH].SL_Cols,
+                                RAND_OFFSET, gridIndex, _layerDatas[(int)LayerType.BUSH].SL_CellRadius,
+                                _layerDatas[(int)LayerType.BUSH].SL_SpawnRandom, _layerDatas[(int)LayerType.BUSH].SL_KAttempts,
+                                _poiRadius, _waitIntervalInSec);
 
                         if (runResult == 0)
                         {
