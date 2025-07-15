@@ -244,6 +244,16 @@
         {+} Fixing logic
 
 --------------------------------------------------------------------------------------------------------
+                                                15 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] PoissonDiscSampler
+        {+} Rounding instead of Flooring Random-Vector
+        {+} Bounds Check fix for sub-layers as well as odd Sub-Layer rows/columns
+    [=] TestPoissonSampler
+        {+} Test script for checking PoissonSampler working
+
+--------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest
     [=] Predefined point of interest

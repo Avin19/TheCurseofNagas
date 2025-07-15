@@ -1,5 +1,6 @@
 // #define POISSON_EMERGENCY_BREAK_1
 // #define DEBUG_TERRAIN_GEN_1
+// #define DEBUG_SUB_LAYER
 
 using System.Collections.Generic;
 using System.Threading;
@@ -47,8 +48,8 @@ namespace CurseOfNaga.Utils
             _grid = grid;
         }
 
-        // public int GeneratePoissonDiscSamples(int rows, int cols, byte cellType, int layerId = 0, int cellRadius = 2,              //TEST
-        public async Task<int> GeneratePoissonDiscSamples(int ogRows, int ogCols, byte cellType, //Color cellColor,
+        public int GeneratePoissonDiscSamples(int ogRows, int ogCols, byte cellType, //Color cellColor,           //TEST
+        // public async Task<int> GeneratePoissonDiscSamples(int ogRows, int ogCols, byte cellType, //Color cellColor,
                 int subRows = 0, int subCols = 0, int randOffset = 0, int startOffset = 0,
                 int cellRadius = 2, bool spawnRandomCluster = false, int kAttempts = 30,
                 float poiRadius = 0f, float waitIntervalInSec = 0.001f, string randomSeed = "")
@@ -89,11 +90,23 @@ namespace CurseOfNaga.Utils
             {
                 // Starting from last row + offset
                 if (startOffset == 0)
+                {
                     midPointVec = new Vector2Int(ogRows / 2, ogCols / 2);
+                    randIndex = 3 + randOffset + startOffset;        // + _GridDimensions.y;
+                    Debug.Log($"midPointVec: {midPointVec}");
+                }
                 else
+                {
                     midPointVec = new Vector2Int(startOffset % ogCols, startOffset / ogCols);
+                    randIndex = randOffset + startOffset;        // + _GridDimensions.y;
 
-                randIndex = 3 + randOffset + startOffset;        // + _GridDimensions.y;
+#if DEBUG_SUB_LAYER
+                    Debug.Log($"midPointVec: {midPointVec} | startOffset: {startOffset}  | Clamp Offset: {Mathf.Clamp01(startOffset)}" +
+                            $" | Invert Clamp Offset: {(byte)Mathf.Clamp01(startOffset) ^ (1 << 0)}" +
+                            $" | Lower-X: {midPointVec.x - (subCols / 2) - (subCols % 2)} | Lower-Y: {midPointVec.y - (subRows / 2) - (subRows % 2)}" +
+                            $" | Upper-X: {midPointVec.x + (subCols / 2) + (subCols % 2)} | Upper-Y: {midPointVec.y + (subRows / 2) + (subRows % 2)}");
+#endif
+                }
                 _grid[randIndex] = cellType;
                 _activeGrid.Add(randIndex);
 
@@ -154,8 +167,8 @@ namespace CurseOfNaga.Utils
                         // yIndex = _activeGrid[randIndex] / cols + Mathf.FloorToInt(randomOffsetVec.y / _wCellSize);
 
                         //_wCellSize will only be needed to calculate the position afterwards, not now
-                        xIndex = (_activeGrid[randIndex] % ogCols) + Mathf.FloorToInt(randomOffsetVec.x);
-                        yIndex = (_activeGrid[randIndex] / ogCols) + Mathf.FloorToInt(randomOffsetVec.y);
+                        xIndex = (_activeGrid[randIndex] % ogCols) + Mathf.RoundToInt(randomOffsetVec.x);
+                        yIndex = (_activeGrid[randIndex] / ogCols) + Mathf.RoundToInt(randomOffsetVec.y);
 #if DEBUG_TERRAIN_GEN_1
                         debugStr.Append($"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | ");
                         debugStr.Append($"Floor X: {Mathf.FloorToInt(randomOffsetVec.x)} | Floor Y: {Mathf.FloorToInt(randomOffsetVec.y)} | ");
@@ -164,28 +177,44 @@ namespace CurseOfNaga.Utils
                         //         + $" | xIndex: {xIndex} | yIndex: {yIndex}");
 #endif
 
+
+#if DEBUG_SUB_LAYER
+                        // if (startOffset != 0)
+                        Debug.Log(
+                        // $"ogRows: {ogRows} | ogCols: {ogCols} | midPointVec: {midPointVec}" +
+                        $"xIndex: {xIndex} | yIndex: {yIndex} | additionalOffset: {additionalOffset} | " +
+                        $"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | " +
+                        $"Floor X: {Mathf.RoundToInt(randomOffsetVec.x)} | Floor Y: {Mathf.RoundToInt(randomOffsetVec.y)} | " +
+                        $"Sqr Magnitude: {Vector2.SqrMagnitude(randomOffsetVec - midPointVec)}"
+                        );
+#endif
+
                         // Updating offset co-ords to current active cell
                         randomOffsetVec.x = xIndex;
                         randomOffsetVec.y = yIndex;
 
                         //Bounds Check
-                        //        Normal-Layer Lower-X Bound + Sub-Layer Lower-X Bound
-                        if (xIndex < (0 + (midPointVec.x - (subCols / 2)) * Mathf.Clamp01(startOffset))
-                            || yIndex < (0 + (midPointVec.x - (subRows / 2)) * Mathf.Clamp01(startOffset))
+                        if (xIndex < 0 || yIndex < 0        // Normal-Layer Lower-X Bound
+                            || xIndex > (ogRows - 1) || yIndex > (ogCols - 1)       // Out of bounds of grid length
 
-                        //      Normal-Layer Upper-X Bound  * Invert of startOffset
-                            || xIndex >= (ogRows * ((byte)Mathf.Clamp01(startOffset) ^ (1 << 0)))
-                        //      Sub-Layer Upper-X Bound * startOffset
-                                + ((midPointVec.x + (subCols / 2)) * Mathf.Clamp01(startOffset))
-                            || yIndex >= (ogCols * ((byte)Mathf.Clamp01(startOffset) ^ (1 << 0)))
-                                + ((midPointVec.x + (subCols / 2)) * Mathf.Clamp01(startOffset))
+                            || xIndex < (midPointVec.x - (subCols / 2) - (subCols % 2)) * Mathf.Clamp01(startOffset)    // Sub-Layer Lower-X Bound
+                            || yIndex < (midPointVec.y - (subRows / 2) - (subRows % 2)) * Mathf.Clamp01(startOffset)
+
+                            || xIndex > ((ogRows - 1) * ((byte)Mathf.Clamp01(startOffset) ^ (1 << 0)))      // Normal-Layer Upper-X Bound  * Invert of startOffset
+                                + ((midPointVec.x + (subCols / 2) + (subCols % 2)) * Mathf.Clamp01(startOffset))        // Sub-Layer Upper-X Bound * startOffset
+                            || yIndex > ((ogCols - 1) * ((byte)Mathf.Clamp01(startOffset) ^ (1 << 0)))
+                                + ((midPointVec.y + (subRows / 2) + (subRows % 2)) * Mathf.Clamp01(startOffset))
 
                             || _grid[xIndex + (yIndex * ogCols)] != 255                                         //Cell occupied by something
                             || (Vector2.SqrMagnitude(randomOffsetVec - midPointVec) - (poiRadius * poiRadius)) <= 0)        // Also check if it is not inside the point of interest
                         {
 #if DEBUG_TERRAIN_GEN_1
                             debugStr.Append($"Outside Bounds");
-                            // Debug.Log($"Outside Bounds: {debugStr}");
+#endif
+
+#if DEBUG_SUB_LAYER
+                            // if (startOffset != 0)
+                            Debug.Log($"Outside Bounds");
 #endif
                             continue;
                         }
@@ -226,6 +255,11 @@ namespace CurseOfNaga.Utils
                                     && _grid[neighbourIndex] == cellType)
                                 {
                                     withinDistance = true;
+#if DEBUG_SUB_LAYER
+                                    // if (startOffset != 0)
+                                    Debug.Log($"Within Distance | hor: {hor} | ver: {ver} | xIndex: {xIndex + hor} | yIndex: {yIndex + ver} | "
+                                            + $"neighbourIndex: {neighbourIndex} | _grid Val: {_grid[neighbourIndex]}");
+#endif
                                 }
 
                                 /*
@@ -254,7 +288,7 @@ namespace CurseOfNaga.Utils
 
                         if (!withinDistance)
                         {
-                            // Debug.Log($"Adding index: {xIndex + (yIndex * _GridDimensions.x)}| xIndex {xIndex} | yIndex: {yIndex}");
+                            // Debug.Log($"Adding index: {xIndex + (yIndex * ogCols)}| xIndex {xIndex} | yIndex: {yIndex}");
                             // debugStr.Append($"Added");
                             foundCell = true;
                             _grid[xIndex + (yIndex * ogCols)] = cellType;
@@ -264,6 +298,7 @@ namespace CurseOfNaga.Utils
                             // InstantitateDebugCube(xIndex, yIndex);
 
                             // Random chance to spawn cluster of objects
+                            /*
                             if (spawnRandomCluster)
                             {
                                 int randomCluster = Random.Range(0, 10);
@@ -287,6 +322,7 @@ namespace CurseOfNaga.Utils
                                     }
                                 }
                             }
+                            */
 
                             // break;
                         }
@@ -304,7 +340,7 @@ namespace CurseOfNaga.Utils
                     }
                     foundCell = false;
 
-                    await Task.Delay((int)(waitIntervalInSec * 1000));
+                    // await Task.Delay((int)(waitIntervalInSec * 1000));
 
                     // if (_cts.IsCancellationRequested) return null;
                     if (_cts.IsCancellationRequested) return 0;

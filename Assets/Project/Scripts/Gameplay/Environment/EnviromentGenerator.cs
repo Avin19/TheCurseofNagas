@@ -55,15 +55,15 @@ namespace CurseOfNaga.Gameplay.Environment
             // GenerateEnvironment();
 
             InitializePoissonData();
-            try
+            // try
             {
                 _poissonDiscSampler = new PoissonDiscSampler(ref _grid);
-                await GeneratePoissonDiscSamples_2();
-                // GeneratePoissonDiscSamples_2();              //TEST
+                // await GeneratePoissonDiscSamples_2();
+                GeneratePoissonDiscSamples_2();              //TEST
             }
-            catch (Exception ex)
+            // catch (Exception ex)
             {
-                Debug.LogError($"Caught Exception: {ex.Message}");
+                // Debug.LogError($"Caught Exception: {ex.Message}");
             }
             if (_cts.IsCancellationRequested) return;
             GenerateGrid();
@@ -143,7 +143,6 @@ namespace CurseOfNaga.Gameplay.Environment
         [Range(5f, 150f)][SerializeField] private int _rows = 10, _cols = 10;
         [Range(0.001f, 1f)][SerializeField] private float _waitIntervalInSec = 0.01f;
         [Range(1f, 100f)][SerializeField] private float _poiRadius = 2f;
-        private int _activeCount;
 
 
         // private readonly Vector2Int _GridDimensions = new Vector2Int(10, 10);
@@ -169,8 +168,8 @@ namespace CurseOfNaga.Gameplay.Environment
             _poissonTex = new Texture2D(_rows, _cols);
         }
 
-        // private int GeneratePoissonDiscSamples_2()              //TEST
-        private async Task<int> GeneratePoissonDiscSamples_2()
+        private int GeneratePoissonDiscSamples_2()              //TEST
+        // private async Task<int> GeneratePoissonDiscSamples_2()
         {
             //Intialize all value to default 
             for (int i = 0; i < _rows * _cols; i++)
@@ -189,7 +188,8 @@ namespace CurseOfNaga.Gameplay.Environment
             for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
             {
 
-                runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
                         START_SUB_ROWS, START_SUB_COLS, layerId, START_OFFSET,
                         _layerDatas[layerId].CellRadius, _layerDatas[layerId].SpawnRandomCluster, _kAttempts,
                         _poiRadius, _waitIntervalInSec, RandomSeed_2);
@@ -200,7 +200,7 @@ namespace CurseOfNaga.Gameplay.Environment
                 }
             }
 
-            /*
+            // /*
             int tempRunCount = 0;
             const int RAND_OFFSET = 1;
             const bool RANDOM_SPAWN = false;
@@ -221,8 +221,10 @@ namespace CurseOfNaga.Gameplay.Environment
                     case (byte)LayerType.BUSH:
                         tempRunCount++;
 
-                        runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
-                                (byte)_layerDatas[gridIndex].CellType,    // _layerDatas[layerId].CellColor,
+                        Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]}");
+                        // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                        runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                                (byte)_layerDatas[1].CellType,    // _layerDatas[layerId].CellColor,
                                 subLayerRows, subLayerCols, RAND_OFFSET, gridIndex,
                                 CELL_RADIUS, RANDOM_SPAWN, _kAttempts,
                                 POI_RADIUS, _waitIntervalInSec, RandomSeed_2);
@@ -367,6 +369,7 @@ namespace CurseOfNaga.Gameplay.Environment
                 // Offset original Pos and also by grid mid row and col     | (Ver)Row is y, (Hor)Col is x
                 finalPos.x = xOrigin - (_GridDimensions.y / 2) + (i % _GridDimensions.y);
                 finalPos.z = zOrigin - (_GridDimensions.x / 2) + (i / _GridDimensions.y);
+                objToCreate.name += $"_X{i % _GridDimensions.y}_Z{i / _GridDimensions.y}";
                 // Debug.Log($"zVal: {i / _GridDimensions.y} | zOrigin: {zOrigin} | _grid: {_grid[i]} | i: {i}");
 
                 objToCreate.transform.localPosition = finalPos;
