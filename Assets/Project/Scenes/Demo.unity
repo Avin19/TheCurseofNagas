@@ -1261,11 +1261,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rows: 10
   _cols: 10
-  subLayerRows: 5
-  subLayerCols: 5
+  subLayerRows: 2
+  subLayerCols: 2
   _mapPreview: {fileID: 1868366776}
   _waitIntervalInSec: 0.001
-  RandomSeed_2: Hello6
+  RandomSeed_2: Hello2
 --- !u!1 &707591954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1958,7 +1958,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1184124002
 Transform:
   m_ObjectHideFlags: 0

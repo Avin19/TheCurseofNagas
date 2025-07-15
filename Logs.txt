@@ -253,6 +253,14 @@
     [=] TestPoissonSampler
         {+} Test script for checking PoissonSampler working
 
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Enabling Random-Cluster-Spawn
+    [=] TestPoissonSampler
+        {+} Lower kAttempts are good for cluster-spawn
+    [=] PoissonDiscSampler
+        {+} Taking subRows/subCols as radius and not total rows/cols for sub-layers
+        {+} Using randomRadius instead of cellRadius for checking neighbours for Sub-Layers
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] Enivronment spawning around point of interest

@@ -202,10 +202,10 @@ namespace CurseOfNaga.Gameplay.Environment
 
             // /*
             int tempRunCount = 0;
-            const int RAND_OFFSET = 1;
-            const bool RANDOM_SPAWN = false;
+            const int RAND_OFFSET = 0;
             const float POI_RADIUS = 0f;
             const int CELL_RADIUS = 1;
+            const bool SPAWN_RANDOM_CLUSTER = true;
             int subLayerRows = 4, subLayerCols = 4;
             for (int gridIndex = 0; gridIndex < _grid.Length && tempRunCount < 1; gridIndex++)
             {
@@ -226,7 +226,7 @@ namespace CurseOfNaga.Gameplay.Environment
                         runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
                                 (byte)_layerDatas[1].CellType,    // _layerDatas[layerId].CellColor,
                                 subLayerRows, subLayerCols, RAND_OFFSET, gridIndex,
-                                CELL_RADIUS, RANDOM_SPAWN, _kAttempts,
+                                CELL_RADIUS, SPAWN_RANDOM_CLUSTER, _kAttempts,
                                 POI_RADIUS, _waitIntervalInSec, RandomSeed_2);
 
                         if (runResult == 0)

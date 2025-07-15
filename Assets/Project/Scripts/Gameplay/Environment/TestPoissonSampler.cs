@@ -9,7 +9,7 @@ public class TestPoissonSampler : MonoBehaviour
     private byte[] _grid;
     [Range(5f, 50f)][SerializeField] private int _rows = 10, _cols = 10;
     [Range(2f, 6f)][SerializeField] private int subLayerRows = 4, subLayerCols = 4;
-    int _kAttempts = 30;
+    int _kAttempts = 5;
 
     private Texture2D _poissonTex;
     [SerializeField] private SpriteRenderer _mapPreview;
@@ -38,9 +38,9 @@ public class TestPoissonSampler : MonoBehaviour
 
         int runResult;
         const int RAND_OFFSET = 0;
-        const bool RANDOM_SPAWN = false;
         const float POI_RADIUS = 0f;
         const int CELL_RADIUS = 1;
+        const bool SPAWN_RANDOM_CLUSTER = true;
         int startOffset = 55;
 
         for (int gridIndex = 0; gridIndex < 1; gridIndex++)
@@ -49,7 +49,7 @@ public class TestPoissonSampler : MonoBehaviour
             // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
             runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
                     1, subLayerRows, subLayerCols, RAND_OFFSET, startOffset,
-                    CELL_RADIUS, RANDOM_SPAWN, _kAttempts,
+                    CELL_RADIUS, SPAWN_RANDOM_CLUSTER, _kAttempts,
                     POI_RADIUS, _waitIntervalInSec, RandomSeed_2);
 
             if (runResult == 0)
