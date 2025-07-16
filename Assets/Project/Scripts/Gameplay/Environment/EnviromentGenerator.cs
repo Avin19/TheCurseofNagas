@@ -11,12 +11,16 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
+
 
 #if PERLIN_NOISE_1
 using CurseOfNaga.Utils;
 #endif
 
+using Random = UnityEngine.Random;
 using static CurseOfNaga.Global.UniversalConstant;
+using CurseOfNaga.Utils;
 
 namespace CurseOfNaga.Gameplay.Environment
 {
@@ -36,6 +40,7 @@ namespace CurseOfNaga.Gameplay.Environment
 
         [SerializeField] private EnvironmentObj[] _environmentPrefabs;
 
+        private PoissonDiscSampler _poissonDiscSampler;
         private CancellationTokenSource _cts;
 
         private void OnDestroy()
@@ -50,7 +55,16 @@ namespace CurseOfNaga.Gameplay.Environment
             // GenerateEnvironment();
 
             InitializePoissonData();
-            await GeneratePoissonDiscSamples();
+            // try
+            {
+                _poissonDiscSampler = new PoissonDiscSampler(ref _grid);
+                // await GeneratePoissonDiscSamples_2();
+                GeneratePoissonDiscSamples_2();              //TEST
+            }
+            // catch (Exception ex)
+            {
+                // Debug.LogError($"Caught Exception: {ex.Message}");
+            }
             if (_cts.IsCancellationRequested) return;
             GenerateGrid();
 
@@ -78,7 +92,7 @@ namespace CurseOfNaga.Gameplay.Environment
                 _poissonTex.Apply();
 
                 UpdatePoissonMap = false;
-                _ = GeneratePoissonDiscSamples();
+                _ = GeneratePoissonDiscSamples_2();
             }
 #endif
 
@@ -111,25 +125,43 @@ namespace CurseOfNaga.Gameplay.Environment
         public bool UpdatePoissonMap = false;
 #endif
 
-        internal enum LayerType { EMPTY = 255, TREE = 0, BUSH = 1, GRASS = 2, FLOWER = 3, ROCK = 4 }
+        internal enum LayerType
+        {
+            EMPTY = 255, TREE = 0, BUSH = 1, GRASS = 2, FLOWER = 3, ROCK = 4,
+            TREE_SUB_SPAWNED = 40, BUSH_SUB_SPAWNED = 41, GRASS_SUB_SPAWNED = 42, FLOWER_SUB_SPAWNED = 43, ROCK_SUB_SPAWNED = 44
+        }
 
         [System.Serializable]
         internal struct LayerData
         {
-            [Range(1f, 20f)] public int CellRadius;
+            public bool SkipLayer;
+            [Range(1, 20)] public int CellRadius;
             public Color CellColor;                                 // For Texture Preview
             public LayerType CellType;
-            public bool SpawnRandomCluster;
+
+            public bool SL_SpawnRandom;
+            [Range(1, 5)] public int SL_CellRadius;
+            [Range(1, 10)] public int SL_KAttempts;
+            [Range(1, 5)] public int SL_Rows, SL_Cols;
         }
 
+        [Serializable]
+        internal struct POIData
+        {
+            public Transform PointOfInterest;
+            public int PoiRadius;
+        }
+
+        [SerializeField] private POIData[] _poiDatas;
+        // [IMPORTANT] Array needs to be filled according to LayerType enum.
         [SerializeField] private LayerData[] _layerDatas;
         // [SerializeField] private int _radius = 4;
-        [SerializeField] private int _kAttempts = 30;
+        [Range(1, 30)][SerializeField] private int _kAttempts = 30;
         [SerializeField] private float _wCellSize;
-        [Range(5f, 150f)][SerializeField] private int _rows = 10, _cols = 10;
+        [Range(5, 200)][SerializeField] private int _rows = 10, _cols = 10;                   // Original Rows = 180 | Original Cols = 180
+        [Range(5, 30)][SerializeField] private int _startSubRows = 10, _startSubCols = 10;
         [Range(0.001f, 1f)][SerializeField] private float _waitIntervalInSec = 0.01f;
-        [Range(1f, 100f)][SerializeField] private float _poiRadius = 2f;
-        private int _activeCount;
+        // [Range(1f, 100f)][SerializeField] private float _poiRadius = 2f;
 
 
         // private readonly Vector2Int _GridDimensions = new Vector2Int(10, 10);
@@ -139,7 +171,7 @@ namespace CurseOfNaga.Gameplay.Environment
         [SerializeField] private string RandomSeed_2 = "135653245";             //135653245
 
         private List<int> _activeGrid;
-        private byte[] _grid;
+        [HideInInspector] private byte[] _grid;
         // [HideInInspector] private byte[] _grid;
 
         private void InitializePoissonData()
@@ -155,9 +187,10 @@ namespace CurseOfNaga.Gameplay.Environment
             _poissonTex = new Texture2D(_rows, _cols);
         }
 
-        private async Task<int> GeneratePoissonDiscSamples()
+        private int GeneratePoissonDiscSamples_2()              //TEST
+        // private async Task<int> GeneratePoissonDiscSamples_2()
         {
-            //Intialize all value to default
+            //Intialize all value to default 
             for (int i = 0; i < _rows * _cols; i++)
                 _grid[i] = 255;
 
@@ -166,262 +199,201 @@ namespace CurseOfNaga.Gameplay.Environment
                 RandomSeed_2 = $"{System.DateTime.Now.Hour}{System.DateTime.Now.Minute}" +
                                 $"{System.DateTime.Now.Second}{System.DateTime.Now.Millisecond}";
             }
-            Random.InitState(RandomSeed_2.GetHashCode());
+            _poissonDiscSampler.UpdateValues(ref _grid, RandomSeed_2);
+
+            int runResult;
+            const int START_MID_INDEX = 0;
+            // const int START_SUB_ROWS = 10, START_SUB_COLS = 10;
+            const bool START_SPAWN_RANDOM_CLUSTER = false;          //If this is not there, then the whole grid will fill up
+            int layerDataIndex = -1;
             Debug.Log($"Seed: {RandomSeed_2}");
 
-            //Select a random point from the grid
-            // int randIndex = Random.Range(0, _rows * _cols);
-            // _grid[randIndex] = 1;
-            // _activeGrid.Add(randIndex);
+            #region LAYER
 
-            //Selecting a center point from rows/cols
-            // If row * col is even, then need to subtract a row, else not equal            //Wrong
-            // If row * col is odd, then can get half                                       //Wrong
-            // int randIndex = (_rows * _cols / 2) - ((_rows % 2) * _cols);                 //Wrong
+            for (int poiID = 0; poiID < _poiDatas.Length; poiID++)
+            // for (int poiID = 0; poiID < 1; poiID++)
+            {
+                layerDataIndex = (int)_poiDatas[poiID].PointOfInterest.position.x + (_rows / 2)
+                    + ((int)_poiDatas[poiID].PointOfInterest.position.z + (_cols / 2)) * _cols;
+                // layerDataIndex = (_rows / 2) + (_cols / 2) * _cols;         //TEST
 
-            // This wont work as the middle is to be exlcuded, it needs to be clear
-            // int randIndex = (_rows / 2) + ((_cols / 2) * _GridDimensions.x);
+                // Debug.Log($"Position: {_poiDatas[poiID].PointOfInterest.position} | layerDataIndex: {layerDataIndex}");
 
-            // Starting from 2nd last row
-            Vector2 midPointVec;
-            int randIndex;
+                for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
+                // for (int layerId = 0; layerId < 2; layerId++)
+                {
+                    if (_layerDatas[layerId].SkipLayer)
+                        continue;
 
-            // _grid[randIndex] = 1;
-            // _activeGrid.Add(randIndex);
-            // Debug.Log($"Selected randIndex: {randIndex}");
+                    // /*
+                    // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                    runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                        (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                        _startSubRows, _startSubCols,
+                        START_MID_INDEX, layerDataIndex, _layerDatas[layerId].CellRadius,
+                        START_SPAWN_RANDOM_CLUSTER, _kAttempts,
+                        _poiDatas[poiID].PoiRadius, _waitIntervalInSec);
 
-            // Display on Sprite Renderer
-            int xIndex, yIndex;
+                    if (runResult == 0)
+                    {
+                        Debug.LogError($"Error occured while generating");
+                    }
+                    // */
+                }
+            }
 
-            // xIndex = randIndex % _rows;
-            // yIndex = randIndex / _rows;
-            // _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
-            // InstantitateDebugCube(xIndex, yIndex);
+            #endregion LAYER
 
-            // Loop active list | Check valid neighbour | Add List | Remove if not valid
-            Vector2 randomOffsetVec, currentVec;
-            bool withinDistance, foundCell;
-            int randomAngle, additionalOffset;
+            #region SPAWN_SUB_LAYERS
 
-            System.Text.StringBuilder debugStr = new System.Text.StringBuilder();
-
-            //Layer 0: For trees | Layer 1: For Bushes
+            int subLayersSet = 0;
             for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
             {
-                // Starting from 2nd last row
-                midPointVec = new Vector3(_rows / 2, _cols / 2);
-                randIndex = 3 + layerId;        // + _GridDimensions.y;
-                _grid[randIndex] = (byte)_layerDatas[layerId].CellType;
-                _activeGrid.Add(randIndex);
+                if (_layerDatas[layerId].SL_SpawnRandom)
+                    subLayersSet |= (1 << layerId);
+            }
 
-                // Display on Sprite Renderer
-                xIndex = yIndex = 0;
+            const byte SPAWNED_OFFSET = 40;
+            int tempRunCount = 0;
+            for (int poiID = 0; poiID < _poiDatas.Length; poiID++)
+            // for (int poiID = 0; poiID < 1; poiID++)
+            {
 
-                xIndex = randIndex % _rows;
-                yIndex = randIndex / _rows;
-                // _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
-                _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[layerId].CellColor);
+                layerDataIndex = (int)_poiDatas[poiID].PointOfInterest.position.x + (_rows / 2)
+                    + ((int)_poiDatas[poiID].PointOfInterest.position.z + (_cols / 2)) * _cols;
+                // layerDataIndex = (_rows / 2) + (_cols / 2) * _cols;         //TEST
 
-                randomOffsetVec = currentVec = Vector2.zero;
+                // Debug.Log($"Position: {_poiDatas[poiID].PointOfInterest.position} | layerDataIndex: {layerDataIndex}");
 
-                withinDistance = foundCell = false;
-                randomAngle = additionalOffset = -1;
-
-#if POISSON_EMERGENCY_BREAK_1
-                int emergencyBreak = 0;
-#endif
-
-                // Debug.Log($"Starting Check | Time: {System.DateTime.Now.Minute}m {System.DateTime.Now.Second}s "
-                //     + $"{System.DateTime.Now.Millisecond}ms {System.DateTime.Now.Ticks}");
-                while (_activeGrid.Count > 0)
+                for (int gridIndex = 0; gridIndex < _grid.Length;// && tempRunCount < 1;
+                    gridIndex++)
                 {
-#if POISSON_EMERGENCY_BREAK_1
-                    emergencyBreak++;
-                    if (emergencyBreak > 2000)
+                    //Check if the layer has been set to create a sub-layer
+                    if (_grid[gridIndex] == 255 || (subLayersSet & (1 << _grid[gridIndex])) == 0)
+                        continue;
+
+                    tempRunCount++;
+
+                    // Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
+                    // + $"CellRadius: {_layerDatas[(int)LayerType.BUSH].SL_CellRadius}");
+
+                    // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                    runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                            (byte)(_grid[gridIndex] + SPAWNED_OFFSET),    // _layerDatas[layerId].CellColor,
+                            _layerDatas[_grid[gridIndex]].SL_Rows, _layerDatas[_grid[gridIndex]].SL_Cols,
+                            layerDataIndex, gridIndex, _layerDatas[_grid[gridIndex]].SL_CellRadius,
+                            _layerDatas[_grid[gridIndex]].SL_SpawnRandom, _layerDatas[_grid[gridIndex]].SL_KAttempts,
+                            _poiDatas[poiID].PoiRadius, _waitIntervalInSec);
+                    _grid[gridIndex] += SPAWNED_OFFSET;
+
+                    if (runResult == 0)
                     {
-                        Debug.LogError($"Emergency Break: {emergencyBreak} | List count: {_activeGrid.Count}");
-                        break;
-                    }
-#endif
-
-                    //Choose a random point from active list
-                    randIndex = Random.Range(0, _activeGrid.Count);
-                    _activeCount = _activeGrid.Count;
-                    // Debug.Log($"randIndex: {_activeGrid[randIndex]} | Count: {_activeGrid.Count}");
-
-                    //Generate upto k points between r and 2r
-                    for (int i = 0; i < _kAttempts; i++)
-                    {
-                        withinDistance = false;
-
-                        // Get a random point
-                        randomAngle = Random.Range(0, 360);
-                        randomOffsetVec.x = Mathf.Cos(randomAngle);
-                        randomOffsetVec.y = Mathf.Sin(randomAngle);
-
-#if DEBUG_TERRAIN_GEN_1
-                        debugStr.Clear();
-                        debugStr.Append($"Initial Vec: {randomOffsetVec} | ");
-#endif
-
-                        // Offset more to be between r and 2r
-                        additionalOffset = Random.Range(_layerDatas[layerId].CellRadius, (2 * _layerDatas[layerId].CellRadius) + 1);
-                        randomOffsetVec *= additionalOffset;
-
-                        // https://www.desmos.com/calculator/fshadmxjaa - Checking
-                        // xIndex = _activeGrid[randIndex] % _rows + Mathf.FloorToInt(randomOffsetVec.x / _wCellSize);
-                        // yIndex = _activeGrid[randIndex] / _rows + Mathf.FloorToInt(randomOffsetVec.y / _wCellSize);
-
-                        //_wCellSize will only be needed to calculate the position afterwards, not now
-                        xIndex = (_activeGrid[randIndex] % _rows) + Mathf.FloorToInt(randomOffsetVec.x);
-                        yIndex = (_activeGrid[randIndex] / _rows) + Mathf.FloorToInt(randomOffsetVec.y);
-#if DEBUG_TERRAIN_GEN_1
-                        debugStr.Append($"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | ");
-                        debugStr.Append($"Floor X: {Mathf.FloorToInt(randomOffsetVec.x)} | Floor Y: {Mathf.FloorToInt(randomOffsetVec.y)} | ");
-                        debugStr.Append($"xIndex: {xIndex} | yIndex: {yIndex} | ");
-                        // Debug.Log($"Random Vec: {randomOffsetVec} | additionalOffset: {additionalOffset}"
-                        //         + $" | xIndex: {xIndex} | yIndex: {yIndex}");
-#endif
-
-                        // Updating offset co-ords to current active cell
-                        randomOffsetVec.x = xIndex;
-                        randomOffsetVec.y = yIndex;
-
-                        //Bounds Check
-                        if (xIndex < 0 || yIndex < 0 || xIndex >= _GridDimensions.x || yIndex >= _GridDimensions.y
-                            || (Vector3.SqrMagnitude(randomOffsetVec - midPointVec) - (_poiRadius * _poiRadius)) <= 0           // Also check if it is not inside the point of interest
-                            || _grid[xIndex + (yIndex * _GridDimensions.y)] != 255)             //Cell occupied by something
-                        {
-#if DEBUG_TERRAIN_GEN_1
-                            debugStr.Append($"Outside Bounds");
-                            // Debug.Log($"Outside Bounds: {debugStr}");
-#endif
-                            continue;
-                        }
-
-#if DEBUG_TERRAIN_GEN_1
-                        debugStr.Append($"SqrDist: {Vector3.SqrMagnitude(randomOffsetVec - midPointVec)} | ");
-#endif
-
-                        // Check if the space(r) is enough between points and no neigbours are within it
-                        // Also checking if the spot itself is valid or not
-                        for (int hor = _layerDatas[layerId].CellRadius * -1;
-                            hor <= _layerDatas[layerId].CellRadius && !withinDistance; hor++)              // TODONE: Fix range as this should check to r
-                        {
-                            for (int ver = _layerDatas[layerId].CellRadius * -1;
-                                ver <= _layerDatas[layerId].CellRadius && !withinDistance; ver++)              // TODONE: Fix range as this should check to r
-                            {
-#if DEBUG_TERRAIN_GEN_1
-                                debugStr.Append($"\nhor: {hor} | ver : {ver} | ");
-                                // Debug.Log($"{debugStr}");               //Test
-#endif
-
-                                //Bounds Check
-                                if ((xIndex + hor) < 0 || (yIndex + ver) < 0
-                                    || (xIndex + hor) >= _GridDimensions.x || (yIndex + ver) >= _GridDimensions.y)
-                                    continue;
-
-                                int neighbourIndex = (xIndex + hor) + ((yIndex + ver) * _GridDimensions.y);
-
-#if DEBUG_TERRAIN_GEN_1
-                                debugStr.Append($"neighbourIndex: {neighbourIndex} | _GridDimensions: {_GridDimensions} | _grid Val: {_grid[neighbourIndex]} | ");
-                                // Debug.Log($"neighbourIndex: {neighbourIndex} | xIndex: {xIndex} | yIndex: {yIndex}"
-                                //         + $" | hor: {hor} | ver : {ver} | _GridDimensions: {_GridDimensions}");
-#endif
-
-                                if (_grid[neighbourIndex] != 255
-                                    && _grid[neighbourIndex] == (byte)_layerDatas[layerId].CellType)
-                                {
-                                    withinDistance = true;
-                                }
-
-                                /*
-                                if (_grid[neighbourIndex] == 255) continue;
-
-                                //Checking the distance
-                                currentVec.x = xIndex + hor;
-                                currentVec.y = yIndex + ver;
-                                // float distance = _grid[neighbourIndex] - _grid[xIndex + (yIndex * _GridDimensions.x)];
-                                float distance = Vector2.SqrMagnitude(randomOffsetVec - currentVec);
-
-                                if (distance < _radius * _radius)
-                                {
-#if DEBUG_TERRAIN_GEN_1
-                                    // Debug.Log($"CurrentVec: [{currentVec.x}, {currentVec.y}] | randomOffsetVec: [{randomOffsetVec.x}, {randomOffsetVec.y}]");
-                                    debugStr.Append($" Dist: {distance} | ");
-                                    // InstantitateDebugCube((xIndex + hor), (yIndex + ver), true);
-#endif
-
-                                    withinDistance = true;
-
-                                }
-                                */
-                            }
-                        }
-
-                        if (!withinDistance)
-                        {
-                            // Debug.Log($"Adding index: {xIndex + (yIndex * _GridDimensions.x)}| xIndex {xIndex} | yIndex: {yIndex}");
-                            // debugStr.Append($"Added");
-                            foundCell = true;
-                            _grid[xIndex + (yIndex * _GridDimensions.y)] = (byte)_layerDatas[layerId].CellType;
-                            _activeGrid.Add(xIndex + (yIndex * _GridDimensions.y));
-
-                            // _poissonTex.SetPixel(xIndex, yIndex, Color.blue);
-                            _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[layerId].CellColor);
-                            // InstantitateDebugCube(xIndex, yIndex);
-
-                            // Random chance to spawn cluster of objects
-                            if (_layerDatas[layerId].SpawnRandomCluster)
-                            {
-                                int randomCluster = Random.Range(0, 10);
-
-                                if (randomCluster > 2 && randomCluster < 5)
-                                {
-                                    //Cover the 1-cell radius fully or randomly some cells only?
-                                    for (int hor = -1; hor <= 1; hor++)
-                                    {
-                                        for (int ver = -1; ver <= 1; ver++)
-                                        {
-                                            //Bounds Check
-                                            if ((xIndex + hor) < 0 || (yIndex + ver) < 0
-                                                || (xIndex + hor) >= _GridDimensions.x || (yIndex + ver) >= _GridDimensions.y
-                                                || _grid[(xIndex + hor) + ((yIndex + ver) * _GridDimensions.y)] != 255)             //Check if cell is occupied or not
-                                                continue;
-
-                                            _grid[(xIndex + hor) + ((yIndex + ver) * _GridDimensions.y)] = (byte)_layerDatas[layerId].CellType;
-                                            _poissonTex.SetPixel((xIndex + hor), (yIndex + ver), _layerDatas[layerId].CellColor);
-                                        }
-                                    }
-                                }
-                            }
-
-                            // break;
-                        }
-#if DEBUG_TERRAIN_GEN_1
-                        Debug.Log($"{debugStr}");
-#endif
+                        Debug.LogError($"Error occured while generating");
                     }
 
-                    if (!foundCell)
-                    {
-#if DEBUG_TERRAIN_GEN_1
-                        // Debug.Log($"Removing from active | index: {randIndex} | Val: {_activeGrid[randIndex]}");
-#endif
-                        _activeGrid.RemoveAt(randIndex);
-                    }
-                    foundCell = false;
-
-                    await Task.Delay((int)(_waitIntervalInSec * 1000));
-
-                    if (_cts.IsCancellationRequested) return 0;
+                    // if (_grid[layerId] == (byte)_layerDatas[1].CellType) { }
                 }
-                // Debug.Log($"Finish Check | Time: {System.DateTime.Now.Minute}m {System.DateTime.Now.Second}s "
-                //     + $"{System.DateTime.Now.Millisecond}ms {System.DateTime.Now.Ticks}");
+            }
 
-#if POISSON_EMERGENCY_BREAK_1
-                Debug.Log($"Emergency Break Count: {emergencyBreak}");               //FOR DEBUG
-#endif
+            #endregion SPAWN_SUB_LAYERS
+
+            #region SPAWN_REST_AREA
+
+            const float POI_RADIUS = 0f;
+            const int FULL_MID_INDEX = 0, FULL_START_OFFSET = -1;
+            const int FULL_SUB_ROW = 0, FULL_SUB_COL = 0;
+            // const int SUBLAYER_RAND_OFFSET = 0;
+            // const int CELL_RADIUS = 1;
+            // const bool SPAWN_RANDOM_CLUSTER = true;
+            // int subLayerRows = 4, subLayerCols = 4;
+
+            // /*
+            for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
+            // for (int layerId = 0; layerId < 2; layerId++)
+            {
+                if (_layerDatas[layerId].SkipLayer)
+                    continue;
+
+                runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                    (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                    FULL_SUB_ROW, FULL_SUB_COL,
+                    FULL_MID_INDEX, FULL_START_OFFSET, _layerDatas[layerId].CellRadius,
+                    START_SPAWN_RANDOM_CLUSTER, _kAttempts,
+                    POI_RADIUS, _waitIntervalInSec);
+
+                if (runResult == 0)
+                {
+                    Debug.LogError($"Error occured while generating");
+                }
+            }
+            // */
+            #endregion SPAWN_REST_AREA
+
+            #region SPAWN_SUB_LAYER_FOR_REST_AREA
+
+            for (int gridIndex = 0; gridIndex < _grid.Length;// && tempRunCount < 1;
+                gridIndex++)
+            {
+                //Check if the layer has been set to create a sub-layer
+                if (_grid[gridIndex] == 255 || (subLayersSet & (1 << _grid[gridIndex])) == 0)
+                    continue;
+                // tempRunCount++;
+
+                // Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
+                // + $"CellRadius: {_layerDatas[(int)LayerType.BUSH].SL_CellRadius}");
+
+                // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                        _grid[gridIndex],    // _layerDatas[layerId].CellColor,
+                        _layerDatas[_grid[gridIndex]].SL_Rows, _layerDatas[_grid[gridIndex]].SL_Cols,
+                        FULL_MID_INDEX, gridIndex, _layerDatas[_grid[gridIndex]].SL_CellRadius,
+                        _layerDatas[_grid[gridIndex]].SL_SpawnRandom, _layerDatas[_grid[gridIndex]].SL_KAttempts,
+                        POI_RADIUS, _waitIntervalInSec);
+
+                if (runResult == 0)
+                {
+                    Debug.LogError($"Error occured while generating");
+                }
+
+                // if (_grid[layerId] == (byte)_layerDatas[1].CellType) { }
+            }
+
+            #endregion SPAWN_SUB_LAYER_FOR_REST_AREA
+
+            int xIndex = 0, yIndex = 0;
+            for (int i = 0; i < _grid.Length; i++)
+            {
+                xIndex = i % _cols;
+                yIndex = i / _cols;
+
+                //[IMPORTANT] This needs to be according to the layer data
+                switch (_grid[i])
+                {
+                    case (byte)LayerType.EMPTY:         //Do Nothing
+                        break;
+
+                    case (byte)LayerType.TREE:
+                        _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[0].CellColor);
+                        break;
+
+                    case (byte)LayerType.BUSH:
+                        _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[1].CellColor);
+                        break;
+
+                    case (byte)LayerType.GRASS:
+                        _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[2].CellColor);
+                        break;
+
+                    case (byte)LayerType.FLOWER:
+                        _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[3].CellColor);
+                        break;
+
+                    case (byte)LayerType.ROCK:
+                        _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[2].CellColor);
+                        break;
+                }
+                // if (_grid[i] == (byte)_layerDatas[0].CellType)
+                // _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[0].CellColor);
             }
 
             _poissonTex.Apply();
@@ -435,8 +407,16 @@ namespace CurseOfNaga.Gameplay.Environment
         [SerializeField] private float xOrigin, zOrigin;
         private void GenerateGrid()
         {
+            Transform[] objHolders = new Transform[5];
+            for (int i = 0; i < 5; i++)
+            {
+                objHolders[i] = new GameObject($"{(LayerType)i}").transform;
+                objHolders[i].parent = transform;
+            }
+
             GameObject objToCreate = null;
             Vector3 finalPos = Vector3.zero;
+            int randomObjIndex = 0;
             for (int i = 0; i < _grid.Length; i++)
             {
 
@@ -444,39 +424,44 @@ namespace CurseOfNaga.Gameplay.Environment
                 {
                     //Do Nothing
                     case (byte)LayerType.EMPTY:
+                    case (byte)LayerType.TREE_SUB_SPAWNED:
+                    case (byte)LayerType.BUSH_SUB_SPAWNED:
+                    case (byte)LayerType.GRASS_SUB_SPAWNED:
+                    case (byte)LayerType.FLOWER_SUB_SPAWNED:
+                    case (byte)LayerType.ROCK_SUB_SPAWNED:
                         continue;
 
                     case (byte)LayerType.TREE:
-                        objToCreate = Instantiate(_environmentPrefabs[0].prefab, transform);
+                        randomObjIndex = Random.Range(0, 9);
+                        objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 1.55f;
-                        objToCreate.name = $"{LayerType.TREE}_{i}";
 
                         break;
 
                     case (byte)LayerType.BUSH:
+                        // randomObjIndex = Random.Range(0, 9);
                         objToCreate = Instantiate(_environmentPrefabs[9].prefab, transform);
                         finalPos.y = 0.8f;
-                        objToCreate.name = $"{LayerType.BUSH}_{i}";
 
                         break;
 
                     case (byte)LayerType.GRASS:
-                        objToCreate = Instantiate(_environmentPrefabs[10].prefab, transform);
+                        randomObjIndex = Random.Range(10, 14);
+                        objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 0.8f;
-                        objToCreate.name = $"{LayerType.GRASS}_{i}";
 
                         break;
 
                     case (byte)LayerType.FLOWER:
-                        objToCreate = Instantiate(_environmentPrefabs[14].prefab, transform);
+                        randomObjIndex = Random.Range(14, 18);
+                        objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 0.8f;
-                        objToCreate.name = $"{LayerType.FLOWER}_{i}";
 
                         break;
 
                     case (byte)LayerType.ROCK:
+                        // randomObjIndex = Random.Range(14, 18);
                         objToCreate = Instantiate(_environmentPrefabs[(byte)LayerType.ROCK].prefab, transform);
-                        objToCreate.name = $"{LayerType.ROCK}_{i}";
 
                         break;
 
@@ -484,11 +469,18 @@ namespace CurseOfNaga.Gameplay.Environment
                         Debug.LogError($"Unknown object: {(LayerType)_grid[i]} | i: {i}");
                         continue;
                 }
+                objToCreate.name = $"{(LayerType)_grid[i]}_{i}";
+                objToCreate.transform.parent = objHolders[_grid[i]];
 
                 // Shift the grid towards lower left, so that it centers on the point-of-interest
                 // Offset original Pos and also by grid mid row and col     | (Ver)Row is y, (Hor)Col is x
                 finalPos.x = xOrigin - (_GridDimensions.y / 2) + (i % _GridDimensions.y);
                 finalPos.z = zOrigin - (_GridDimensions.x / 2) + (i / _GridDimensions.y);
+                objToCreate.name += $"_X{i % _GridDimensions.y}_Z{i / _GridDimensions.y}";
+
+                // finalPos.x = i % _GridDimensions.y;       //TEST
+                // finalPos.z = i / _GridDimensions.y;       //TEST
+
                 // Debug.Log($"zVal: {i / _GridDimensions.y} | zOrigin: {zOrigin} | _grid: {_grid[i]} | i: {i}");
 
                 objToCreate.transform.localPosition = finalPos;
