@@ -284,6 +284,15 @@
     [=] EnvironmentGenerator
         {+} Moving sub-rows/sub-columns for poi to local fields
 
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Separating POI data from layer data
+        {+} Iterating over every POI and instantiating every layer | Also doing this for sub-layers
+        {+} Adding flag to check which layer has been set to have sub-layer
+        {+} Adding bool to skip layer in LayerData struct
+    [=] PoissonDiscSampler
+        {+} Replacing randomOffset with midIndex
+            <~> Using this for sub-layer creation for random cluster spawn
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
 - [NOW] (180 x 180) Grid for the whole forest

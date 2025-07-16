@@ -130,9 +130,7 @@ namespace CurseOfNaga.Gameplay.Environment
         [System.Serializable]
         internal struct LayerData
         {
-            public Transform PointOfInterest;
-            public int PoiRadius;
-
+            public bool SkipLayer;
             [Range(1, 20)] public int CellRadius;
             public Color CellColor;                                 // For Texture Preview
             public LayerType CellType;
@@ -143,6 +141,14 @@ namespace CurseOfNaga.Gameplay.Environment
             [Range(1, 5)] public int SL_Rows, SL_Cols;
         }
 
+        [Serializable]
+        internal struct POIData
+        {
+            public Transform PointOfInterest;
+            public int PoiRadius;
+        }
+
+        [SerializeField] private POIData[] _poiDatas;
         // [IMPORTANT] Array needs to be filled according to LayerType enum.
         [SerializeField] private LayerData[] _layerDatas;
         // [SerializeField] private int _radius = 4;
@@ -161,7 +167,7 @@ namespace CurseOfNaga.Gameplay.Environment
         [SerializeField] private string RandomSeed_2 = "135653245";             //135653245
 
         private List<int> _activeGrid;
-        private byte[] _grid;
+        [HideInInspector] private byte[] _grid;
         // [HideInInspector] private byte[] _grid;
 
         private void InitializePoissonData()
@@ -198,87 +204,135 @@ namespace CurseOfNaga.Gameplay.Environment
             int layerDataIndex = -1;
 
             Debug.Log($"Seed: {RandomSeed_2}");
-            // for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
-            for (int layerId = 0; layerId < 1; layerId++)
+            for (int poiID = 0; poiID < _poiDatas.Length; poiID++)
+            // for (int poiID = 0; poiID < 1; poiID++)
             {
-                // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
-                // runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
-                //         START_SUB_ROWS, START_SUB_COLS, layerId, START_OFFSET,
-                //         _layerDatas[layerId].CellRadius, START_SPAWN_RANDOM_CLUSTER, _kAttempts,
-                //         _poiRadius, _waitIntervalInSec);
-
-                layerDataIndex = (int)_layerDatas[layerId].PointOfInterest.position.x + (_rows / 2)
-                    + ((int)_layerDatas[layerId].PointOfInterest.position.z + (_cols / 2)) * _cols;
+                layerDataIndex = (int)_poiDatas[poiID].PointOfInterest.position.x + (_rows / 2)
+                    + ((int)_poiDatas[poiID].PointOfInterest.position.z + (_cols / 2)) * _cols;
                 // layerDataIndex = (_rows / 2) + (_cols / 2) * _cols;         //TEST
 
-                Debug.Log($"Position: {_layerDatas[layerId].PointOfInterest.position} | layerDataIndex: {layerDataIndex}");
+                // Debug.Log($"Position: {_poiDatas[poiID].PointOfInterest.position} | layerDataIndex: {layerDataIndex}");
 
-                // /*
-                runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
+                // for (int layerId = 0; layerId < 2; layerId++)
+                {
+                    if (_layerDatas[layerId].SkipLayer)
+                        continue;
+
+                    // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                    // runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                    //         START_SUB_ROWS, START_SUB_COLS, layerId, START_OFFSET,
+                    //         _layerDatas[layerId].CellRadius, START_SPAWN_RANDOM_CLUSTER, _kAttempts,
+                    //         _poiRadius, _waitIntervalInSec);
+
+                    // /*
+                    runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
                         _startSubRows, _startSubCols,
                         START_RAND_OFFSET, layerDataIndex, _layerDatas[layerId].CellRadius,
                         START_SPAWN_RANDOM_CLUSTER, _kAttempts,
-                        _layerDatas[layerId].PoiRadius, _waitIntervalInSec);
+                        _poiDatas[poiID].PoiRadius, _waitIntervalInSec);
 
-                if (runResult == 0)
-                {
-                    Debug.LogError($"Error occured while generating");
+                    if (runResult == 0)
+                    {
+                        Debug.LogError($"Error occured while generating");
+                    }
+                    // */
                 }
-                // */
             }
 
-            /*
-            int tempRunCount = 0;
-            const int SUBLAYER_RAND_OFFSET = 0;
-            // const float POI_RADIUS = 0f;
-            // const int CELL_RADIUS = 1;
-            // const bool SPAWN_RANDOM_CLUSTER = true;
-            // int subLayerRows = 4, subLayerCols = 4;
-            for (int gridIndex = 0; gridIndex < _grid.Length;// && tempRunCount < 1;
-                gridIndex++)
+            //Spawning Sub Layers
+            int subLayersSet = -1;
+            for (int layerId = 0; layerId < 2; layerId++)
             {
-                //[IMPORTANT] This needs to be according to the layer data
-                switch (_grid[gridIndex])
-                {
-                    case (byte)LayerType.EMPTY:         //Do Nothing
-                        break;
-
-                    case (byte)LayerType.TREE:
-                        break;
-
-                    case (byte)LayerType.BUSH:
-                        tempRunCount++;
-
-                        Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
-                        + $"CellRadius: {_layerDatas[(int)LayerType.BUSH].SL_CellRadius}");
-
-                        // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
-                        runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
-                                (byte)_layerDatas[(int)LayerType.BUSH].CellType,    // _layerDatas[layerId].CellColor,
-                                _layerDatas[(int)LayerType.BUSH].SL_Rows, _layerDatas[(int)LayerType.BUSH].SL_Cols,
-                                SUBLAYER_RAND_OFFSET, gridIndex, _layerDatas[(int)LayerType.BUSH].SL_CellRadius,
-                                _layerDatas[(int)LayerType.BUSH].SL_SpawnRandom, _layerDatas[(int)LayerType.BUSH].SL_KAttempts,
-                                _poiRadius, _waitIntervalInSec);
-
-                        if (runResult == 0)
-                        {
-                            Debug.LogError($"Error occured while generating");
-                        }
-                        break;
-
-                    case (byte)LayerType.GRASS:
-                        break;
-
-                    case (byte)LayerType.FLOWER:
-                        break;
-
-                    case (byte)LayerType.ROCK:
-                        break;
-                }
-
-                // if (_grid[layerId] == (byte)_layerDatas[1].CellType) { }
+                if (_layerDatas[layerId].SL_SpawnRandom)
+                    subLayersSet |= (1 << layerId);
             }
-            // */
+
+            for (int poiID = 0; poiID < _poiDatas.Length; poiID++)
+            // for (int poiID = 0; poiID < 1; poiID++)
+            {
+                int tempRunCount = 0;
+                // const int SUBLAYER_RAND_OFFSET = 0;
+                // const float POI_RADIUS = 0f;
+                // const int CELL_RADIUS = 1;
+                // const bool SPAWN_RANDOM_CLUSTER = true;
+                // int subLayerRows = 4, subLayerCols = 4;
+
+                layerDataIndex = (int)_poiDatas[poiID].PointOfInterest.position.x + (_rows / 2)
+                    + ((int)_poiDatas[poiID].PointOfInterest.position.z + (_cols / 2)) * _cols;
+                // layerDataIndex = (_rows / 2) + (_cols / 2) * _cols;         //TEST
+
+                // Debug.Log($"Position: {_poiDatas[poiID].PointOfInterest.position} | layerDataIndex: {layerDataIndex}");
+
+                for (int gridIndex = 0; gridIndex < _grid.Length;// && tempRunCount < 1;
+                    gridIndex++)
+                {
+                    //Check if the layer has been set to create a sub-layer
+                    if (_grid[gridIndex] == 255 || (subLayersSet & (1 << _grid[gridIndex])) == 0)
+                        continue;
+                    tempRunCount++;
+
+                    // Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
+                    // + $"CellRadius: {_layerDatas[(int)LayerType.BUSH].SL_CellRadius}");
+
+                    // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                    runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                            _grid[gridIndex],    // _layerDatas[layerId].CellColor,
+                            _layerDatas[_grid[gridIndex]].SL_Rows, _layerDatas[_grid[gridIndex]].SL_Cols,
+                            layerDataIndex, gridIndex, _layerDatas[_grid[gridIndex]].SL_CellRadius,
+                            _layerDatas[_grid[gridIndex]].SL_SpawnRandom, _layerDatas[_grid[gridIndex]].SL_KAttempts,
+                            _poiDatas[poiID].PoiRadius, _waitIntervalInSec);
+
+                    if (runResult == 0)
+                    {
+                        Debug.LogError($"Error occured while generating");
+                    }
+
+                    //[IMPORTANT] This needs to be according to the layer data
+                    /*
+                    switch (_grid[gridIndex])
+                    {
+                        case (byte)LayerType.EMPTY:         //Do Nothing
+                            break;
+
+                        case (byte)LayerType.TREE:
+                            break;
+
+                        case (byte)LayerType.BUSH:
+                            // tempRunCount++;
+
+                            Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
+                            + $"CellRadius: {_layerDatas[(int)LayerType.BUSH].SL_CellRadius}");
+
+                            // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                            runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                                    (byte)_layerDatas[(int)LayerType.BUSH].CellType,    // _layerDatas[layerId].CellColor,
+                                    _layerDatas[(int)LayerType.BUSH].SL_Rows, _layerDatas[(int)LayerType.BUSH].SL_Cols,
+                                    layerDataIndex, gridIndex, _layerDatas[(int)LayerType.BUSH].SL_CellRadius,
+                                    _layerDatas[(int)LayerType.BUSH].SL_SpawnRandom, _layerDatas[(int)LayerType.BUSH].SL_KAttempts,
+                                    _poiDatas[poiID].PoiRadius, _waitIntervalInSec);
+
+                            if (runResult == 0)
+                            {
+                                Debug.LogError($"Error occured while generating");
+                            }
+                            break;
+
+                        case (byte)LayerType.GRASS:
+                            break;
+
+                        case (byte)LayerType.FLOWER:
+                            break;
+
+                        case (byte)LayerType.ROCK:
+                            break;
+                    }
+                    */
+
+                    // if (_grid[layerId] == (byte)_layerDatas[1].CellType) { }
+                }
+            }
+
 
             int xIndex = 0, yIndex = 0;
             for (int i = 0; i < _grid.Length; i++)

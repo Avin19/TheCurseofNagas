@@ -993,9 +993,15 @@ MonoBehaviour:
     prefab: {fileID: 0}
   poissonMapPreview: {fileID: 106571406}
   UpdatePoissonMap: 0
-  _layerDatas:
+  _poiDatas:
   - PointOfInterest: {fileID: 707591955}
     PoiRadius: 10
+  - PointOfInterest: {fileID: 1558817249}
+    PoiRadius: 10
+  - PointOfInterest: {fileID: 383907023}
+    PoiRadius: 10
+  _layerDatas:
+  - SkipLayer: 0
     CellRadius: 3
     CellColor: {r: 0.044811275, g: 0.4433962, b: 0, a: 1}
     CellType: 0
@@ -1004,18 +1010,25 @@ MonoBehaviour:
     SL_KAttempts: 1
     SL_Rows: 1
     SL_Cols: 1
-  - PointOfInterest: {fileID: 1558817249}
-    PoiRadius: 10
+  - SkipLayer: 0
     CellRadius: 8
     CellColor: {r: 0, g: 0.8396226, b: 0, a: 1}
     CellType: 1
+    SL_SpawnRandom: 1
+    SL_CellRadius: 1
+    SL_KAttempts: 4
+    SL_Rows: 2
+    SL_Cols: 2
+  - SkipLayer: 1
+    CellRadius: 8
+    CellColor: {r: 0, g: 0.6132076, b: 0, a: 1}
+    CellType: 2
     SL_SpawnRandom: 0
     SL_CellRadius: 1
     SL_KAttempts: 1
-    SL_Rows: 2
-    SL_Cols: 2
-  - PointOfInterest: {fileID: 383907023}
-    PoiRadius: 10
+    SL_Rows: 1
+    SL_Cols: 1
+  - SkipLayer: 0
     CellRadius: 6
     CellColor: {r: 1, g: 1, b: 0.2688679, a: 1}
     CellType: 3
@@ -2655,9 +2668,9 @@ MonoBehaviour:
     prefab: {fileID: 0}
   poissonMapPreview: {fileID: 0}
   UpdatePoissonMap: 0
+  _poiDatas: []
   _layerDatas:
-  - PointOfInterest: {fileID: 0}
-    PoiRadius: 0
+  - SkipLayer: 0
     CellRadius: 3
     CellColor: {r: 0.044811275, g: 0.4433962, b: 0, a: 1}
     CellType: 0
@@ -2666,8 +2679,7 @@ MonoBehaviour:
     SL_KAttempts: 0
     SL_Rows: 0
     SL_Cols: 0
-  - PointOfInterest: {fileID: 0}
-    PoiRadius: 0
+  - SkipLayer: 0
     CellRadius: 6
     CellColor: {r: 0, g: 0.8396226, b: 0, a: 1}
     CellType: 1
@@ -2676,8 +2688,7 @@ MonoBehaviour:
     SL_KAttempts: 0
     SL_Rows: 0
     SL_Cols: 0
-  - PointOfInterest: {fileID: 0}
-    PoiRadius: 0
+  - SkipLayer: 0
     CellRadius: 6
     CellColor: {r: 1, g: 1, b: 0.2688679, a: 1}
     CellType: 3

@@ -44,7 +44,7 @@ namespace CurseOfNaga.Utils
 
         public int GeneratePoissonDiscSamples(int ogRows, int ogCols, byte cellType, //Color cellColor,           //TEST
         // public async Task<int> GeneratePoissonDiscSamples(int ogRows, int ogCols, byte cellType, //Color cellColor,
-                int subRows = 0, int subCols = 0, int randOffset = 0, int startOffset = 0,
+                int subRows = 0, int subCols = 0, int midIndex = 0, int startOffset = 0,
                 int cellRadius = 2, bool spawnRandomCluster = false, int kAttempts = 30,
                 float poiRadius = 0f, float waitIntervalInSec = 0.001f)
         {
@@ -68,20 +68,21 @@ namespace CurseOfNaga.Utils
             System.Text.StringBuilder debugStr = new System.Text.StringBuilder();
 #endif
 
-
-            if (spawnRandomCluster)
-                midPointVec = new Vector2Int(ogRows / 2, ogCols / 2);
-            else
-                midPointVec = new Vector2Int(startOffset % ogCols, startOffset / ogCols);
-
-            if (startOffset == 0)
+            if (startOffset == -1)
             {
+                midPointVec = new Vector2Int(ogRows / 2, ogCols / 2);
                 currentVec = midPointVec;
                 // Starting from last row + offset
-                randIndex = randOffset + startOffset;        // + _GridDimensions.y;
+                // randIndex = midIndex + startOffset;        // + _GridDimensions.y;
+                randIndex = startOffset;        // + _GridDimensions.y;
             }
             else
             {
+                if (spawnRandomCluster)
+                    midPointVec = new Vector2Int(midIndex % ogCols, midIndex / ogCols);
+                else
+                    midPointVec = new Vector2Int(startOffset % ogCols, startOffset / ogCols);
+
                 currentVec = new Vector2Int(startOffset % ogCols, startOffset / ogCols);
                 // This will always go Left and Down | Starting from last row/last column | Also bounds check
                 // randIndex = startOffset - (subRows + subCols * ogCols);
@@ -168,7 +169,8 @@ namespace CurseOfNaga.Utils
 #endif
 
 #if DEBUG_SUB_LAYER
-                    if (startOffset != 0)
+                    // if (startOffset != 0)
+                    if (spawnRandomCluster)
                         Debug.Log(
                         $"xIndex: {xIndex} | yIndex: {yIndex} | additionalOffset: {additionalOffset} | " +
                         $"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | " +
@@ -202,7 +204,8 @@ namespace CurseOfNaga.Utils
 #endif
 
 #if DEBUG_SUB_LAYER
-                        if (startOffset != 0)
+                        // if (startOffset != 0)
+                        if (spawnRandomCluster)
                             Debug.Log(
                                 $"Outside Bounds | " +
                                 $"randomOffsetVec: {randomOffsetVec} | midPointVec: {midPointVec} | " +
@@ -251,7 +254,8 @@ namespace CurseOfNaga.Utils
                             {
                                 withinDistance = true;
 #if DEBUG_SUB_LAYER
-                                if (startOffset != 0)
+                                // if (startOffset != 0)
+                                if (spawnRandomCluster)
                                     Debug.Log($"Within Distance | hor: {hor} | ver: {ver} | xIndex: {xIndex + hor} | yIndex: {yIndex + ver} | "
                                             + $"randomRadius: {randomRadius} | neighbourIndex: {neighbourIndex} | _grid Val: {_grid[neighbourIndex]}");
 #endif
