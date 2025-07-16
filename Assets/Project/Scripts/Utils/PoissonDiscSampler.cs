@@ -15,7 +15,7 @@ namespace CurseOfNaga.Utils
     {
         private int _activeCount;
         private List<int> _activeGrid;
-        private byte[] _grid;
+        [HideInInspector] private byte[] _grid;
 
         private CancellationTokenSource _cts;
 
@@ -69,27 +69,33 @@ namespace CurseOfNaga.Utils
 #endif
 
 
-            // Starting from last row + offset
+            if (spawnRandomCluster)
+                midPointVec = new Vector2Int(ogRows / 2, ogCols / 2);
+            else
+                midPointVec = new Vector2Int(startOffset % ogCols, startOffset / ogCols);
+
             if (startOffset == 0)
             {
-                midPointVec = new Vector2Int(ogRows / 2, ogCols / 2);
                 currentVec = midPointVec;
-                randIndex = 3 + randOffset + startOffset;        // + _GridDimensions.y;
-                // Debug.Log($"midPointVec: {midPointVec}");
+                // Starting from last row + offset
+                randIndex = randOffset + startOffset;        // + _GridDimensions.y;
             }
             else
             {
                 currentVec = new Vector2Int(startOffset % ogCols, startOffset / ogCols);
-                midPointVec = new Vector2Int(ogRows / 2, ogCols / 2);
-                randIndex = randOffset + startOffset;        // + _GridDimensions.y;
+                // This will always go Left and Down | Starting from last row/last column | Also bounds check
+                // randIndex = startOffset - (subRows + subCols * ogCols);
+                randIndex = Mathf.Max(0, ((int)currentVec.x - subRows)) + (Mathf.Max(0, ((int)currentVec.y - subCols)) * ogCols);
+            }
+
 
 #if DEBUG_SUB_LAYER
-                Debug.Log($"midPointVec: {midPointVec} | currentVec: {currentVec} | startOffset: {startOffset}  | Clamp Offset: {Mathf.Clamp01(startOffset)}" +
+            Debug.Log($"randIndex:{randIndex} | midPointVec: {midPointVec} | currentVec: {currentVec} | " +
+                        $"startOffset: {startOffset}  | Clamp Offset: {Mathf.Clamp01(startOffset)}" +
                         $"Invert Clamp Offset: {(byte)Mathf.Clamp01(startOffset) ^ (1 << 0)} | cellRadius: {cellRadius} | " +
                         $"Lower-X: {currentVec.x - subCols} | Lower-Y: {currentVec.y - subRows} | " +
                         $"Upper-X: {currentVec.x + subCols} | Upper-Y: {currentVec.y + subRows} | ");
 #endif
-            }
             _grid[randIndex] = cellType;
             _activeGrid.Add(randIndex);
 
@@ -166,14 +172,15 @@ namespace CurseOfNaga.Utils
                         Debug.Log(
                         $"xIndex: {xIndex} | yIndex: {yIndex} | additionalOffset: {additionalOffset} | " +
                         $"Offset Vec: [{randomOffsetVec.x}, {randomOffsetVec.y}] | additionalOffset: {additionalOffset} | " +
-                        $"Floor X: {Mathf.RoundToInt(randomOffsetVec.x)} | Floor Y: {Mathf.RoundToInt(randomOffsetVec.y)} | " +
-                        $"Sqr Magnitude: {Vector2.SqrMagnitude(randomOffsetVec - midPointVec)}"
+                        $"Floor X: {Mathf.RoundToInt(randomOffsetVec.x)} | Floor Y: {Mathf.RoundToInt(randomOffsetVec.y)} | "
                         );
 #endif
 
                     // Updating offset co-ords to current active cell
                     randomOffsetVec.x = xIndex;
                     randomOffsetVec.y = yIndex;
+
+                    //--------------------------------------------------------------------------------------------
 
                     //Bounds Check
                     if (xIndex < 0 || yIndex < 0        // Normal-Layer Lower-X Bound
@@ -196,10 +203,16 @@ namespace CurseOfNaga.Utils
 
 #if DEBUG_SUB_LAYER
                         if (startOffset != 0)
-                            Debug.Log($"Outside Bounds");
+                            Debug.Log(
+                                $"Outside Bounds | " +
+                                $"randomOffsetVec: {randomOffsetVec} | midPointVec: {midPointVec} | " +
+                                $"Sqr Magnitude: {Vector2.SqrMagnitude(randomOffsetVec - midPointVec)}"
+                            );
 #endif
                         continue;
                     }
+
+                    //--------------------------------------------------------------------------------------------
 
                     if (spawnRandomCluster)
                         randomRadius = (int)Mathf.Clamp01(Random.Range(0, 5));

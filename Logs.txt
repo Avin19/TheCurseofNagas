@@ -269,8 +269,24 @@
         {+} Adding currentVec to keep track of current point for sub-layers
         {+} Doing poiRadius check for sub-layers also
         {+} Setting Random at time of creation or updating-values, not everytime
+
+- Scripts
+    [=] EnvironmentGenerator
+        {+} Covering the whole area except the POI
+        {+} Adding poi transform/radius to LayerData
+--------------------------------------------------------------------------------------------------------
+                                                15 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] PoissonDiscSampler
+        {+} Chaning MidPoint according to localized or full-grid spawn
+        {+} Random index to start from the last-row/last-column
+    [=] EnvironmentGenerator
+        {+} Moving sub-rows/sub-columns for poi to local fields
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Basic combat, exploration, vision-triggered objectives
+- [NOW] (180 x 180) Grid for the whole forest
 - [NOW] Enivronment spawning around point of interest
     [=] Predefined point of interest
     [=] Environment generation around point of interest.
@@ -282,6 +298,10 @@
         {+} Might need to overlap bushes, to some extent, not fully
             <~> Will need to clump bushes together, space between bushes look unnatural
         {+} Will there be grass everywhere?                                 -   Performance Issue
+- [DO] Can just pass the offset from which to start to the PoissonSampler
+    [=] Normal indexing can be used to generate the grid from 0 to the last index of the localized grid
+    [=] The offset can be used at last to add to the whole grid for the localized values
+    [=] This way only 1 option remains instead of 2 just as now
 - [FIX] WeaponPlacement for Player
     [=] Dedicated animation for left/right facing?
 - [DO] Enemies
