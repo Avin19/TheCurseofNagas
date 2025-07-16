@@ -125,7 +125,11 @@ namespace CurseOfNaga.Gameplay.Environment
         public bool UpdatePoissonMap = false;
 #endif
 
-        internal enum LayerType { EMPTY = 255, TREE = 0, BUSH = 1, GRASS = 2, FLOWER = 3, ROCK = 4 }
+        internal enum LayerType
+        {
+            EMPTY = 255, TREE = 0, BUSH = 1, GRASS = 2, FLOWER = 3, ROCK = 4,
+            TREE_SUB_SPAWNED = 40, BUSH_SUB_SPAWNED = 41, GRASS_SUB_SPAWNED = 42, FLOWER_SUB_SPAWNED = 43, ROCK_SUB_SPAWNED = 44
+        }
 
         [System.Serializable]
         internal struct LayerData
@@ -198,12 +202,14 @@ namespace CurseOfNaga.Gameplay.Environment
             _poissonDiscSampler.UpdateValues(ref _grid, RandomSeed_2);
 
             int runResult;
-            const int START_RAND_OFFSET = 0;
+            const int START_MID_INDEX = 0;
             // const int START_SUB_ROWS = 10, START_SUB_COLS = 10;
             const bool START_SPAWN_RANDOM_CLUSTER = false;          //If this is not there, then the whole grid will fill up
             int layerDataIndex = -1;
-
             Debug.Log($"Seed: {RandomSeed_2}");
+
+            #region LAYER
+
             for (int poiID = 0; poiID < _poiDatas.Length; poiID++)
             // for (int poiID = 0; poiID < 1; poiID++)
             {
@@ -219,16 +225,12 @@ namespace CurseOfNaga.Gameplay.Environment
                     if (_layerDatas[layerId].SkipLayer)
                         continue;
 
-                    // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
-                    // runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
-                    //         START_SUB_ROWS, START_SUB_COLS, layerId, START_OFFSET,
-                    //         _layerDatas[layerId].CellRadius, START_SPAWN_RANDOM_CLUSTER, _kAttempts,
-                    //         _poiRadius, _waitIntervalInSec);
-
                     // /*
-                    runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols, (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                    // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                    runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                        (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
                         _startSubRows, _startSubCols,
-                        START_RAND_OFFSET, layerDataIndex, _layerDatas[layerId].CellRadius,
+                        START_MID_INDEX, layerDataIndex, _layerDatas[layerId].CellRadius,
                         START_SPAWN_RANDOM_CLUSTER, _kAttempts,
                         _poiDatas[poiID].PoiRadius, _waitIntervalInSec);
 
@@ -240,23 +242,22 @@ namespace CurseOfNaga.Gameplay.Environment
                 }
             }
 
-            //Spawning Sub Layers
-            int subLayersSet = -1;
-            for (int layerId = 0; layerId < 2; layerId++)
+            #endregion LAYER
+
+            #region SPAWN_SUB_LAYERS
+
+            int subLayersSet = 0;
+            for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
             {
                 if (_layerDatas[layerId].SL_SpawnRandom)
                     subLayersSet |= (1 << layerId);
             }
 
+            const byte SPAWNED_OFFSET = 40;
+            int tempRunCount = 0;
             for (int poiID = 0; poiID < _poiDatas.Length; poiID++)
             // for (int poiID = 0; poiID < 1; poiID++)
             {
-                int tempRunCount = 0;
-                // const int SUBLAYER_RAND_OFFSET = 0;
-                // const float POI_RADIUS = 0f;
-                // const int CELL_RADIUS = 1;
-                // const bool SPAWN_RANDOM_CLUSTER = true;
-                // int subLayerRows = 4, subLayerCols = 4;
 
                 layerDataIndex = (int)_poiDatas[poiID].PointOfInterest.position.x + (_rows / 2)
                     + ((int)_poiDatas[poiID].PointOfInterest.position.z + (_cols / 2)) * _cols;
@@ -270,6 +271,7 @@ namespace CurseOfNaga.Gameplay.Environment
                     //Check if the layer has been set to create a sub-layer
                     if (_grid[gridIndex] == 255 || (subLayersSet & (1 << _grid[gridIndex])) == 0)
                         continue;
+
                     tempRunCount++;
 
                     // Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
@@ -277,62 +279,86 @@ namespace CurseOfNaga.Gameplay.Environment
 
                     // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
                     runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
-                            _grid[gridIndex],    // _layerDatas[layerId].CellColor,
+                            (byte)(_grid[gridIndex] + SPAWNED_OFFSET),    // _layerDatas[layerId].CellColor,
                             _layerDatas[_grid[gridIndex]].SL_Rows, _layerDatas[_grid[gridIndex]].SL_Cols,
                             layerDataIndex, gridIndex, _layerDatas[_grid[gridIndex]].SL_CellRadius,
                             _layerDatas[_grid[gridIndex]].SL_SpawnRandom, _layerDatas[_grid[gridIndex]].SL_KAttempts,
                             _poiDatas[poiID].PoiRadius, _waitIntervalInSec);
+                    _grid[gridIndex] += SPAWNED_OFFSET;
 
                     if (runResult == 0)
                     {
                         Debug.LogError($"Error occured while generating");
                     }
 
-                    //[IMPORTANT] This needs to be according to the layer data
-                    /*
-                    switch (_grid[gridIndex])
-                    {
-                        case (byte)LayerType.EMPTY:         //Do Nothing
-                            break;
-
-                        case (byte)LayerType.TREE:
-                            break;
-
-                        case (byte)LayerType.BUSH:
-                            // tempRunCount++;
-
-                            Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
-                            + $"CellRadius: {_layerDatas[(int)LayerType.BUSH].SL_CellRadius}");
-
-                            // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
-                            runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
-                                    (byte)_layerDatas[(int)LayerType.BUSH].CellType,    // _layerDatas[layerId].CellColor,
-                                    _layerDatas[(int)LayerType.BUSH].SL_Rows, _layerDatas[(int)LayerType.BUSH].SL_Cols,
-                                    layerDataIndex, gridIndex, _layerDatas[(int)LayerType.BUSH].SL_CellRadius,
-                                    _layerDatas[(int)LayerType.BUSH].SL_SpawnRandom, _layerDatas[(int)LayerType.BUSH].SL_KAttempts,
-                                    _poiDatas[poiID].PoiRadius, _waitIntervalInSec);
-
-                            if (runResult == 0)
-                            {
-                                Debug.LogError($"Error occured while generating");
-                            }
-                            break;
-
-                        case (byte)LayerType.GRASS:
-                            break;
-
-                        case (byte)LayerType.FLOWER:
-                            break;
-
-                        case (byte)LayerType.ROCK:
-                            break;
-                    }
-                    */
-
                     // if (_grid[layerId] == (byte)_layerDatas[1].CellType) { }
                 }
             }
 
+            #endregion SPAWN_SUB_LAYERS
+
+            #region SPAWN_REST_AREA
+
+            const float POI_RADIUS = 0f;
+            const int FULL_MID_INDEX = 0, FULL_START_OFFSET = -1;
+            const int FULL_SUB_ROW = 0, FULL_SUB_COL = 0;
+            // const int SUBLAYER_RAND_OFFSET = 0;
+            // const int CELL_RADIUS = 1;
+            // const bool SPAWN_RANDOM_CLUSTER = true;
+            // int subLayerRows = 4, subLayerCols = 4;
+
+            // /*
+            for (int layerId = 0; layerId < _layerDatas.Length; layerId++)
+            // for (int layerId = 0; layerId < 2; layerId++)
+            {
+                if (_layerDatas[layerId].SkipLayer)
+                    continue;
+
+                runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                    (byte)_layerDatas[layerId].CellType,     // _layerDatas[layerId].CellColor,
+                    FULL_SUB_ROW, FULL_SUB_COL,
+                    FULL_MID_INDEX, FULL_START_OFFSET, _layerDatas[layerId].CellRadius,
+                    START_SPAWN_RANDOM_CLUSTER, _kAttempts,
+                    POI_RADIUS, _waitIntervalInSec);
+
+                if (runResult == 0)
+                {
+                    Debug.LogError($"Error occured while generating");
+                }
+            }
+            // */
+            #endregion SPAWN_REST_AREA
+
+            #region SPAWN_SUB_LAYER_FOR_REST_AREA
+
+            for (int gridIndex = 0; gridIndex < _grid.Length;// && tempRunCount < 1;
+                gridIndex++)
+            {
+                //Check if the layer has been set to create a sub-layer
+                if (_grid[gridIndex] == 255 || (subLayersSet & (1 << _grid[gridIndex])) == 0)
+                    continue;
+                // tempRunCount++;
+
+                // Debug.Log($"Bush Sub-Layer | grid: {_grid[gridIndex]} | gridIndex: {gridIndex} | "
+                // + $"CellRadius: {_layerDatas[(int)LayerType.BUSH].SL_CellRadius}");
+
+                // runResult = await _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                runResult = _poissonDiscSampler.GeneratePoissonDiscSamples(_rows, _cols,
+                        _grid[gridIndex],    // _layerDatas[layerId].CellColor,
+                        _layerDatas[_grid[gridIndex]].SL_Rows, _layerDatas[_grid[gridIndex]].SL_Cols,
+                        FULL_MID_INDEX, gridIndex, _layerDatas[_grid[gridIndex]].SL_CellRadius,
+                        _layerDatas[_grid[gridIndex]].SL_SpawnRandom, _layerDatas[_grid[gridIndex]].SL_KAttempts,
+                        POI_RADIUS, _waitIntervalInSec);
+
+                if (runResult == 0)
+                {
+                    Debug.LogError($"Error occured while generating");
+                }
+
+                // if (_grid[layerId] == (byte)_layerDatas[1].CellType) { }
+            }
+
+            #endregion SPAWN_SUB_LAYER_FOR_REST_AREA
 
             int xIndex = 0, yIndex = 0;
             for (int i = 0; i < _grid.Length; i++)
@@ -359,7 +385,7 @@ namespace CurseOfNaga.Gameplay.Environment
                         break;
 
                     case (byte)LayerType.FLOWER:
-                        _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[2].CellColor);
+                        _poissonTex.SetPixel(xIndex, yIndex, _layerDatas[3].CellColor);
                         break;
 
                     case (byte)LayerType.ROCK:
@@ -371,7 +397,6 @@ namespace CurseOfNaga.Gameplay.Environment
             }
 
             _poissonTex.Apply();
-
 
             poissonMapPreview.sprite = Sprite.Create(_poissonTex, new Rect(0f, 0f, _rows, _cols)
                     , new Vector2(0.5f, 0.5f));
@@ -399,14 +424,17 @@ namespace CurseOfNaga.Gameplay.Environment
                 {
                     //Do Nothing
                     case (byte)LayerType.EMPTY:
+                    case (byte)LayerType.TREE_SUB_SPAWNED:
+                    case (byte)LayerType.BUSH_SUB_SPAWNED:
+                    case (byte)LayerType.GRASS_SUB_SPAWNED:
+                    case (byte)LayerType.FLOWER_SUB_SPAWNED:
+                    case (byte)LayerType.ROCK_SUB_SPAWNED:
                         continue;
 
                     case (byte)LayerType.TREE:
                         randomObjIndex = Random.Range(0, 9);
                         objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 1.55f;
-                        objToCreate.name = $"{LayerType.TREE}_{i}";
-                        objToCreate.transform.parent = objHolders[(int)LayerType.TREE];
 
                         break;
 
@@ -414,8 +442,6 @@ namespace CurseOfNaga.Gameplay.Environment
                         // randomObjIndex = Random.Range(0, 9);
                         objToCreate = Instantiate(_environmentPrefabs[9].prefab, transform);
                         finalPos.y = 0.8f;
-                        objToCreate.name = $"{LayerType.BUSH}_{i}";
-                        objToCreate.transform.parent = objHolders[(int)LayerType.BUSH];
 
                         break;
 
@@ -423,8 +449,6 @@ namespace CurseOfNaga.Gameplay.Environment
                         randomObjIndex = Random.Range(10, 14);
                         objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 0.8f;
-                        objToCreate.name = $"{LayerType.GRASS}_{i}";
-                        objToCreate.transform.parent = objHolders[(int)LayerType.GRASS];
 
                         break;
 
@@ -432,16 +456,12 @@ namespace CurseOfNaga.Gameplay.Environment
                         randomObjIndex = Random.Range(14, 18);
                         objToCreate = Instantiate(_environmentPrefabs[randomObjIndex].prefab, transform);
                         finalPos.y = 0.8f;
-                        objToCreate.name = $"{LayerType.FLOWER}_{i}";
-                        objToCreate.transform.parent = objHolders[(int)LayerType.FLOWER];
 
                         break;
 
                     case (byte)LayerType.ROCK:
                         // randomObjIndex = Random.Range(14, 18);
                         objToCreate = Instantiate(_environmentPrefabs[(byte)LayerType.ROCK].prefab, transform);
-                        objToCreate.name = $"{LayerType.ROCK}_{i}";
-                        objToCreate.transform.parent = objHolders[(int)LayerType.ROCK];
 
                         break;
 
@@ -449,6 +469,8 @@ namespace CurseOfNaga.Gameplay.Environment
                         Debug.LogError($"Unknown object: {(LayerType)_grid[i]} | i: {i}");
                         continue;
                 }
+                objToCreate.name = $"{(LayerType)_grid[i]}_{i}";
+                objToCreate.transform.parent = objHolders[_grid[i]];
 
                 // Shift the grid towards lower left, so that it centers on the point-of-interest
                 // Offset original Pos and also by grid mid row and col     | (Ver)Row is y, (Hor)Col is x

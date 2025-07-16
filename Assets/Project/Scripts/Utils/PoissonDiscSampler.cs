@@ -74,7 +74,8 @@ namespace CurseOfNaga.Utils
                 currentVec = midPointVec;
                 // Starting from last row + offset
                 // randIndex = midIndex + startOffset;        // + _GridDimensions.y;
-                randIndex = startOffset;        // + _GridDimensions.y;
+                randIndex = (ogRows / 2) + ((ogCols / 2) * ogCols);        // + _GridDimensions.y;
+                Debug.Log($"randIndex:{randIndex} | midPointVec: {midPointVec} | currentVec: {currentVec} | ");
             }
             else
             {
