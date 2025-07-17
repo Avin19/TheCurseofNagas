@@ -275,7 +275,7 @@
         {+} Covering the whole area except the POI
         {+} Adding poi transform/radius to LayerData
 --------------------------------------------------------------------------------------------------------
-                                                15 JULY, 2025
+                                                16 JULY, 2025
 --------------------------------------------------------------------------------------------------------
 - Scripts
     [=] PoissonDiscSampler
@@ -303,10 +303,16 @@
         {+} Object creation name/parent refactor
     [=] PoissonDiscSampler
         {+} Using mid-point of map as starting index for non-localized spawning
+
 --------------------------------------------------------------------------------------------------------
-- [NOW] Basic combat, exploration, vision-triggered objectives
-- [NOW] (180 x 180) Grid for the whole forest
-- [NOW] Enivronment spawning around point of interest
+                                                17 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Making fog shader
+--------------------------------------------------------------------------------------------------------
+- [NOW] Fog at the edge of the map
+- [DONE FOR NOW] Basic combat, exploration, vision-triggered objectives
+- [BASE] (180 x 180) Grid for the whole forest
+- [DONE] FOR NOW Enivronment spawning around point of interest
     [=] Predefined point of interest
     [=] Environment generation around point of interest.
     [=] Spawn trees/bushes on the basis of pearl noise
