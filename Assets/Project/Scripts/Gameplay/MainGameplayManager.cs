@@ -47,8 +47,11 @@ namespace CurseOfNaga.Gameplay
         private GameStatus _gameStatus;
         public GameStatus GameStatus { get => _gameStatus; }
 
+        [SerializeField] private GameplayEventManager _gameplayEventManager;
+
         private CancellationTokenSource _cts;
         public Action<PlayerStatus> OnObjectiveVisible;
+        public Action<PlayerStatus, int> OnPlayerEnterTrigger;
         public Action<EnemyStatus, int, float> OnEnemyStatusUpdate;
 
         private void OnDestroy()
@@ -65,6 +68,8 @@ namespace CurseOfNaga.Gameplay
 #if TEST_GAME_1
             SetGameStatus_Test();
 #endif
+
+            _gameplayEventManager.InitializeCallbacks();
 
             _cts = new CancellationTokenSource();
             _inactiveObjectives = new List<ObjectiveInfo>();

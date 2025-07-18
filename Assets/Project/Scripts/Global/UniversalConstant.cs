@@ -30,6 +30,8 @@ namespace CurseOfNaga.Global
             INTERACTING = 1 << 10,
             USING_ITEM = 1 << 11,
             ENEMY_FOUND = 1 << 12,
+            INVOKE_TRIGGER = 1 << 13,
+            LEFT_TRIGGER = 1 << 14,
         }
 
         public enum EnemyStatus
@@ -55,6 +57,17 @@ namespace CurseOfNaga.Global
             GRASS_0, GRASS_1, GRASS_2, GRASS_3,
             FLOWER_0, FLOWER_1, FLOWER_2, FLOWER_3,
             ROCK_0
+        }
+
+        public enum Layer
+        {
+            DEFAULT = 0, ENEMY = 7, WEAPON = 8, INTERACTABLE = 9, TRIGGER = 10
+        }
+
+        public enum TriggeredEvent
+        {
+            DEFAULT = 0, EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5,
+            EVENT_6, EVENT_7, EVENT_8, EVENT_9, EVENT_10
         }
     }
 }

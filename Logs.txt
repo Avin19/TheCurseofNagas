@@ -314,7 +314,27 @@
 --------------------------------------------------------------------------------------------------------
 - Adjusting Fog Shader
 - Making a cut-off shader for Foreground-fog
+
+- Scripts
+    [=] UniversalConstant
+        {+} Adding values to PlayerStatus enum
+        {+} Adding Layer and TriggeredEvent enum
+    [=] MainGameplayManager
+        {+} Adding action for player entering triggers
+    [=] Player
+        {+} using Layer for more checks in OnTriggerEnter
+    [=] GameplayEventManager
+        {+} internal InvokableEventsData and HiddenObjectsData to contain trigger tansforms, events and hidden objects
+        {+} Array of both internal classes
+        {+} OnPlayerEnterTrigger callback | Make object descend logic
+- Scene
+    [=] Player_K prefab
+        {+} Adding Rigidbody to Player
+        {+} Changing Player Collider layer to Player
+- Adding tags: Interactables | Triggers
+        
 --------------------------------------------------------------------------------------------------------
+- [NOW] Collision/Triggers for buildings
 - [NOW] Fog at the edge of the map
 - [DONE FOR NOW] Basic combat, exploration, vision-triggered objectives
 - [BASE] (180 x 180) Grid for the whole forest
@@ -385,3 +405,10 @@
     [=] Non-Async 50 | Start: 7m 13s 697ms 638877712336972752 | End: 7m 13s 699ms 638877712336997780       | 25,028
 
     [=] Non-Async 100 | Start: 10m 24s 506ms 638877714245066834 | End: 10m 24s 517ms 638877714245177378       | 25,028
+
+-------------------------------------------------------------------------------------------------------------------------
+- Some of these building will have triggers 
+    [=] That will open up a room Or something
+- I was thinking some building will have a collider that will make player to spawn in next area
+    [=] If you see the sprite folder there some ground tiles
+    [=] These will be place next to each other depending upon the collision player will spawn different ground

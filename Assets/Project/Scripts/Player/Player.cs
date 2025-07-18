@@ -35,14 +35,14 @@ namespace CurseOfNaga.Gameplay.Player
         // private Animator _playerAC;
         private PlayerAnimationController _animationController;
 
-        // private Rigidbody _playerRb;
+        private Rigidbody _playerRb;
         private Vector3 inputVector;
 
         // private readonly Vector3 _LEFTFACING = new Vector3(-40f, 180f, 0f);
         // private readonly Vector3 _RIGHTFACING = new Vector3(40f, 0f, 0f);
         private const float _LEFT_FACING_WEAPON_PLACEMENT = 1.45f;
         private const float _RIGHT_FACING_WEAPON_PLACEMENT = -1.2f;
-        private const int _ENEMY_LAYER = 7;
+        // private const int _ENEMY_LAYER = 7;
 
         #region AnimationValues
         private const float _ROLL_COLLIDER_Y_POS = 1.25f, _ROLL_COLLIDER_Y_SIZE = 2.5f;
@@ -61,7 +61,7 @@ namespace CurseOfNaga.Gameplay.Player
 #if TESTING
             _movSpeed = 25f;
 #endif
-            // _playerRb = GetComponent<Rigidbody>();
+            _playerRb = GetComponent<Rigidbody>();
             // _playerAC = GetComponent<Animator>();
 
             _animationController = new PlayerAnimationController();
@@ -84,23 +84,60 @@ namespace CurseOfNaga.Gameplay.Player
 
         private void OnTriggerEnter(Collider other)
         {
-            // Debug.Log($"Detected Collider: {other.name} | layer: {other.gameObject.layer}");
-
-            if (other.gameObject.layer == _ENEMY_LAYER)                   //other.gameobject can be a bit consuming
+            Debug.Log($"Detected Collider: {other.name} | layer: {other.gameObject.layer} | " +
+                $"Instance ID: {other.transform.GetInstanceID()}");
+            int colliderID = other.transform.GetInstanceID();
+            switch (other.gameObject.layer)
             {
-                int colliderID = other.transform.parent.GetInstanceID();
-                MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 1);
+                case (int)Layer.ENEMY:
+                    MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 1);
+
+                    break;
+
+                case (int)Layer.INTERACTABLE:
+
+
+                    break;
+
+                case (int)Layer.TRIGGER:
+                    MainGameplayManager.Instance.OnPlayerEnterTrigger?.Invoke(PlayerStatus.INVOKE_TRIGGER, colliderID);
+
+                    break;
             }
+
+            // if (other.gameObject.layer == _ENEMY_LAYER)                   //other.gameobject can be a bit consuming
+            // {
+            //         int colliderID = other.transform.parent.GetInstanceID();
+            //         MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 1);
+            // }
         }
 
         private void OnTriggerExit(Collider other)
         {
-
-            if (other.gameObject.layer == _ENEMY_LAYER)                   //other.gameobject can be a bit consuming
+            int colliderID = other.transform.GetInstanceID();
+            switch (other.gameObject.layer)
             {
-                int colliderID = other.transform.parent.GetInstanceID();
-                MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 0);
+                case (int)Layer.ENEMY:
+                    MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 0);
+
+                    break;
+
+                case (int)Layer.INTERACTABLE:
+
+
+                    break;
+
+                case (int)Layer.TRIGGER:
+                    MainGameplayManager.Instance.OnPlayerEnterTrigger?.Invoke(PlayerStatus.LEFT_TRIGGER, colliderID);
+
+                    break;
             }
+
+            // if (other.gameObject.layer == _ENEMY_LAYER)                   //other.gameobject can be a bit consuming
+            // {
+            //     int colliderID = other.transform.parent.GetInstanceID();
+            //     MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 0);
+            // }
         }
 
         private void HandleInput(PlayerStatus status, float value)
