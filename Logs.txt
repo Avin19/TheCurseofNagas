@@ -332,6 +332,12 @@
         {+} Adding Rigidbody to Player
         {+} Changing Player Collider layer to Player
 - Adding tags: Interactables | Triggers
+
+- Scripts
+    [=] GameplayEventManager
+        {+} Adding HiddenObjectsStatus enum and adding to HiddenObjectsData
+        {+} Making object shake sideways along with descending
+        {+} Make object rotate logic
         
 --------------------------------------------------------------------------------------------------------
 - [NOW] Collision/Triggers for buildings
