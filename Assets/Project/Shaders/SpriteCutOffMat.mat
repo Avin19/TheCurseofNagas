@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fog_URP_SpriteLit_1
-  m_Shader: {fileID: -6465566751694194690, guid: 71a792a8f229b2246afe6cb57ecd8d00, type: 3}
+  m_Name: SpriteCutOffMat
+  m_Shader: {fileID: -6465566751694194690, guid: 8a4de4a37ce53e74881989fd48f08ab9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -16,27 +16,15 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2999
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BaseMap:
+    - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseTex_1:
-        m_Texture: {fileID: 2800000, guid: ecb578f8ceb9f314a943222c08f355e3, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseTex_2:
-        m_Texture: {fileID: 2800000, guid: ae90fda4be5fb9f4c82470240f02a5a4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -53,25 +41,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _CutOff: 0.14
-    - _CutOffMult: 3
-    - _FallOff: -0.1
-    - _FallOffMult: 1
-    - _QueueControl: 1
-    - _QueueOffset: 0
-    - _TimeMult: 0.05
-    - _TimeMult_1: 0.1
-    - _TimeMult_2: 0.05
+    - _CutOffDist: 0.83
+    - _CutOffMult: 0.25
     m_Colors:
-    - _BaseColor: {r: 0.95, g: 0.95, b: 0.95, a: 1}
-    - _DisplacementVec_1: {r: 0.5, g: 0, b: 0, a: 0}
-    - _DisplacementVec_2: {r: 0.25, g: 0.25, b: 0, a: 0}
-    - _Noise1_Tiling: {r: 1, g: 1, b: 0, a: 0}
-    - _Noise2_Tiling: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _UV: {r: 0, g: 1, b: 0, a: 0}
-    - _UV_X_Y: {r: 0, g: 1, b: 0, a: 0}
+    - _BaseColor: {r: 0.9433962, g: 0.9433962, b: 0.9433962, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &2406843508528537125
+--- !u!114 &5829843485114465740
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
