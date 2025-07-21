@@ -5,7 +5,7 @@ using static CurseOfNaga.Global.UniversalConstant;
 
 using InputAction = UnityEngine.InputSystem.InputAction;
 
-namespace CurseOfNaga.Gameplay
+namespace CurseOfNaga.Gameplay.Managers
 {
 
     public class GameInput : MonoBehaviour

@@ -21,6 +21,7 @@ using CurseOfNaga.Utils;
 using Random = UnityEngine.Random;
 using static CurseOfNaga.Global.UniversalConstant;
 using CurseOfNaga.Utils;
+using CurseOfNaga.Gameplay.Managers;
 
 namespace CurseOfNaga.Gameplay.Environment
 {

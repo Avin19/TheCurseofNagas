@@ -2,6 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
+using CurseOfNaga.Gameplay.Managers;
+
 using static CurseOfNaga.Global.UniversalConstant;
 
 namespace CurseOfNaga.Gameplay.Enemies

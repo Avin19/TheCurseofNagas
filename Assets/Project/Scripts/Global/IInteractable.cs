@@ -1,6 +1,6 @@
 using static CurseOfNaga.Global.UniversalConstant;
 
-namespace CurseOfNaga.Gameplay
+namespace CurseOfNaga.Global
 {
     public interface IInteractable
     {

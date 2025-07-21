@@ -1,6 +1,6 @@
-
-using System;
 using UnityEngine;
+
+using CurseOfNaga.Gameplay.Managers;
 
 namespace CurseOfNaga.Gameplay.Player
 {

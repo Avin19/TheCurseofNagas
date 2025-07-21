@@ -361,6 +361,8 @@
 - Scene
     [=] Adding a test NPC
 
+- Project
+    [=] Refactor files to include namespaces
 
 --------------------------------------------------------------------------------------------------------
 - [NOW] Collision/Triggers for buildings

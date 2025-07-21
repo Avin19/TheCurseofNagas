@@ -5,7 +5,7 @@ using UnityEngine;
 
 using static CurseOfNaga.Global.UniversalConstant;
 
-namespace CurseOfNaga.Gameplay
+namespace CurseOfNaga.Gameplay.Managers
 {
     [Serializable]
     public class GameplayEventManager

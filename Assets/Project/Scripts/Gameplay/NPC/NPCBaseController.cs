@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using CurseOfNaga.Global;
 using static CurseOfNaga.Global.UniversalConstant;
 
 namespace CurseOfNaga.Gameplay.NPC
