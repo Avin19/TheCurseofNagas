@@ -30,8 +30,6 @@ namespace CurseOfNaga.Global
             INTERACTING = 1 << 10,
             USING_ITEM = 1 << 11,
             ENEMY_FOUND = 1 << 12,
-            INVOKE_TRIGGER = 1 << 13,
-            LEFT_TRIGGER = 1 << 14,
         }
 
         public enum EnemyStatus
@@ -68,6 +66,14 @@ namespace CurseOfNaga.Global
         {
             DEFAULT = 0, EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5,
             EVENT_6, EVENT_7, EVENT_8, EVENT_9, EVENT_10
+        }
+
+        public enum InteractionType
+        {
+            NONE = 0, PROMPT_TRIGGERED, INTERACTION_REQUEST,
+            INTERACTING_WITH_NPC, PICKING_UP_OBJECT, PUTTING_DOWN_OBJECT,
+            USE_ITEM,
+            INVOKE_TRIGGER, LEFT_TRIGGER,
         }
     }
 }

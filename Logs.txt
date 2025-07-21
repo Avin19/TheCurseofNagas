@@ -340,6 +340,29 @@
         {+} Make object rotate logic
         
 --------------------------------------------------------------------------------------------------------
+                                                21 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- For now, keeping Interactables as a separate gameobject
+- Scripts
+    [=] UniversalConstant
+        {+} Adding InteractionType enum | Adding more values
+        {+} Moving PlayerStatus values to InteractionType enum
+    [=] MainGameplayManager
+        {+} Renaming OnPlayerEnterTrigger to OnPlayerInteraction
+    [=] Player
+        {+} Interaction logic
+            <~> Field for storing current interaction status
+            <~> Using OnTriggerEnter for interaction for now
+        {+} Storing Current Interactable Object when detected and calling for interaction with User-Input
+    [=] NPCBaseController
+        {+} Template script | Inheriting IInteractable
+    [=] IInteractable
+        {+} Interface for interactable objects
+- Scene
+    [=] Adding a test NPC
+
+
+--------------------------------------------------------------------------------------------------------
 - [NOW] Collision/Triggers for buildings
 - [NOW] Fog at the edge of the map
 - [DONE FOR NOW] Basic combat, exploration, vision-triggered objectives
@@ -355,6 +378,7 @@
         {+} Might need to overlap bushes, to some extent, not fully
             <~> Will need to clump bushes together, space between bushes look unnatural
         {+} Will there be grass everywhere?                                 -   Performance Issue
+- [DO][IMP] NPC | ENEMY | PLAYER to have a common base class
 - [DO] Can just pass the offset from which to start to the PoissonSampler
     [=] Normal indexing can be used to generate the grid from 0 to the last index of the localized grid
     [=] The offset can be used at last to add to the whole grid for the localized values
@@ -418,3 +442,5 @@
 - I was thinking some building will have a collider that will make player to spawn in next area
     [=] If you see the sprite folder there some ground tiles
     [=] These will be place next to each other depending upon the collision player will spawn different ground
+- Depending upon Building or npc
+    [=] It will open a room or conversation dialogue

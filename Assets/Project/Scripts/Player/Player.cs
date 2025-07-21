@@ -38,6 +38,9 @@ namespace CurseOfNaga.Gameplay.Player
         private Rigidbody _playerRb;
         private Vector3 inputVector;
 
+        private InteractionType _currentInteractionStatus;
+        private IInteractable _currentInteractable;
+
         // private readonly Vector3 _LEFTFACING = new Vector3(-40f, 180f, 0f);
         // private readonly Vector3 _RIGHTFACING = new Vector3(40f, 0f, 0f);
         private const float _LEFT_FACING_WEAPON_PLACEMENT = 1.45f;
@@ -82,62 +85,69 @@ namespace CurseOfNaga.Gameplay.Player
             }
         }
 
+        // private void FixedUpdate()
+        // {
+        //     //- Cast a sphere and check if any interactable things are within it
+        //     //  [=] This will waste some resource, as we are only searching in x-z axis. We will never be 
+        //     //      looking for anything above the ground
+        //     //- A simple position check in the x-z axis should do the trick instead
+        //     //  [=] Problem will come if any dynamic object is needed to be added and the player would not 
+        //     //      detect the item if it is not registered
+        // }
+
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log($"Detected Collider: {other.name} | layer: {other.gameObject.layer} | " +
-                $"Instance ID: {other.transform.GetInstanceID()}");
-            int colliderID = other.transform.GetInstanceID();
-            switch (other.gameObject.layer)
+            Debug.Log($"Detected Collider: {other.name} | layer: {other.gameObject.layer} | ");
+            int colliderID;
+            switch (other.gameObject.layer)                   //other.gameobject can be a bit consuming
             {
                 case (int)Layer.ENEMY:
+                    colliderID = other.transform.parent.GetInstanceID();
                     MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 1);
+                    Debug.Log($"Instance ID: {other.transform.parent.GetInstanceID()}");
 
                     break;
 
                 case (int)Layer.INTERACTABLE:
-
+                    // colliderID = other.transform.parent.GetInstanceID();
+                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 1);
+                    _currentInteractionStatus = InteractionType.PROMPT_TRIGGERED;
+                    _currentInteractable = other.transform.parent.GetComponent<IInteractable>();
 
                     break;
 
                 case (int)Layer.TRIGGER:
-                    MainGameplayManager.Instance.OnPlayerEnterTrigger?.Invoke(PlayerStatus.INVOKE_TRIGGER, colliderID);
+                    colliderID = other.transform.parent.GetInstanceID();
+                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.INVOKE_TRIGGER, colliderID);
+                    Debug.Log($"Instance ID: {other.transform.parent.GetInstanceID()}");
 
                     break;
             }
-
-            // if (other.gameObject.layer == _ENEMY_LAYER)                   //other.gameobject can be a bit consuming
-            // {
-            //         int colliderID = other.transform.parent.GetInstanceID();
-            //         MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 1);
-            // }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            int colliderID = other.transform.GetInstanceID();
-            switch (other.gameObject.layer)
+            int colliderID;
+            switch (other.gameObject.layer)                   //other.gameobject can be a bit consuming
             {
                 case (int)Layer.ENEMY:
+                    colliderID = other.transform.parent.GetInstanceID();
                     MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 0);
 
                     break;
 
                 case (int)Layer.INTERACTABLE:
-
+                    _currentInteractionStatus = InteractionType.NONE;
+                    _currentInteractable = null;
 
                     break;
 
                 case (int)Layer.TRIGGER:
-                    MainGameplayManager.Instance.OnPlayerEnterTrigger?.Invoke(PlayerStatus.LEFT_TRIGGER, colliderID);
+                    colliderID = other.transform.parent.GetInstanceID();
+                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.LEFT_TRIGGER, colliderID);
 
                     break;
             }
-
-            // if (other.gameObject.layer == _ENEMY_LAYER)                   //other.gameobject can be a bit consuming
-            // {
-            //     int colliderID = other.transform.parent.GetInstanceID();
-            //     MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 0);
-            // }
         }
 
         private void HandleInput(PlayerStatus status, float value)
@@ -219,20 +229,45 @@ namespace CurseOfNaga.Gameplay.Player
 
                     break;
 
+                /*
+                * MOVING | JUMPING | ROLLING | INTERACTING
+                *
+                * Flow:
+                *   - Player comes within the range of intertacting with something
+                *   - Player sees a prompt trigger at the top of the screen
+                *   - Player presses the necessary button to trigger the interaction
+                *   - Player is interacting with the Object/ NPC/ item
+                *
+                * Conditions:
+                *   - There can be long-press situations also
+                *
+                * Actions are divided into 2 types: Additive | Non-Additive
+                *   [=] Non-Additive actions 
+                *       {+} Performed one at a time | continously.
+                *       {+} Eg: Rolling: Player can't attack/interact/jump/use item during rolling
+                *   [=] Additive actions
+                *       {+} Performed continously | One on top of another action | Not more than 2 actions tho
+                *       {+} Eg: Attack can be done while running
+                */
                 case PlayerStatus.INTERACTING:
-                    if (value > 0)
+                    if (value > 0
+                        && (_playerStatus & PlayerStatus.INTERACTING) == 0)
                     {
                         _playerStatus |= PlayerStatus.INTERACTING;
                         _playerStatus |= PlayerStatus.PERFORMING_ACTION;
 
                         // PlayAnimation(PlayerStatus.INTERACTING);
                         _animationController.PlayAnimation(PlayerStatus.INTERACTING);
-                        UnsetAction_Async(PlayerStatus.INTERACTING);
+
+                        _currentInteractionStatus = InteractionType.INTERACTION_REQUEST;
+                        _currentInteractionStatus = _currentInteractable.Interact();
+                        // UnsetAction_Async(PlayerStatus.INTERACTING);
                     }
-                    // else
+                    // else if (value <= 0.1
+                    //     && (_playerStatus & PlayerStatus.INTERACTING) != 0)
                     // {
-                    //     _playerStatus &= ~PlayerStatus.INTERACTING; 
-                    //     // _playerStatus &= ~PlayerStatus.PERFORMING_ACTION;
+                    //     _playerStatus &= ~PlayerStatus.INTERACTING;
+                    //     _playerStatus &= ~PlayerStatus.PERFORMING_ACTION;
                     // }
 
                     break;
@@ -244,6 +279,10 @@ namespace CurseOfNaga.Gameplay.Player
             if ((_playerStatus & PlayerStatus.ROLLING) != 0)
             {
                 transform.position += inputVector.normalized * _rollSpeed * Time.deltaTime;
+            }
+            else if ((_playerStatus & PlayerStatus.INTERACTING) != 0)
+            {
+                //Sending out a raycast to check if an NPC/Object is there?
             }
         }
 
@@ -286,9 +325,10 @@ namespace CurseOfNaga.Gameplay.Player
                     goto case PlayerStatus.IDLE;
 
                 case PlayerStatus.INTERACTING:
-                    await Task.Delay(1000);
+                    await Task.Delay(500);
                     _playerStatus &= ~PlayerStatus.INTERACTING;
                     _playerStatus &= ~PlayerStatus.PERFORMING_ACTION;
+                    _currentInteractionStatus = InteractionType.NONE;
 
                     goto case PlayerStatus.IDLE;
 

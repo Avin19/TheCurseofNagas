@@ -45,7 +45,7 @@ namespace CurseOfNaga.Gameplay
         ~GameplayEventManager()
         {
             _cts.Cancel();
-            MainGameplayManager.Instance.OnPlayerEnterTrigger -= RespondToPlayer;
+            MainGameplayManager.Instance.OnPlayerInteraction -= RespondToPlayer;
         }
 
         public GameplayEventManager()
@@ -55,17 +55,31 @@ namespace CurseOfNaga.Gameplay
 
         public void InitializeCallbacks()
         {
-            MainGameplayManager.Instance.OnPlayerEnterTrigger += RespondToPlayer;
+            MainGameplayManager.Instance.OnPlayerInteraction += RespondToPlayer;
         }
 
-        public void RespondToPlayer(PlayerStatus status, int transformID)
+        //Maybe reduce to only InteractionType
+        // public void RespondToPlayer(PlayerStatus status, InteractionType interactionType, int value)
+        public void RespondToPlayer(InteractionType interactionType, int value)
         {
-            switch (status)
+            // switch (status)
+            // {
+            //     case PlayerStatus.INTERACTING:
+
+            //         break;
+            // }
+
+            switch ((InteractionType)value)
             {
-                case PlayerStatus.INVOKE_TRIGGER:
+                case InteractionType.INTERACTING_WITH_NPC:
+
+
+                    break;
+
+                case InteractionType.INVOKE_TRIGGER:
                     for (int i = 0; i < _eventData.Length; i++)
                     {
-                        if (_eventData[i].TriggerTransform.GetInstanceID() == transformID)
+                        if (_eventData[i].TriggerTransform.GetInstanceID() == value)
                             InvokeEvent(_eventData[i].Event);
                     }
 
