@@ -2,11 +2,13 @@
 // #define DEBUG_WORLD_POINT
 #define TEST_CUTSCENE
 #define TEST_GAME_1
+#define TEST_SAVE_1
 
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CurseOfNaga.Global;
 using UnityEngine;
 
 using static CurseOfNaga.Global.UniversalConstant;
@@ -68,6 +70,10 @@ namespace CurseOfNaga.Gameplay.Managers
 
 #if TEST_GAME_1
             SetGameStatus_Test();
+#endif
+
+#if TEST_SAVE_1
+            SaveGame_Test();
 #endif
 
             _gameplayEventManager.InitializeCallbacks();
@@ -145,6 +151,16 @@ namespace CurseOfNaga.Gameplay.Managers
             }
 
         }
+
+#if TEST_SAVE_1
+        private void SaveGame_Test()
+        {
+            PlayerState playerState = new PlayerState();
+            playerState.PlayerPos = Vector3.zero;
+
+            SaveSystem.Instance.SavePlayerState(playerState);
+        }
+#endif
 
 #if TEST_CUTSCENE
         private async void DisableCutScene()

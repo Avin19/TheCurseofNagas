@@ -377,8 +377,14 @@
         {+} Manager to spawn and control NPC's
     [=] NPCDialogue.json
         {+} Json to contain NPC dialogues
+
+- Scripts
+    [=] SaveSystem
+        {+} Basic save system
 --------------------------------------------------------------------------------------------------------
-- [NOW] Dialogue with NPC logic
+- [NOW] Save System
+- [DO] Main Menu
+- [DO] Dialogue with NPC logic
 - [DONE FOR NOW] Collision/Triggers for buildings
 - [DONE FOR NOW] Fog at the edge of the map
 - [DONE FOR NOW] Basic combat, exploration, vision-triggered objectives
