@@ -364,6 +364,13 @@
 - Project
     [=] Refactor files to include namespaces
 
+- Scene
+    [=] Adding test canvas for Demo
+- Scripts
+    [=] Moving UIManager to MainMenu
+    [=] MainGameplayUIManager
+        {+} Separate script for controlling UI for main gameplay
+        {+} OnPlayerInteraction callback to show prompt
 --------------------------------------------------------------------------------------------------------
 - [NOW] Collision/Triggers for buildings
 - [NOW] Fog at the edge of the map

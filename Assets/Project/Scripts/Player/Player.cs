@@ -139,6 +139,7 @@ namespace CurseOfNaga.Gameplay.Player
                     break;
 
                 case (int)Layer.INTERACTABLE:
+                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 0);
                     _currentInteractionStatus = InteractionType.NONE;
                     _currentInteractable = null;
 
@@ -255,6 +256,8 @@ namespace CurseOfNaga.Gameplay.Player
                     if (value > 0
                         && (_playerStatus & PlayerStatus.INTERACTING) == 0)
                     {
+                        MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 0);
+
                         _playerStatus |= PlayerStatus.INTERACTING;
                         _playerStatus |= PlayerStatus.PERFORMING_ACTION;
 
@@ -263,7 +266,7 @@ namespace CurseOfNaga.Gameplay.Player
 
                         _currentInteractionStatus = InteractionType.INTERACTION_REQUEST;
                         _currentInteractionStatus = _currentInteractable.Interact();
-                        // UnsetAction_Async(PlayerStatus.INTERACTING);
+                        UnsetAction_Async(PlayerStatus.INTERACTING);                        //TEST
                     }
                     // else if (value <= 0.1
                     //     && (_playerStatus & PlayerStatus.INTERACTING) != 0)
