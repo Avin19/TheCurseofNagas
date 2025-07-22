@@ -2,7 +2,7 @@
 // #define DEBUG_WORLD_POINT
 #define TEST_CUTSCENE
 #define TEST_GAME_1
-#define TEST_SAVE_1
+#define TEST_SAVE_SYTEM
 
 using System;
 using System.Collections.Generic;
@@ -50,6 +50,7 @@ namespace CurseOfNaga.Gameplay.Managers
         public GameStatus GameStatus { get => _gameStatus; }
 
         [SerializeField] private GameplayEventManager _gameplayEventManager;
+        private SaveSystem _saveSystem;             //TEST
 
         private CancellationTokenSource _cts;
         public Action<PlayerStatus> OnObjectiveVisible;
@@ -72,8 +73,10 @@ namespace CurseOfNaga.Gameplay.Managers
             SetGameStatus_Test();
 #endif
 
-#if TEST_SAVE_1
-            SaveGame_Test();
+            SaveSystem saveSystem = new SaveSystem();
+#if TEST_SAVE_SYTEM
+            SaveGameState_Test();
+            LoadGameState_Test();
 #endif
 
             _gameplayEventManager.InitializeCallbacks();
@@ -152,13 +155,25 @@ namespace CurseOfNaga.Gameplay.Managers
 
         }
 
-#if TEST_SAVE_1
-        private void SaveGame_Test()
+#if TEST_SAVE_SYTEM
+        private void SaveGameState_Test()
         {
-            PlayerState playerState = new PlayerState();
-            playerState.PlayerPos = Vector3.zero;
+            PlayerState playerState = new PlayerState(PlayerTransform.position, 100f, 0f);
 
-            SaveSystem.Instance.SavePlayerState(playerState);
+            SaveSystem.Instance.SavePlayerState(playerState, (saveStatus, opResult) =>
+            {
+                Debug.Log($"saveStatus: {saveStatus}");
+            });
+        }
+
+        private async void LoadGameState_Test()
+        {
+            await Task.Delay(5000);
+
+            SaveSystem.Instance.LoadPlayerState((loadStatus, opResult) =>
+            {
+                Debug.Log($"loadStatus: {loadStatus}");
+            });
         }
 #endif
 

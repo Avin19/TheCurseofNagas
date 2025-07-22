@@ -75,5 +75,12 @@ namespace CurseOfNaga.Global
             USE_ITEM,
             INVOKE_TRIGGER, LEFT_TRIGGER,
         }
+
+        public enum SaveStatus
+        {
+            DEFAULT = 0,
+            SAVE_SUCCESSFUL, SAVE_FAILED,
+            LOAD_SUCCESSFUL, LOAD_FAILED
+        }
     }
 }

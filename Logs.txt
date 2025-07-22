@@ -381,6 +381,20 @@
 - Scripts
     [=] SaveSystem
         {+} Basic save system
+
+--------------------------------------------------------------------------------------------------------
+                                                22 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] MainGameplayManager
+        {+} Testing save-system
+    [=] SaveSystem
+        {+} Default contructor
+        {+} fields for playerState and worldState
+        {+} Callbacks for Save/Load operations
+    [=] UniversalConstant
+        {+} Adding SaveStatus enum
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Save System
 - [DO] Main Menu
@@ -466,3 +480,12 @@
     [=] These will be place next to each other depending upon the collision player will spawn different ground
 - Depending upon Building or npc
     [=] It will open a room or conversation dialogue
+
+NEW TASKS
+- 1. Mini map
+- 2. Enemy spawner - > Behaviour tree for enemy ( attack , patrol , search ,idle ) 
+- 3. Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )4.  audio manager 
+- 5.Cutsence , Timeline ( dependency on me ) 
+- 5.5 Instruction to play the game 
+- 6. Modular Dialog  system
+- a singleton for audio manager 
