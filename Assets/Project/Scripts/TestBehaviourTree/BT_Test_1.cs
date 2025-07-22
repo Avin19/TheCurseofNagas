@@ -59,16 +59,16 @@ namespace CurseOfNaga.TestBehaviourTree
             RangeNode shootingRangeNode = new RangeNode(_shootRange, _playerTransform, transform);
 
 #if YOUTUBE_IMPLEMENTATION
+            Sequence chaseSequence = new Sequence(new List<Node> { chasingRangeNode, chaseNode });
+            Sequence shootSequence = new Sequence(new List<Node> { shootingRangeNode, shootNode });
+
+            _topNode = new Selector(new List<Node> { shootSequence, chaseSequence });
+#else
             Sequence checkSequence_0 = new Sequence(new List<Node> { checkNode_1Arr[0], doNode_1Arr[0], checkNode_1Arr[1], });
             Sequence checkSequence_1 = new Sequence(new List<Node> { checkNode_1Arr[2], doNode_1Arr[1], checkNode_1Arr[3], });
             Sequence checkSequence_2 = new Sequence(new List<Node> { checkNode_1Arr[4], doNode_1Arr[2], checkNode_1Arr[5], });
 
             _topNode = new Selector(new List<Node> { checkSequence_0, checkSequence_1, checkSequence_2 });
-#else
-            Sequence chaseSequence = new Sequence(new List<Node> { chasingRangeNode, chaseNode });
-            Sequence shootSequence = new Sequence(new List<Node> { shootingRangeNode, shootNode });
-
-            _topNode = new Selector(new List<Node> { shootSequence, chaseSequence });
 #endif
         }
 
