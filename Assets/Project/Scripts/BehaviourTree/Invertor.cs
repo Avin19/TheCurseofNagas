@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace CurseOfNaga.TestBehaviourTree
+namespace CurseOfNaga.BehaviourTree
 {
     public class Invertor : Node
     {

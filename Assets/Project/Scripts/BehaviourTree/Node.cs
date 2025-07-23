@@ -1,4 +1,4 @@
-namespace CurseOfNaga.TestBehaviourTree
+namespace CurseOfNaga.BehaviourTree
 {
     public enum NodeState { RUNNING, SUCCESS, FAILURE, }
 

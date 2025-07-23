@@ -397,8 +397,21 @@
 
 - Behaviour Tree Tests
 - Youtube implementation is wrong
+
+--------------------------------------------------------------------------------------------------------
+                                                23 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] Chaning namespace from TestBehaviourTree to BehaviourTree
+    [=] Selector/Sequence
+        {+} Changing List to arrays
+- Project
+    [=] Moving BT scripts
+
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
+- [DO] [IF POSSIBLE] Implement GOAP instead of Behaviour Tree
 - [NOW PARTIAL] Save System
 - [DO] Main Menu
 - [DO] Dialogue with NPC logic
@@ -491,4 +504,4 @@ NEW TASKS
 - 5.    Cutsence , Timeline ( dependency on me ) 
 - 5.5   Instruction to play the game 
 - 6.    Modular Dialog  system
-- 7.    singleton for audio manager 
+- 7.    singleton for audio manager

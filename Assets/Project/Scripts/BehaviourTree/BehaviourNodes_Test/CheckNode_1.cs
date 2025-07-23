@@ -1,7 +1,7 @@
-namespace CurseOfNaga.TestBehaviourTree
+namespace CurseOfNaga.BehaviourTree
 {
     [System.Serializable]
-    public class DoNode_1 : Node
+    public class CheckNode_1 : Node
     {
         public NodeState SetNode
         {

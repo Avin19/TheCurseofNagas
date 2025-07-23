@@ -2,13 +2,13 @@
 
 using System.Collections.Generic;
 
-namespace CurseOfNaga.TestBehaviourTree
+namespace CurseOfNaga.BehaviourTree
 {
     public class Sequence : Node
     {
-        protected List<Node> _NodeList;
+        protected Node[] _NodeList;
 
-        public Sequence(List<Node> nodes)
+        public Sequence(Node[] nodes)
         {
             _NodeList = nodes;
         }
@@ -19,7 +19,7 @@ namespace CurseOfNaga.TestBehaviourTree
             bool isAnyNodeRunning = false;
 #endif
             _CurrCount = currCount;
-            for (int i = 0; i < _NodeList.Count; i++)
+            for (int i = 0; i < _NodeList.Length; i++)
             {
                 switch (_NodeList[i].Evaluate(currCount))
                 {

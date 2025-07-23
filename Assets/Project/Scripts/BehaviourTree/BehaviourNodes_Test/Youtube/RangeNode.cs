@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CurseOfNaga.TestBehaviourTree
+namespace CurseOfNaga.BehaviourTree
 {
     public class RangeNode : Node
     {
