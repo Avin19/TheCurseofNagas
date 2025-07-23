@@ -40,12 +40,13 @@ namespace CurseOfNaga.Global
             ATTACKING = 1 << 3,
             INVESTIGATE_AREA = 1 << 4,
             PLAYER_VISIBLE = 1 << 5,
-            CHASING_PLAYER = 1 << 6,
-            REACHED_PLAYER = 1 << 7,
-            ATTACKING_PLAYER = 1 << 8,
-            ENEMY_WITHIN_PLAYER_RANGE = 1 << 9,
-            PLAYER_ATTACKING = 1 << 10,
-            DEAD = 1 << 11,
+            LOST_PLAYER = 1 << 6,
+            CHASING_PLAYER = 1 << 7,
+            REACHED_PLAYER = 1 << 8,
+            ATTACKING_PLAYER = 1 << 9,
+            ENEMY_WITHIN_PLAYER_RANGE = 1 << 10,
+            PLAYER_ATTACKING = 1 << 11,
+            DEAD = 1 << 12,
         }
 
         public enum EnvironmentType

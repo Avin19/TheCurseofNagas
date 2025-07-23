@@ -25,8 +25,8 @@ namespace CurseOfNaga.BehaviourTree
                 return NodeState.SUCCESS;
             }
 
-            _NodeState = NodeState.RUNNING;
-            return NodeState.RUNNING;
+            _NodeState = NodeState.FAILURE;
+            return NodeState.FAILURE;
         }
     }
 }

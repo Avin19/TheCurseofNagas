@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -14,6 +15,13 @@ namespace CurseOfNaga.BehaviourTree
         private PatrolStatus _patrolStatus;
         private byte _currPatrolIndex;
         private const float _STOP_RANGE = 0.2f;
+
+        private CancellationTokenSource _cts;
+
+        ~PatrolAreaTask()
+        {
+            _cts.Cancel();
+        }
 
         public PatrolAreaTask(Vector3[] patrolPoints, float waitTime)
         {
@@ -44,6 +52,7 @@ namespace CurseOfNaga.BehaviourTree
         private async void WaitAtPlace()
         {
             await Task.Delay((int)(_waitTime * 1000));
+            if (_cts.IsCancellationRequested) return;
 
             _patrolStatus = PatrolStatus.WALKING;
             _currPatrolIndex = ((_currPatrolIndex + 1) >= _patrolPoints.Length) ? (byte)0 : (byte)(_currPatrolIndex + 1);

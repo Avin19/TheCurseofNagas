@@ -3,6 +3,8 @@ using UnityEngine;
 using CurseOfNaga.BehaviourTree;
 using CurseOfNaga.Gameplay.Managers;
 
+using static CurseOfNaga.Global.UniversalConstant;
+
 namespace CurseOfNaga.Gameplay.Enemies
 {
     public class TestEnemyController : MonoBehaviour
@@ -14,6 +16,8 @@ namespace CurseOfNaga.Gameplay.Enemies
         [SerializeField] private Transform[] _patrolPoints;
         [SerializeField] private float _patrolWaitTime;
 
+        private EnemyStatus _enemyStatus;
+
         int debugIntVar = 0;
 
         private void Start()
@@ -24,7 +28,7 @@ namespace CurseOfNaga.Gameplay.Enemies
 
         private void InitializeTree()
         {
-            CheckRangeSquared checkPlayerVisibility = new CheckRangeSquared(transform, MainGameplayManager.Instance.PlayerTransform, _playerVisibleRange);
+            CheckPlayerRange checkPlayerVisibility = new CheckPlayerRange(transform, MainGameplayManager.Instance.PlayerTransform, _playerVisibleRange);
             // Selector 
 
             ChaseTargetTask chasePlayer = new ChaseTargetTask(transform, MainGameplayManager.Instance.PlayerTransform, _chaseStopRange, _chaseSpeedMult);

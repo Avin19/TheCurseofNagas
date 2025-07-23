@@ -419,6 +419,20 @@
         {+} Move between different target points With speed mult
         {+} Wait at points for fixed interval of time
         {+} Status: RUNNING/SUCCESS
+
+- Scripts
+    [=] UniversalConstant
+        {+} Adding LOST_PLayer to EnemyStatus enum
+    [=] CheckRangeSquared
+        {+} Returning FAILURE when not found
+    [=] CheckPlayerRange
+        {+} Extension of CheckRangeSquared for setting EnemyStatus
+    [=] CheckIfLostPlayer
+        {+} Toggle Enemy Status according to Player visibility
+    [=] InvestigateAreaTask
+        {+} Check if enemy has lost Player
+        {+} Create a search radius and choose a random direction to go withing the radius
+        {+} Do this until the totalSearch time is over
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
 - [DO] [IF POSSIBLE] Implement GOAP instead of Behaviour Tree
