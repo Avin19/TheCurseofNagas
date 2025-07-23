@@ -408,7 +408,17 @@
 - Project
     [=] Moving BT scripts
 
-
+- Scripts
+    [=] ChaseTargetTask
+        {+} Move towards target with speed mult
+        {+} Status: RUNNING/SUCCESS
+    [=] CheckRangeSquared - Check Target distance square from self
+        {+} Check distance aquare from target
+        {+} Status: RUNNING/SUCCESS
+    [=] PatrolAreaTask - Patrol Area Node
+        {+} Move between different target points With speed mult
+        {+} Wait at points for fixed interval of time
+        {+} Status: RUNNING/SUCCESS
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
 - [DO] [IF POSSIBLE] Implement GOAP instead of Behaviour Tree
