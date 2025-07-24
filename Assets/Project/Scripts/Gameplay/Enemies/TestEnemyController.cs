@@ -38,6 +38,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         [SerializeField] private InvestigateAreaTask investigateArea;
         [SerializeField] private StayAndLookAroundTask lookAroundArea;
         [SerializeField] private CheckPlayerInAttackRange checkPlayerInAttackRange;
+        [SerializeField] private DecideAttackTypeTask decideAttackType;
 
         private EnemyBoard _mainBoard;
         // private EnemyStatus _mainEnemyStatus;
@@ -55,6 +56,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         {
 #if TESTING_BT
             checkPlayerInAttackRange.Initialize(_mainBoard);
+            decideAttackType.Initialize(_mainBoard);
 
             chasePlayer.Initialize(_mainBoard);
             checkPlayerVisibility.Initialize(_mainBoard);
@@ -70,6 +72,7 @@ namespace CurseOfNaga.Gameplay.Enemies
             }
 #else
             checkPlayerInAttackRange = new CheckPlayerInAttackRange(_mainBoard, transform, _playerTransform, _attackRange);
+            decideAttackType = new DecideAttackTypeTask(_mainBoard);
 
             checkPlayerVisibility = new CheckPlayerRange(_mainBoard, transform, _playerTransform, _playerVisibleRange, _mainBoard);
             chasePlayer = new ChaseTargetTask(transform, _playerTransform, _chaseStopRange, _chaseSpeedMult);
@@ -85,8 +88,12 @@ namespace CurseOfNaga.Gameplay.Enemies
             }
             patrolArea = new PatrolAreaTask(transform, patrolPoints, _patrolSpeedMult, _patrolWaitTime);
 #endif
+            Selector attackSelector = new Selector(new Node[]{
+                new Invertor(decideAttackType)
+            });
             Sequence attackSequence = new Sequence(new Node[] {
                 checkPlayerInAttackRange,
+                attackSelector
             });
 
             Sequence chasePlayerSequence = new Sequence(new Node[] {

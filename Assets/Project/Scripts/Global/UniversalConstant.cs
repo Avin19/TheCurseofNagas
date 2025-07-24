@@ -35,18 +35,25 @@ namespace CurseOfNaga.Global
         public enum EnemyStatus
         {
             IDLE = 0,
-            MOVING = 1 << 1,
-            DODGING = 1 << 2,
-            ATTACKING = 1 << 3,
-            INVESTIGATE_AREA = 1 << 4,
-            PLAYER_VISIBLE = 1 << 5,
-            LOST_PLAYER = 1 << 6,
-            CHASING_PLAYER = 1 << 7,
-            REACHED_PLAYER = 1 << 8,
-            ATTACKING_PLAYER = 1 << 9,
-            ENEMY_WITHIN_PLAYER_RANGE = 1 << 10,
-            PLAYER_ATTACKING = 1 << 11,
-            DEAD = 1 << 12,
+            MOVING = 1 << 0,
+            DODGING = 1 << 1,
+            ATTACKING = 1 << 2,
+            INVESTIGATE_AREA = 1 << 3,
+            PLAYER_VISIBLE = 1 << 4,
+            LOST_PLAYER = 1 << 5,
+            CHASING_PLAYER = 1 << 6,
+            REACHED_PLAYER = 1 << 7,
+            ATTACKING_PLAYER = 1 << 8,
+            ENEMY_WITHIN_PLAYER_RANGE = 1 << 9,
+            PLAYER_ATTACKING = 1 << 10,
+            DEAD = 1 << 11,
+        }
+
+        public enum EnemyAttackType
+        {
+            NOT_ATACKING = 0,
+            MELEE_0 = 1, MELEE_1 = 2, MELEE_3 = 3, MELEE_4 = 4,
+            RANGED_ATTACK_0 = 20, RANGED_ATTACK_1 = 21, RANGED_ATTACK_2 = 22, RANGED_ATTACK_3 = 23,
         }
 
         public enum EnvironmentType
