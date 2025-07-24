@@ -22,9 +22,18 @@ namespace CurseOfNaga.Gameplay.Enemies
         [Range(1f, 10f), SerializeField] private float _patrolSpeedMult;
         [Range(1f, 3f), SerializeField] private float _patrolWaitTime;
 
+        [Header("Investigation Controls")]
+        [Range(1f, 3f), SerializeField] private float _searchRange;
+        [Range(1f, 3f), SerializeField] private float _totalSearchDuration;
+        [Range(1f, 3f), SerializeField] private float _investigateSpeedMult;
+
         [Header("Behaviour Tree Controls")]
         [SerializeField] private PatrolAreaTask patrolArea;
         [SerializeField] private CheckPlayerRange checkPlayerVisibility;
+        [SerializeField] private ChaseTargetTask chasePlayer;
+        [SerializeField] private CheckIfLostPlayer checkIfLostPlayer;
+        [SerializeField] private InvestigateAreaTask investigateArea;
+        [SerializeField] private StayAndLookAroundTask lookAroundArea;
 
         private EnemyBoard _mainBoard;
         // private EnemyStatus _mainEnemyStatus;
@@ -40,13 +49,13 @@ namespace CurseOfNaga.Gameplay.Enemies
 
         private void InitializeTree()
         {
-            // Selector 
-
-            ChaseTargetTask chasePlayer = new ChaseTargetTask(transform, _playerTransform, _chaseStopRange, _chaseSpeedMult);
-
 #if TESTING_BT
-            // checkPlayerVisibility.Initialize(ref _mainEnemyStatus);
+            chasePlayer.Initialize(_mainBoard);
             checkPlayerVisibility.Initialize(_mainBoard);
+
+            checkIfLostPlayer.Initialize(_mainBoard);
+            investigateArea.Initialize(_mainBoard);
+            lookAroundArea.Initialize(_mainBoard);
 
             patrolArea._patrolPoints = new Vector3[_patrolPoints.Length];
             for (int i = 0; i < _patrolPoints.Length; i++)
@@ -54,7 +63,12 @@ namespace CurseOfNaga.Gameplay.Enemies
                 patrolArea._patrolPoints[i] = _patrolPoints[i].position;
             }
 #else
-            checkPlayerVisibility = new CheckPlayerRange(transform, _playerTransform, _playerVisibleRange, _mainBoard);
+            checkPlayerVisibility = new CheckPlayerRange(_mainBoard, transform, _playerTransform, _playerVisibleRange, _mainBoard);
+            chasePlayer = new ChaseTargetTask(transform, _playerTransform, _chaseStopRange, _chaseSpeedMult);
+
+            checkIfLostPlayer = new CheckIfLostPlayer(_mainBoard);
+            investigateArea = new InvestigateAreaTask(transform, _mainBoard, _searchRange, _totalSearchDuration, _investigateSpeedMult);
+            lookAroundArea = new StayAndLookAroundTask(_mainBoard, _totalSearchDuration);
 
             Vector3 patrolPoints = new Vector3[_patrolPoints.Length];
             for (int i = 0; i < _patrolPoints.Length; i++)
@@ -66,11 +80,17 @@ namespace CurseOfNaga.Gameplay.Enemies
 
             Sequence chasePlayerSequence = new Sequence(new Node[] {
                 checkPlayerVisibility,
-                // chasePlayer
+                chasePlayer
+            });
+
+            Sequence investigateForPlayer = new Sequence(new Node[] {
+                checkIfLostPlayer,
+                investigateArea
             });
 
             _rootNode = new Selector(new Node[] {
                 chasePlayerSequence,
+                investigateForPlayer,
                 patrolArea
             });
         }

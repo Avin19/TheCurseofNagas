@@ -703,9 +703,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerTransform: {fileID: 847042427}
-  _playerVisibleRange: 0
-  _chaseStopRange: 0
-  _chaseSpeedMult: 0
+  _playerVisibleRange: 4
+  _chaseStopRange: 0.25
+  _chaseSpeedMult: 2
   _patrolPoints:
   - {fileID: 589090491}
   - {fileID: 337725550}
@@ -713,6 +713,9 @@ MonoBehaviour:
   - {fileID: 306475986}
   _patrolSpeedMult: 3
   _patrolWaitTime: 2
+  _searchRange: 1
+  _totalSearchDuration: 1
+  _investigateSpeedMult: 1
   patrolArea:
     _patrolPoints: []
     _self: {fileID: 1573657564}
@@ -722,6 +725,16 @@ MonoBehaviour:
     _origin: {fileID: 1573657564}
     _target: {fileID: 847042427}
     _range: 4
+  chasePlayer:
+    _self: {fileID: 1573657564}
+    _target: {fileID: 847042427}
+    _stopRange: 1
+    _chaseSpeedMult: 2
+  investigateArea:
+    _searchRange: 1.5
+    _speedMult: 2
+    _totalSearchDuration: 12
+    _self: {fileID: 1573657564}
 --- !u!1 &1691099434
 GameObject:
   m_ObjectHideFlags: 0

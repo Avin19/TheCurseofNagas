@@ -1,3 +1,5 @@
+#define TESTING_BT
+
 using CurseOfNaga.BehaviourTree;
 using UnityEngine;
 using static CurseOfNaga.Global.UniversalConstant;
@@ -7,11 +9,24 @@ namespace CurseOfNaga.Gameplay.Enemies
     public class StayAndLookAroundTask : Node
     {
         private EnemyBoard _board;
-        private float _totalSearchDuration, _currDuration;          //Max time enemy will take to search the player
+#if !TESTING_BT
+        private float _totalSearchDuration;          //Max time enemy will take to search the player
+#else
+        public float _totalSearchDuration;
+#endif
+        private float _currDuration;
 
-        public StayAndLookAroundTask(EnemyBoard board)
+#if TESTING_BT
+        public void Initialize(EnemyBoard board)
         {
             _board = board;
+        }
+#endif
+
+        public StayAndLookAroundTask(EnemyBoard board, float totalSearchDuration)
+        {
+            _board = board;
+            _totalSearchDuration = totalSearchDuration;
         }
 
         public override NodeState Evaluate(int currCount)
@@ -33,6 +48,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                 _board.Status &= ~EnemyStatus.LOST_PLAYER;
                 _board.Status &= ~EnemyStatus.INVESTIGATE_AREA;
 
+                _currDuration = 0;
                 _NodeState = NodeState.FAILURE;
                 return NodeState.FAILURE;
             }

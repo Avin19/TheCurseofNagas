@@ -1,11 +1,21 @@
+#define TESTING_BT
+
 using CurseOfNaga.BehaviourTree;
 using static CurseOfNaga.Global.UniversalConstant;
 
 namespace CurseOfNaga.Gameplay.Enemies
 {
+    [System.Serializable]
     public class CheckIfLostPlayer : Node
     {
         private EnemyBoard _board;
+
+#if TESTING_BT
+        public void Initialize(EnemyBoard board)
+        {
+            _board = board;
+        }
+#endif
 
         public CheckIfLostPlayer(EnemyBoard board)
         {

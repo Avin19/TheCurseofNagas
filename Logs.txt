@@ -453,6 +453,20 @@
 
 - Project
     [=] Moving BehaviourNode scripts to Enemies
+
+- Scripts
+    [=] ChaseTargetTask
+        {+} Adding EnemyBoard | Test Conditions
+        {+} Fixing Stopping logic
+    [=] CheckIfLostPlayer
+        {+} Adding Test Conditions
+    [=] InvestigateAreaTask
+        {+} Adding Test Conditions
+        {+} Fixing random search position logic
+            <~> Resetting start pos for every random search pos
+            <~> Reset currDuration after FAILURE
+    [=] StayAndLookAround
+        {+} Adding Test Conditions
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
 - [DO] [IF POSSIBLE] Implement GOAP instead of Behaviour Tree

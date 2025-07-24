@@ -28,7 +28,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         }
 #endif
 
-        public CheckPlayerRange(Transform origin, Transform target, float range, EnemyBoard board)
+        public CheckPlayerRange(EnemyBoard board, Transform origin, Transform target, float range)
         {
             _target = target;
             _origin = origin;
