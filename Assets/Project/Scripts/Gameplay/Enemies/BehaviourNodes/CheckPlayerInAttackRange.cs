@@ -1,0 +1,55 @@
+#define TESTING_BT
+
+using UnityEngine;
+
+using CurseOfNaga.BehaviourTree;
+using static CurseOfNaga.Global.UniversalConstant;
+
+namespace CurseOfNaga.Gameplay.Enemies
+{
+    [System.Serializable]
+    public class CheckPlayerInAttackRange : Node
+    {
+#if !TESTING_BT
+        private Transform _origin;
+        private Transform _target;
+        private float _range;
+#else
+        public Transform _origin;
+        public Transform _target;
+        public float _range;
+#endif
+        private EnemyBoard _board;
+
+#if TESTING_BT
+        public void Initialize(EnemyBoard board)
+        {
+            _board = board;
+        }
+#endif
+
+        public CheckPlayerInAttackRange(EnemyBoard board, Transform origin, Transform target, float range)
+        {
+            _target = target;
+            _origin = origin;
+            _range = range;
+            _board = board;
+        }
+
+        public override NodeState Evaluate(int currCount)
+        {
+            _CurrCount = currCount;
+
+            if (Vector3.SqrMagnitude(_target.position - _origin.position) <= (_range * _range))
+            {
+                _board.Status |= EnemyStatus.ATTACKING_PLAYER;
+
+                _NodeState = NodeState.SUCCESS;
+                return NodeState.SUCCESS;
+            }
+
+            _NodeState = NodeState.FAILURE;
+            return NodeState.FAILURE;
+        }
+    }
+}

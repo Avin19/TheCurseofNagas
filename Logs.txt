@@ -467,6 +467,12 @@
             <~> Reset currDuration after FAILURE
     [=] StayAndLookAround
         {+} Adding Test Conditions
+
+- Scripts
+    [=] Inverter
+        {+} Fixing script
+    [=] CheckPlayerInAttackRange
+        {+} Adding Test Conditions | Flags
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
 - [DO] [IF POSSIBLE] Implement GOAP instead of Behaviour Tree

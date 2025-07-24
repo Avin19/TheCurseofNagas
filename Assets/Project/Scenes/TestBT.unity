@@ -716,6 +716,7 @@ MonoBehaviour:
   _searchRange: 1
   _totalSearchDuration: 1
   _investigateSpeedMult: 1
+  _attackRange: 1
   patrolArea:
     _patrolPoints: []
     _self: {fileID: 1573657564}
@@ -735,6 +736,10 @@ MonoBehaviour:
     _speedMult: 2
     _totalSearchDuration: 12
     _self: {fileID: 1573657564}
+  checkPlayerInAttackRange:
+    _origin: {fileID: 1573657564}
+    _target: {fileID: 847042427}
+    _range: 2
 --- !u!1 &1691099434
 GameObject:
   m_ObjectHideFlags: 0
