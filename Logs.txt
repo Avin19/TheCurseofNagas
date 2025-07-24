@@ -433,6 +433,24 @@
         {+} Check if enemy has lost Player
         {+} Create a search radius and choose a random direction to go withing the radius
         {+} Do this until the totalSearch time is over
+
+--------------------------------------------------------------------------------------------------------
+                                                24 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] Defining TESTING_BT preprocessor
+    [=] InvestigateAreaTask
+        {+} Completing logic | Setting/Unsetting flags
+    [=] StayAndLookAround
+        {+} Basic logic | Setting/Unsetting flags
+    [=] PatrolAreaTask
+        {+} Fixing Bugs | References to fields/values for them
+    [=] EnemyBoard
+        {+} Blackboard class to keep track of Enemy
+    [=] Changing all Behaviour-Nodes EnemyStatus to EnemyBoard
+- Project
+    [=] Test mats for BT tests
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
 - [DO] [IF POSSIBLE] Implement GOAP instead of Behaviour Tree

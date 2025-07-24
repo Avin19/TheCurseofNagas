@@ -1,6 +1,6 @@
 namespace CurseOfNaga.BehaviourTree
 {
-    public enum NodeState { RUNNING, SUCCESS, FAILURE, }
+    public enum NodeState { IDLE, RUNNING, SUCCESS, FAILURE, }
 
     [System.Serializable]
     public abstract class Node

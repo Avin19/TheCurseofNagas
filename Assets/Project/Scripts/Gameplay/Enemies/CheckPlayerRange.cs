@@ -1,3 +1,5 @@
+#define TESTING_BT
+
 using UnityEngine;
 
 using CurseOfNaga.BehaviourTree;
@@ -5,19 +7,33 @@ using static CurseOfNaga.Global.UniversalConstant;
 
 namespace CurseOfNaga.Gameplay.Enemies
 {
+    [System.Serializable]
     public class CheckPlayerRange : Node
     {
+#if !TESTING_BT
         private Transform _origin;
         private Transform _target;
         private float _range;
-        private EnemyStatus _enemyStatus;
+#else
+        public Transform _origin;
+        public Transform _target;
+        public float _range;
+#endif
+        private EnemyBoard _board;
 
-        public CheckPlayerRange(Transform origin, Transform target, float range, ref EnemyStatus status)
+#if TESTING_BT
+        public void Initialize(EnemyBoard board)
+        {
+            _board = board;
+        }
+#endif
+
+        public CheckPlayerRange(Transform origin, Transform target, float range, EnemyBoard board)
         {
             _target = target;
             _origin = origin;
             _range = range;
-            _enemyStatus = status;
+            _board = board;
         }
 
         public override NodeState Evaluate(int currCount)
@@ -26,8 +42,8 @@ namespace CurseOfNaga.Gameplay.Enemies
 
             if (Vector3.SqrMagnitude(_target.position - _origin.position) <= (_range * _range))
             {
-                _enemyStatus |= EnemyStatus.PLAYER_VISIBLE;
-                _enemyStatus &= ~EnemyStatus.LOST_PLAYER;
+                _board.Status |= EnemyStatus.PLAYER_VISIBLE;
+                _board.Status &= ~EnemyStatus.LOST_PLAYER;
 
                 _NodeState = NodeState.SUCCESS;
                 return NodeState.SUCCESS;

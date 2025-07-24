@@ -5,11 +5,11 @@ namespace CurseOfNaga.Gameplay.Enemies
 {
     public class CheckIfLostPlayer : Node
     {
-        private EnemyStatus _enemyStatus;
+        private EnemyBoard _board;
 
-        public CheckIfLostPlayer(ref EnemyStatus status)
+        public CheckIfLostPlayer(EnemyBoard board)
         {
-            _enemyStatus = status;
+            _board = board;
         }
 
         public override NodeState Evaluate(int currCount)
@@ -17,9 +17,9 @@ namespace CurseOfNaga.Gameplay.Enemies
             _CurrCount = currCount;
 
             //Player was visible and we have lost the player
-            if ((_enemyStatus & EnemyStatus.PLAYER_VISIBLE) != 0)
+            if ((_board.Status & EnemyStatus.PLAYER_VISIBLE) != 0)
             {
-                _enemyStatus |= EnemyStatus.LOST_PLAYER;
+                _board.Status |= EnemyStatus.LOST_PLAYER;
 
                 _NodeState = NodeState.SUCCESS;
                 return NodeState.SUCCESS;
