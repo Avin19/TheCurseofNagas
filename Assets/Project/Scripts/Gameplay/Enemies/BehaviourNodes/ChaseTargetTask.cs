@@ -1,6 +1,8 @@
 using UnityEngine;
 
-namespace CurseOfNaga.BehaviourTree
+using CurseOfNaga.BehaviourTree;
+
+namespace CurseOfNaga.Gameplay.Enemies
 {
     public class ChaseTargetTask : Node
     {

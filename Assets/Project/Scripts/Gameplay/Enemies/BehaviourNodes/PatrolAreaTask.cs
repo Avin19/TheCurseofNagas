@@ -2,9 +2,12 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+
 using UnityEngine;
 
-namespace CurseOfNaga.BehaviourTree
+using CurseOfNaga.BehaviourTree;
+
+namespace CurseOfNaga.Gameplay.Enemies
 {
     [System.Serializable]
     public class PatrolAreaTask : Node

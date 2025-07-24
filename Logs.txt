@@ -451,6 +451,8 @@
 - Project
     [=] Test mats for BT tests
 
+- Project
+    [=] Moving BehaviourNode scripts to Enemies
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
 - [DO] [IF POSSIBLE] Implement GOAP instead of Behaviour Tree
