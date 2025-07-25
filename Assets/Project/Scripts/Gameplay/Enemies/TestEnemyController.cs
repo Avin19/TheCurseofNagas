@@ -89,8 +89,9 @@ namespace CurseOfNaga.Gameplay.Enemies
             patrolArea = new PatrolAreaTask(transform, patrolPoints, _patrolSpeedMult, _patrolWaitTime);
 #endif
             Selector attackSelector = new Selector(new Node[]{
-                new Invertor(decideAttackType)
+                new Invertor(decideAttackType),
             });
+
             Sequence attackSequence = new Sequence(new Node[] {
                 checkPlayerInAttackRange,
                 attackSelector

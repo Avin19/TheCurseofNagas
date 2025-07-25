@@ -1,0 +1,40 @@
+{
+    "attack_data": [
+        {
+            "pid": 0,
+            "name": "Enemy_0",
+            "melee_combos": [
+                {
+                    "id": 0,
+                    "combo": "N1,N2,H1,N2"
+                },
+                {
+                    "id": 1,
+                    "combo": "N2,H2,H1,N2"
+                },
+                {
+                    "id": 2,
+                    "combo": "N1,H2,H2,N2"
+                }
+            ]
+        },
+        {
+            "pid": 1,
+            "name": "Enemy_1",
+            "melee_combos": [
+                {
+                    "id": 0,
+                    "combo": "N1,N2,H1,N2"
+                },
+                {
+                    "id": 1,
+                    "combo": "N2,H2,H1,N2"
+                },
+                {
+                    "id": 2,
+                    "combo": "N1,H2,H2,N2"
+                }
+            ]
+        }
+    ]
+}

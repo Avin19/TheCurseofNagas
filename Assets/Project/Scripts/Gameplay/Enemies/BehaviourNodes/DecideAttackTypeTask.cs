@@ -37,10 +37,10 @@ namespace CurseOfNaga.Gameplay.Enemies
             _CurrCount = currCount;
 
             //Check conditions for determining what to attack player with
-            //This can logically never return FAILURE, as enemy will always attack player. but FEAR SYSTEM?
+            //This can logically never return FAILURE and will always return SUCESS, as enemy will always attack player, but FEAR SYSTEM?
             //Always fall back to Melee
 
-            _board.AttackType = EnemyAttackType.MELEE_0;
+            _board.AttackType |= EnemyAttackType.MELEE;
 
             _NodeState = NodeState.SUCCESS;
             return NodeState.SUCCESS;

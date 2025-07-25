@@ -15,7 +15,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         {
             Self = self;
             Status = EnemyStatus.IDLE;
-            AttackType = EnemyAttackType.NOT_ATACKING;
+            AttackType = EnemyAttackType.NOT_ATTACKING;
         }
     }
 }

@@ -484,6 +484,21 @@
         {+} Adding EnemyAttackType as field
     [=] TestEnemyController
         {+} Inverting DecideAttackTypeTask to let the next Node work as it is under a Selector
+
+--------------------------------------------------------------------------------------------------------
+                                                25 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] PerformAttackTask
+        {+} Basic attack script
+    [=] UniversalConstant
+        {+} Removing RANGED_ATTACK values as it does not makes sense, only keeping 1
+        {+} Adding Heavy Melee Attack values to AttackType enum
+        {+} Making AttackType to work as flags
+- Project
+    [=] AttackComboData.json
+        {+} Will contain all the attack combos/patterns
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
     [=] [DO] Make StayAndLookAround logic
