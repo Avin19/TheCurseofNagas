@@ -49,16 +49,18 @@ namespace CurseOfNaga.Gameplay.Enemies
             //  Determine which kind of attack can the Enemy perform from the the list of attacks
 
             //  Play out the attack combo
-            if ((_board.AttackType & EnemyAttackType.ATTACK_DECIDED) != 0
-                && (_board.AttackType & EnemyAttackType.MELEE) != 0)
+            // if ((_board.AttackType & EnemyAttackType.ATTACK_DECIDED) != 0
+            //     && (_board.AttackType & EnemyAttackType.MELEE) != 0)
+            if (_board.AttackTypeBase == (byte)EnemyAttackType.MELEE)
             {
                 // Determine the attack type
                 EnemyAttackType attackType;
 
 
             }
-            else if ((_board.AttackType & EnemyAttackType.ATTACK_DECIDED) != 0
-                && (_board.AttackType & EnemyAttackType.RANGED_ATTACK) != 0)
+            // else if ((_board.AttackType & EnemyAttackType.ATTACK_DECIDED) != 0
+            //     && (_board.AttackType & EnemyAttackType.RANGED_ATTACK) != 0)
+            else if (_board.AttackTypeBase == (byte)EnemyAttackType.RANGED_ATTACK)
             {
 
             }

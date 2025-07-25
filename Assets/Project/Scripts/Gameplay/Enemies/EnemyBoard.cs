@@ -9,6 +9,7 @@ namespace CurseOfNaga.Gameplay.Enemies
     {
         public Transform Self;
         public EnemyStatus Status;
+        public byte AttackTypeBase;
         public EnemyAttackType AttackType;
 
         public EnemyBoard(Transform self)

@@ -49,6 +49,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         {
             // Invoke(nameof(InitializeTree), 2f);
             _mainBoard = new EnemyBoard(transform);
+
             InitializeTree();
         }
 

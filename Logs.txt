@@ -499,6 +499,25 @@
     [=] AttackComboData.json
         {+} Will contain all the attack combos/patterns
 
+- Scripts
+    [=] FileDataHelper
+        {+} Utility script for loading files from StreamingAssets path
+    [=] AttackTemplate
+        {+} Template for holding AttackData json
+        {+} Changing from porperties to fields
+        {+} Adding constructor to each class
+        {+} Adding ComboSequence to parse the sequence and load to here
+    [=] AttackDataParser
+        {+} For loading and parsing AttackData
+        {+} Constants for Comparing Combo string
+    [=] UniversalConstant
+        {+} Changing AttackType back to normal values and renaming values
+    [=] EnemyBoard
+        {+} Addin AttackTypeBase to identify the base type of attack
+    [=] DecideAttackTypeTask/PerformAttackTask
+        {+} Setting/Comparing AttackTypeBase instead
+- Project
+    [=] Changing StreamingAssets folder location
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
     [=] [DO] Make StayAndLookAround logic

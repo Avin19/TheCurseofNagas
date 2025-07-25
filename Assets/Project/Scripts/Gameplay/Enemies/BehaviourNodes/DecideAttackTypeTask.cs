@@ -40,7 +40,8 @@ namespace CurseOfNaga.Gameplay.Enemies
             //This can logically never return FAILURE and will always return SUCESS, as enemy will always attack player, but FEAR SYSTEM?
             //Always fall back to Melee
 
-            _board.AttackType |= EnemyAttackType.MELEE;
+            _board.AttackTypeBase = (byte)EnemyAttackType.MELEE;
+            // _board.AttackType |= EnemyAttackType.MELEE;
 
             _NodeState = NodeState.SUCCESS;
             return NodeState.SUCCESS;
