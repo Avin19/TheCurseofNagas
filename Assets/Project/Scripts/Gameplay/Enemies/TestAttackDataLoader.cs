@@ -8,7 +8,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         private static TestAttackDataLoader _instance;
         public static TestAttackDataLoader Instance { get => _instance; }
 
-        private void OnAwake()
+        private void Awake()
         {
             if (_instance == null)
                 _instance = this;

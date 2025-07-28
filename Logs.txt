@@ -536,6 +536,16 @@
     [=] PerformAttackTask
         {+} Attack logic template
 
+- Scripts
+    [=] EnemyBoard
+        {+} Adding Animator
+        {+} Constants for animation flags
+        {+} AnimClipLengths array ref for animation clips length
+    [=] PerformAttackTask
+        {+} Invoke animation / Change animation after delay
+        {+} Checking if any animation is currently playing
+- Project
+    [=] Test animations for Enemy
 
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree

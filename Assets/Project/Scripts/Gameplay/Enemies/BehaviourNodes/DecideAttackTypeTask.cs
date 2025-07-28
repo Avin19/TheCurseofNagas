@@ -53,7 +53,12 @@ namespace CurseOfNaga.Gameplay.Enemies
 
             // Select a combo if not selected
             if (_board.SelectedComboIndex == 255)
-                _board.SelectedComboIndex = (byte)Random.Range(0, _board.MeleeCombos.Count);
+            {
+                _board.SelectedComboIndex = 0;
+                // _board.SelectedComboIndex = (byte)Random.Range(0, _board.MeleeCombos.Count);
+
+                Debug.Log($"SelectedComboIndex: {_board.SelectedComboIndex}");
+            }
 
             _NodeState = NodeState.SUCCESS;
             return NodeState.SUCCESS;

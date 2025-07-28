@@ -13,6 +13,10 @@ namespace CurseOfNaga.Gameplay.Enemies
         private Node _rootNode;
         [SerializeField] private Transform _playerTransform;
 
+        [Header("Animation Controls")]
+        [SerializeField] private Animator _enemyAnimator;
+        [SerializeField] private AnimationClip[] _animClips;
+
         [Header("Chase Controls")]
         [SerializeField] private float _playerVisibleRange;
         [SerializeField] private float _chaseStopRange, _chaseSpeedMult;
@@ -39,6 +43,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         [SerializeField] private StayAndLookAroundTask lookAroundArea;
         [SerializeField] private CheckPlayerInAttackRange checkPlayerInAttackRange;
         [SerializeField] private DecideAttackTypeTask decideAttackType;
+        [SerializeField] private PerformAttackTask performAttack;
 
         private EnemyBoard _mainBoard;
         // private EnemyStatus _mainEnemyStatus;
@@ -48,18 +53,24 @@ namespace CurseOfNaga.Gameplay.Enemies
 
         private void Start()
         {
-            _mainBoard = new EnemyBoard(transform,
-                TestAttackDataLoader.Instance.AttackDataParser.AttackTemplateData.attack_data[0].melee_combos);
-
             // InitializeTree();
             Invoke(nameof(InitializeTree), 2f);
         }
 
         private void InitializeTree()
         {
+            float[] clipLengths = new float[_animClips.Length];
+            for (int i = 0; i < clipLengths.Length; i++)
+                clipLengths[i] = _animClips[i].length;
+
+            _mainBoard = new EnemyBoard(transform,
+                TestAttackDataLoader.Instance.AttackDataParser.AttackTemplateData.attack_data[0].melee_combos,
+                _enemyAnimator, clipLengths);
+
 #if TESTING_BT
             checkPlayerInAttackRange.Initialize(_mainBoard);
             decideAttackType.Initialize(_mainBoard);
+            performAttack.Initialize(_mainBoard);
 
             chasePlayer.Initialize(_mainBoard);
             checkPlayerVisibility.Initialize(_mainBoard);
@@ -76,6 +87,7 @@ namespace CurseOfNaga.Gameplay.Enemies
 #else
             checkPlayerInAttackRange = new CheckPlayerInAttackRange(_mainBoard, transform, _playerTransform, _attackRange);
             decideAttackType = new DecideAttackTypeTask(_mainBoard);
+            performAttack = new PerformAttackTask(_mainBoard);
 
             checkPlayerVisibility = new CheckPlayerRange(_mainBoard, transform, _playerTransform, _playerVisibleRange, _mainBoard);
             chasePlayer = new ChaseTargetTask(transform, _playerTransform, _chaseStopRange, _chaseSpeedMult);
@@ -93,6 +105,7 @@ namespace CurseOfNaga.Gameplay.Enemies
 #endif
             Selector attackSelector = new Selector(new Node[]{
                 new Invertor(decideAttackType),
+                performAttack
             });
 
             Sequence attackSequence = new Sequence(new Node[] {
