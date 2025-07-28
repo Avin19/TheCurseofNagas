@@ -47,14 +47,21 @@ namespace CurseOfNaga.Global
             ENEMY_WITHIN_PLAYER_RANGE = 1 << 9,
             PLAYER_ATTACKING = 1 << 10,
             DEAD = 1 << 11,
+            ATTACK_DECIDED = 1 << 12,
         }
 
         public enum EnemyAttackType
         {
+            // MELEE = 2 | RANGED_ATTACK = 128
             NOT_ATTACKING = 0, ATTACK_DECIDED = 1, MELEE = 1 << 1,
             NORMAL_M0 = 3, NORMAL_M1 = 4, NORMAL_M2 = 5, NORMAL_M3 = 6, NORMAL_M4 = 7, NORMAL_M5 = 8,
             HEAVY_M0 = 13, HEAVY_M1 = 14, HEAVY_M2 = 15, HEAVY_M3 = 16, HEAVY_M4 = 17, HEAVY_M5 = 18,
             RANGED_ATTACK = 1 << 7, SHOOT1 = 129, THROW1 = 130
+        }
+
+        public enum EnemyType
+        {
+            ENEMY_0, ENEMY_1, ENEMY_2, ENEMY_3
         }
 
         public enum EnvironmentType

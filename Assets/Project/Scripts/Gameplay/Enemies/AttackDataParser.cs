@@ -48,7 +48,7 @@ namespace CurseOfNaga.Gameplay.Enemies
 
             FileDataHelper fileDataHelper = new FileDataHelper();
             string attackDataStr = await fileDataHelper.GetFileData_Async(path);
-            Debug.Log($"Str: {attackDataStr}");
+            // Debug.Log($"Str: {attackDataStr}");
             if (_cts.IsCancellationRequested) return;
 
             await Task.Run(() =>
@@ -71,17 +71,17 @@ namespace CurseOfNaga.Gameplay.Enemies
         private void ParseAttackCombos()
         {
             //Parse the combos and store them
-            int meleeIndex = 0, attackIndex = 0;
+            int meleeComboIndex = 0, attackIndex = 0;
             int tempArrSize = 0;
             byte tempAttackVal = 0;
             string tempStr;
             MeleeCombo meleeCombo;
             for (int attDataIndex = 0; attDataIndex < AttackTemplateData.attack_data.Count; attDataIndex++)
             {
-                for (meleeIndex = 0; meleeIndex < AttackTemplateData.attack_data[attDataIndex].melee_combos.Count;
-                    meleeIndex++)
+                for (meleeComboIndex = 0; meleeComboIndex < AttackTemplateData.attack_data[attDataIndex].melee_combos.Count;
+                    meleeComboIndex++)
                 {
-                    meleeCombo = AttackTemplateData.attack_data[attDataIndex].melee_combos[meleeIndex];
+                    meleeCombo = AttackTemplateData.attack_data[attDataIndex].melee_combos[meleeComboIndex];
 
                     int.TryParse(meleeCombo.combo.Substring(0, 1), out tempArrSize);
                     meleeCombo.ComboSequence = new byte[tempArrSize];

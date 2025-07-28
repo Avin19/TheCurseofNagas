@@ -5,11 +5,23 @@ namespace CurseOfNaga.Gameplay.Enemies
 {
     public class TestAttackDataLoader : MonoBehaviour
     {
-        private AttackDataParser attackDataParser;
+        private static TestAttackDataLoader _instance;
+        public static TestAttackDataLoader Instance { get => _instance; }
+
+        private void OnAwake()
+        {
+            if (_instance == null)
+                _instance = this;
+            else
+                Destroy(gameObject);
+        }
+
+        public AttackDataParser AttackDataParser;
+
         private void Start()
         {
-            attackDataParser = new AttackDataParser();
-            attackDataParser.LoadAttackDataJson();
+            AttackDataParser = new AttackDataParser();
+            AttackDataParser.LoadAttackDataJson();
         }
     }
 }

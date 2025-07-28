@@ -518,10 +518,30 @@
         {+} Setting/Comparing AttackTypeBase instead
 - Project
     [=] Changing StreamingAssets folder location
+
+--------------------------------------------------------------------------------------------------------
+                                                28 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Updated BT diagram
+- Scripts
+    [=] UniversalConstant
+        {+} Adding EnemyType enum to identify Enemy
+        {+} Adding values to EnemeyStatus
+    [=] DecideAttackTypeTask
+        {+} Also deciding the melee-combo to perform
+    [=] EnemyBoard
+        {+} Adding MeleeCombo field for storing combo references
+        {+} Adding SelectedComboIndex to track the combo selected
+        {+} Adding CurrentAttackIndex to keep track of the attack index in the combo
+    [=] PerformAttackTask
+        {+} Attack logic template
+
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
     [=] [DO] Make StayAndLookAround logic
     [=] [DO] Make DecideAttackTypeTask abstract
+- [DO] [IMP] Reset flags for the attack tree
 - [DO] [IF POSSIBLE] Implement GOAP instead of Behaviour Tree
 - [NOW PARTIAL] Save System
 - [DO] Main Menu

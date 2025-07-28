@@ -1,6 +1,8 @@
 using UnityEngine;
 
+using CurseOfNaga.Global.Template;
 using static CurseOfNaga.Global.UniversalConstant;
+using System.Collections.Generic;
 
 namespace CurseOfNaga.Gameplay.Enemies
 {
@@ -12,11 +14,17 @@ namespace CurseOfNaga.Gameplay.Enemies
         public byte AttackTypeBase;
         public EnemyAttackType AttackType;
 
-        public EnemyBoard(Transform self)
+        public byte SelectedComboIndex, CurrentAttackIndex;
+        public List<MeleeCombo> MeleeCombos;
+
+        public EnemyBoard(Transform self, List<MeleeCombo> combos)
         {
             Self = self;
             Status = EnemyStatus.IDLE;
             AttackType = EnemyAttackType.NOT_ATTACKING;
+            SelectedComboIndex = 255;
+            CurrentAttackIndex = 0;
+            MeleeCombos = combos;
         }
     }
 }

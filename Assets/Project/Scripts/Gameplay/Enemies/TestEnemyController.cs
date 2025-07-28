@@ -44,13 +44,15 @@ namespace CurseOfNaga.Gameplay.Enemies
         // private EnemyStatus _mainEnemyStatus;
 
         int debugIntVar = 0;
+        bool _initialized = false;
 
         private void Start()
         {
-            // Invoke(nameof(InitializeTree), 2f);
-            _mainBoard = new EnemyBoard(transform);
+            _mainBoard = new EnemyBoard(transform,
+                TestAttackDataLoader.Instance.AttackDataParser.AttackTemplateData.attack_data[0].melee_combos);
 
-            InitializeTree();
+            // InitializeTree();
+            Invoke(nameof(InitializeTree), 2f);
         }
 
         private void InitializeTree()
@@ -114,11 +116,15 @@ namespace CurseOfNaga.Gameplay.Enemies
                 investigateForPlayer,
                 patrolArea
             });
+
+            _initialized = true;
         }
 
 
         private void Update()
         {
+            if (!_initialized) return;
+
             _rootNode.Evaluate(debugIntVar);
         }
     }
