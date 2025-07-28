@@ -547,6 +547,15 @@
 - Project
     [=] Test animations for Enemy
 
+- Scripts
+    [=] EnemyBoard
+        {+} Shifting animation constant here from PerformAttackTask | Adding another const
+        {+} Changing const to flags
+    [=] PerformAttackTask
+        {+} Repeatedly async checking if animation has finished playing instead of setting flags directly
+- Project
+    [=] Adding event to animation-clips to trigger AnimationClipFinished
+    [=] Adding some extra test animation-clips
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
     [=] [DO] Make StayAndLookAround logic

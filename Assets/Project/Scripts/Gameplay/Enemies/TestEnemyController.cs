@@ -57,6 +57,15 @@ namespace CurseOfNaga.Gameplay.Enemies
             Invoke(nameof(InitializeTree), 2f);
         }
 
+        // For the use of animator
+        private void AnimationClipFinished()
+        {
+            //An animation is already playing
+            _mainBoard.CurrentAttackIndex |= EnemyBoard.PLAY_FINISHED;
+
+            Debug.Log($"Finished Clip | Setting Index : {_mainBoard.CurrentAttackIndex}");
+        }
+
         private void InitializeTree()
         {
             float[] clipLengths = new float[_animClips.Length];

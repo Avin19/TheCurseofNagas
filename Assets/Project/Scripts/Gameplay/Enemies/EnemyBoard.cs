@@ -25,6 +25,8 @@ namespace CurseOfNaga.Gameplay.Enemies
         public float DamageMultiplier;
         public Animator EnemyAnimator;
 
+        public const int ALREADY_PLAYING = (1 << 20), PLAY_FINISHED = (1 << 21);
+
         public EnemyBoard(Transform self, List<MeleeCombo> combos, Animator animator, float[] clipLengths)
         {
             Self = self;

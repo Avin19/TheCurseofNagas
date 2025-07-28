@@ -6,15 +6,15 @@
             "melee_combos": [
                 {
                     "id": 0,
-                    "combo": "4,NM1,NM2,HM1,NM2"
+                    "combo": "4,NM0,NM1,HM0,NM1"
                 },
                 {
                     "id": 1,
-                    "combo": "4,NM2,HM2,HM1,NM2"
+                    "combo": "4,NM1,HM1,HM0,NM1"
                 },
                 {
                     "id": 2,
-                    "combo": "4,NM1,HM2,HM2,NM2"
+                    "combo": "4,NM0,HM1,HM1,NM1"
                 }
             ]
         },
@@ -24,15 +24,15 @@
             "melee_combos": [
                 {
                     "id": 0,
-                    "combo": "4,NM1,NM2,HM1,NM2"
+                    "combo": "4,NM0,NM1,HM0,NM1"
                 },
                 {
                     "id": 1,
-                    "combo": "4,NM2,HM2,HM1,NM2"
+                    "combo": "4,NM1,HM1,HM0,NM1"
                 },
                 {
                     "id": 2,
-                    "combo": "4,NM1,HM2,HM2,NM2"
+                    "combo": "4,NM0,HM1,HM1,NM1"
                 }
             ]
         }
