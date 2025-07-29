@@ -60,6 +60,12 @@ namespace CurseOfNaga.Gameplay.Enemies
         {
             _CurrCount = currCount;
 
+            if (_board.SelectedCombatDecision != (byte)CombatDecision.ATTACK)
+            {
+                _NodeState = NodeState.FAILURE;
+                return NodeState.FAILURE;
+            }
+
             // An Attack is already playing
             if ((_board.CurrentAttackIndex & EnemyBoard.ALREADY_PLAYING) != 0)
             {
@@ -70,10 +76,10 @@ namespace CurseOfNaga.Gameplay.Enemies
             switch (_board.AttackTypeBase)
             {
                 case (byte)EnemyAttackType.MELEE:
-                    Debug.Log($"CurrentAttackIndex: {_board.CurrentAttackIndex} | MeleeCombos: {_board.MeleeCombos[_board.SelectedComboIndex]}");
+                    Debug.Log($"CurrentAttackIndex: {_board.CurrentAttackIndex} | MeleeCombos: {_board.MeleeCombos[_board.SelectedCombo]}");
 
                     Time.timeScale = 0.25f;
-                    EnemyAttackType attackType = (EnemyAttackType)_board.MeleeCombos[_board.SelectedComboIndex]
+                    EnemyAttackType attackType = (EnemyAttackType)_board.MeleeCombos[_board.SelectedCombo]
                                                 .ComboSequence[_board.CurrentAttackIndex];
 
                     _board.CurrentAttackIndex |= EnemyBoard.ALREADY_PLAYING;
@@ -145,14 +151,15 @@ namespace CurseOfNaga.Gameplay.Enemies
                     _board.CurrentAttackIndex &= ~EnemyBoard.ALREADY_PLAYING;
                     _board.CurrentAttackIndex &= ~EnemyBoard.PLAY_FINISHED;
 
-                    if (_board.CurrentAttackIndex < _board.MeleeCombos[_board.SelectedComboIndex].ComboSequence.Length - 1)
+                    if (_board.CurrentAttackIndex < _board.MeleeCombos[_board.SelectedCombo].ComboSequence.Length - 1)
                     {
                         _board.CurrentAttackIndex++;
                         break;
                     }
                     else
                     {
-                        _board.SelectedComboIndex = 255;
+                        _board.SelectedCombo = (byte)ComboType.DEFAULT;
+                        _board.SelectedCombatDecision = (byte)CombatDecision.NOT_DECIDED;
                         _board.CurrentAttackIndex = 0;
                         _board.EnemyAnimator.SetInteger(EnemyBoard.PERFORM_ATTACK, (int)EnemyAttackType.NOT_ATTACKING);
                         break;

@@ -556,6 +556,28 @@
 - Project
     [=] Adding event to animation-clips to trigger AnimationClipFinished
     [=] Adding some extra test animation-clips
+
+--------------------------------------------------------------------------------------------------------
+                                                29 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] DecideAttackTypeTask | MakeCombatDecisionTask
+        {+} Renaming to MakeCombatDecisionTask
+        {+} Making logic flow
+        {+} Random wait function
+    [=] EnemyBoard
+        {+} Renaming SelectedComboIndex to SelectedCombo
+        {+} Adding SelectedCombatDecision
+    [=] PerformAttackTask
+        {+} Checking for CombatDecision and resetting flags
+    [=] UniversalConstant
+        {+} Adding CombatDecision enum
+        {+} Removing ATTACK_DECIDED from EnemyAttackType
+- Project
+    [=] Testing animations
+
+
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
     [=] [DO] Make StayAndLookAround logic
@@ -637,6 +659,25 @@
     [=] Non-Async 50 | Start: 7m 13s 697ms 638877712336972752 | End: 7m 13s 699ms 638877712336997780       | 25,028
 
     [=] Non-Async 100 | Start: 10m 24s 506ms 638877714245066834 | End: 10m 24s 517ms 638877714245177378       | 25,028
+
+-------------------------------------------------------------------------------------------------------------------------
+                                                    COMBAT MODEL
+-------------------------------------------------------------------------------------------------------------------------
+- Chase the Player                                      - Basic
+- Hit the Player                                        - Basic
+- Decide which move to use on the Player                - Basic
+- Get hit from the Player                               - Basic
+- Defend from the Player
+- Strafe around the Player
+- Take Cover from the Player
+- Throw things at the Player for doing Damage
+- Use Melee-Weapons at the Player
+- Use Ranged-Weapons at the Player
+- Take surroundings into consideration
+- Take their own condition into consideration
+- When low Health, do something to increase health
+    [=] Heal if Possible
+
 
 -------------------------------------------------------------------------------------------------------------------------
 - Some of these building will have triggers 

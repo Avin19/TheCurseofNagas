@@ -17,7 +17,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         public byte AttackTypeBase;
         public EnemyAttackType AttackType;
 
-        public byte SelectedComboIndex;
+        public byte SelectedCombatDecision, SelectedCombo;
         public int CurrentAttackIndex;
         public List<MeleeCombo> MeleeCombos;
         public float[] AnimClipLengths;
@@ -32,7 +32,8 @@ namespace CurseOfNaga.Gameplay.Enemies
             Self = self;
             Status = EnemyStatus.IDLE;
             AttackType = EnemyAttackType.NOT_ATTACKING;
-            SelectedComboIndex = 255;
+            SelectedCombatDecision = (byte)CombatDecision.NOT_DECIDED;
+            SelectedCombo = (byte)ComboType.DEFAULT;
             CurrentAttackIndex = 0;
             MeleeCombos = combos;
             EnemyAnimator = animator;

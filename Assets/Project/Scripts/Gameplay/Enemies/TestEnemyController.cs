@@ -42,7 +42,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         [SerializeField] private InvestigateAreaTask investigateArea;
         [SerializeField] private StayAndLookAroundTask lookAroundArea;
         [SerializeField] private CheckPlayerInAttackRange checkPlayerInAttackRange;
-        [SerializeField] private DecideAttackTypeTask decideAttackType;
+        [SerializeField] private MakeCombatDecisionTask makeCombatDecision;
         [SerializeField] private PerformAttackTask performAttack;
 
         private EnemyBoard _mainBoard;
@@ -78,7 +78,7 @@ namespace CurseOfNaga.Gameplay.Enemies
 
 #if TESTING_BT
             checkPlayerInAttackRange.Initialize(_mainBoard);
-            decideAttackType.Initialize(_mainBoard);
+            makeCombatDecision.Initialize(_mainBoard);
             performAttack.Initialize(_mainBoard);
 
             chasePlayer.Initialize(_mainBoard);
@@ -113,7 +113,7 @@ namespace CurseOfNaga.Gameplay.Enemies
             patrolArea = new PatrolAreaTask(transform, patrolPoints, _patrolSpeedMult, _patrolWaitTime);
 #endif
             Selector attackSelector = new Selector(new Node[]{
-                new Invertor(decideAttackType),
+                new Invertor(makeCombatDecision),
                 performAttack
             });
 
