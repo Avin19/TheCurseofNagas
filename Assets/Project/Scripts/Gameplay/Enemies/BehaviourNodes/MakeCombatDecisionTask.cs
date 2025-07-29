@@ -76,7 +76,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                 // For now, just choosing a random decision
 
                 // _board.SelectedCombatDecision = (byte)Random.Range((int)CombatDecision.ATTACK, (int)CombatDecision.WAIT + 1);
-                _board.SelectedCombatDecision = (byte)CombatDecision.WAIT;          //TEST
+                _board.SelectedCombatDecision = (byte)CombatDecision.DEFEND;          //TEST
 
                 switch ((CombatDecision)_board.SelectedCombatDecision)
                 {
@@ -93,8 +93,6 @@ namespace CurseOfNaga.Gameplay.Enemies
                     // Just Pass to next node
                     case CombatDecision.DEFEND:
                     case CombatDecision.STRAFE:
-                        MakeNewDecision(Random.Range(1f, 3f));          //TEST
-
                         break;
 
                     case CombatDecision.WAIT:

@@ -67,7 +67,7 @@ namespace CurseOfNaga.Gameplay.Enemies
             }
 
             // An Attack is already playing
-            if ((_board.CurrentAttackIndex & EnemyBoard.ALREADY_PLAYING) != 0)
+            if ((_board.CurrentDecisionIndex & EnemyBoard.ALREADY_PLAYING) != 0)
             {
                 _NodeState = NodeState.SUCCESS;
                 return NodeState.SUCCESS;
@@ -76,13 +76,13 @@ namespace CurseOfNaga.Gameplay.Enemies
             switch (_board.AttackTypeBase)
             {
                 case (byte)EnemyAttackType.MELEE:
-                    Debug.Log($"CurrentAttackIndex: {_board.CurrentAttackIndex} | MeleeCombos: {_board.MeleeCombos[_board.SelectedCombo]}");
+                    Debug.Log($"CurrentAttackIndex: {_board.CurrentDecisionIndex} | MeleeCombos: {_board.MeleeCombos[_board.SelectedCombo]}");
 
                     Time.timeScale = 0.25f;
                     EnemyAttackType attackType = (EnemyAttackType)_board.MeleeCombos[_board.SelectedCombo]
-                                                .ComboSequence[_board.CurrentAttackIndex];
+                                                .ComboSequence[_board.CurrentDecisionIndex];
 
-                    _board.CurrentAttackIndex |= EnemyBoard.ALREADY_PLAYING;
+                    _board.CurrentDecisionIndex |= EnemyBoard.ALREADY_PLAYING;
                     switch (attackType)
                     {
                         case EnemyAttackType.NORMAL_M0:
@@ -145,28 +145,29 @@ namespace CurseOfNaga.Gameplay.Enemies
                 await Task.Delay(10);
                 if (_cts.IsCancellationRequested) return;
 
-                if ((_board.CurrentAttackIndex & EnemyBoard.PLAY_FINISHED) != 0)
+                if ((_board.CurrentDecisionIndex & EnemyBoard.PLAY_FINISHED) != 0)
                 {
-                    Debug.Log($"Changing Clip: {_board.CurrentAttackIndex}");
-                    _board.CurrentAttackIndex &= ~EnemyBoard.ALREADY_PLAYING;
-                    _board.CurrentAttackIndex &= ~EnemyBoard.PLAY_FINISHED;
+                    Debug.Log($"Changing Clip: {_board.CurrentDecisionIndex}");
+                    _board.CurrentDecisionIndex &= ~EnemyBoard.ALREADY_PLAYING;
+                    _board.CurrentDecisionIndex &= ~EnemyBoard.PLAY_FINISHED;
 
-                    if (_board.CurrentAttackIndex < _board.MeleeCombos[_board.SelectedCombo].ComboSequence.Length - 1)
+                    if (_board.CurrentDecisionIndex < _board.MeleeCombos[_board.SelectedCombo].ComboSequence.Length - 1)
                     {
-                        _board.CurrentAttackIndex++;
+                        _board.CurrentDecisionIndex++;
                         break;
                     }
                     else
                     {
                         _board.SelectedCombo = (byte)ComboType.DEFAULT;
                         _board.SelectedCombatDecision = (byte)CombatDecision.NOT_DECIDED;
-                        _board.CurrentAttackIndex = 0;
+                        _board.CurrentDecisionIndex = EnemyBoard.NO_DECISION;
+                        _NodeState = NodeState.IDLE;
                         _board.EnemyAnimator.SetInteger(EnemyBoard.PERFORM_ATTACK, (int)EnemyAttackType.NOT_ATTACKING);
                         break;
                     }
                 }
             }
-            Debug.Log($"Clip Changed: {_board.CurrentAttackIndex}");
+            Debug.Log($"Clip Changed: {_board.CurrentDecisionIndex}");
         }
 
         public virtual void CheckAttackConditions() { }

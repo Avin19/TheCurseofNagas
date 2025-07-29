@@ -576,6 +576,14 @@
 - Project
     [=] Testing animations
 
+- Scripts
+    [=] Adding scripts PerformDefendTask | PerformStrafeTask
+        {+} Basic functionality template
+        {+} Setting NodeState to IDLE at exit
+    [=] EnemyBoard
+        {+} Renaming CurrentAttackIndex to CurrentDecisionIndex
+        {+} Adding const NO_DECISION
+- Updating BT diagram
 
 
 --------------------------------------------------------------------------------------------------------

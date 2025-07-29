@@ -44,6 +44,8 @@ namespace CurseOfNaga.Gameplay.Enemies
         [SerializeField] private CheckPlayerInAttackRange checkPlayerInAttackRange;
         [SerializeField] private MakeCombatDecisionTask makeCombatDecision;
         [SerializeField] private PerformAttackTask performAttack;
+        [SerializeField] private PerformDefendTask performDefend;
+        [SerializeField] private PerformStrafeTask performStrafe;
 
         private EnemyBoard _mainBoard;
         // private EnemyStatus _mainEnemyStatus;
@@ -61,9 +63,9 @@ namespace CurseOfNaga.Gameplay.Enemies
         private void AnimationClipFinished()
         {
             //An animation is already playing
-            _mainBoard.CurrentAttackIndex |= EnemyBoard.PLAY_FINISHED;
+            _mainBoard.CurrentDecisionIndex |= EnemyBoard.PLAY_FINISHED;
 
-            Debug.Log($"Finished Clip | Setting Index : {_mainBoard.CurrentAttackIndex}");
+            Debug.Log($"Finished Clip | Setting Index : {_mainBoard.CurrentDecisionIndex}");
         }
 
         private void InitializeTree()
@@ -80,6 +82,8 @@ namespace CurseOfNaga.Gameplay.Enemies
             checkPlayerInAttackRange.Initialize(_mainBoard);
             makeCombatDecision.Initialize(_mainBoard);
             performAttack.Initialize(_mainBoard);
+            performDefend.Initialize(_mainBoard);
+            performStrafe.Initialize(_mainBoard);
 
             chasePlayer.Initialize(_mainBoard);
             checkPlayerVisibility.Initialize(_mainBoard);
@@ -114,7 +118,9 @@ namespace CurseOfNaga.Gameplay.Enemies
 #endif
             Selector attackSelector = new Selector(new Node[]{
                 new Invertor(makeCombatDecision),
-                performAttack
+                performAttack,
+                performDefend,
+                performStrafe
             });
 
             Sequence attackSequence = new Sequence(new Node[] {

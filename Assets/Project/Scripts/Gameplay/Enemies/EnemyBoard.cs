@@ -18,14 +18,14 @@ namespace CurseOfNaga.Gameplay.Enemies
         public EnemyAttackType AttackType;
 
         public byte SelectedCombatDecision, SelectedCombo;
-        public int CurrentAttackIndex;
+        public int CurrentDecisionIndex;
         public List<MeleeCombo> MeleeCombos;
         public float[] AnimClipLengths;
 
         public float DamageMultiplier;
         public Animator EnemyAnimator;
 
-        public const int ALREADY_PLAYING = (1 << 20), PLAY_FINISHED = (1 << 21);
+        public const int NO_DECISION = 0, ALREADY_PLAYING = (1 << 20), PLAY_FINISHED = (1 << 21);
 
         public EnemyBoard(Transform self, List<MeleeCombo> combos, Animator animator, float[] clipLengths)
         {
@@ -34,7 +34,7 @@ namespace CurseOfNaga.Gameplay.Enemies
             AttackType = EnemyAttackType.NOT_ATTACKING;
             SelectedCombatDecision = (byte)CombatDecision.NOT_DECIDED;
             SelectedCombo = (byte)ComboType.DEFAULT;
-            CurrentAttackIndex = 0;
+            CurrentDecisionIndex = NO_DECISION;
             MeleeCombos = combos;
             EnemyAnimator = animator;
             AnimClipLengths = clipLengths;
