@@ -34,6 +34,11 @@ namespace CurseOfNaga.Gameplay.Enemies
         [Header("Attack Controls")]
         [Range(1f, 3f), SerializeField] private float _attackRange;
 
+        [Header("Attack Controls")]
+        [Range(1.5f, 3f), SerializeField] private float _strafeRadius = 1.5f;
+        [Range(20f, 50f), SerializeField] private float _strafeSpeedMult = 30f;
+
+
         [Header("Behaviour Tree Controls")]
         [SerializeField] private PatrolAreaTask patrolArea;
         [SerializeField] private CheckPlayerRange checkPlayerVisibility;
@@ -101,6 +106,8 @@ namespace CurseOfNaga.Gameplay.Enemies
             checkPlayerInAttackRange = new CheckPlayerInAttackRange(_mainBoard, transform, _playerTransform, _attackRange);
             decideAttackType = new DecideAttackTypeTask(_mainBoard);
             performAttack = new PerformAttackTask(_mainBoard);
+            performDefend = new PerformDefendTask(_mainBoard);
+            performStrafe = new PerformStrafeTask(_mainBoard, transform, _playerTransform, _strafeRadius, _strafeSpeedMult);
 
             checkPlayerVisibility = new CheckPlayerRange(_mainBoard, transform, _playerTransform, _playerVisibleRange, _mainBoard);
             chasePlayer = new ChaseTargetTask(transform, _playerTransform, _chaseStopRange, _chaseSpeedMult);

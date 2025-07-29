@@ -585,7 +585,15 @@
         {+} Adding const NO_DECISION
 - Updating BT diagram
 
-
+- Scripts
+    [=] EnemyBoard
+        {+} Adding const COMBAT_DECISION for animation
+    [=] PerformStrafeTask
+        {+} Strafe around the player in a circle with defined radius
+        {+} Adding strafe mechanics | Radius, speed, time - min/max
+        {+} Fixing logic | Direction Change randomly
+- Project
+    [=] Adding test animation parameter to Enemy AC
 --------------------------------------------------------------------------------------------------------
 - [NOW] Behaviour Tree
     [=] [DO] Make StayAndLookAround logic

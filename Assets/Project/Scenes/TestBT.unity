@@ -679,7 +679,7 @@ Transform:
   m_GameObject: {fileID: 847042424}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.92, y: 0.25, z: -5.89}
+  m_LocalPosition: {x: 1, y: 0.25, z: -1}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -908,6 +908,8 @@ MonoBehaviour:
   _totalSearchDuration: 1
   _investigateSpeedMult: 1
   _attackRange: 1
+  _strafeRadius: 1.5
+  _strafeSpeedMult: 30
   patrolArea:
     _patrolPoints: []
     _self: {fileID: 1573657564}
@@ -931,6 +933,13 @@ MonoBehaviour:
     _origin: {fileID: 1573657564}
     _target: {fileID: 847042427}
     _range: 2
+  performStrafe:
+    _self: {fileID: 1573657564}
+    _target: {fileID: 847042427}
+    _radius: 1.5
+    _speedMult: 30
+    _minStrafeTime: 3
+    _maxStrafeTime: 6
 --- !u!95 &1573657566
 Animator:
   serializedVersion: 5

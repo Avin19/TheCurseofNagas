@@ -50,7 +50,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                 return NodeState.FAILURE;
             }
 
-            // Defend is already playing
+            // Defend is already playing 
             if ((_board.CurrentDecisionIndex & EnemyBoard.ALREADY_PLAYING) != 0)
             {
                 _NodeState = NodeState.SUCCESS;
@@ -58,6 +58,7 @@ namespace CurseOfNaga.Gameplay.Enemies
             }
 
             _board.CurrentDecisionIndex |= EnemyBoard.ALREADY_PLAYING;
+            _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, _board.SelectedCombatDecision);
             MakeNewDecision(Random.Range(1f, 3f));
 
             _NodeState = NodeState.SUCCESS;
