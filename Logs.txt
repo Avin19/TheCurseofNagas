@@ -594,7 +594,18 @@
         {+} Fixing logic | Direction Change randomly
 - Project
     [=] Adding test animation parameter to Enemy AC
+
 --------------------------------------------------------------------------------------------------------
+                                                30 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Project
+    [=] Making test animations for Enemy
+        {+} Adding CombatDecision parameter and connecting to transitions
+    [=] Adding bones to Skeleton sprite
+
+
+--------------------------------------------------------------------------------------------------------
+- [NOW] Weapons logic
 - [NOW] Behaviour Tree
     [=] [DO] Make StayAndLookAround logic
     [=] [DO] Make DecideAttackTypeTask abstract
