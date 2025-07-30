@@ -37,7 +37,6 @@ namespace CurseOfNaga.Global
             IDLE = 0,
             MOVING = 1 << 0,
             DODGING = 1 << 1,
-            ATTACKING = 1 << 2,
             INVESTIGATE_AREA = 1 << 3,
             PLAYER_VISIBLE = 1 << 4,
             LOST_PLAYER = 1 << 5,
@@ -45,9 +44,11 @@ namespace CurseOfNaga.Global
             REACHED_PLAYER = 1 << 7,
             ATTACKING_PLAYER = 1 << 8,
             ENEMY_WITHIN_PLAYER_RANGE = 1 << 9,
-            PLAYER_ATTACKING = 1 << 10,
-            DEAD = 1 << 11,
-            ATTACK_DECIDED = 1 << 12,
+            PLAYER_WITHIN_RANGE = 1 << 10,
+            PLAYER_ATTACKING = 1 << 11,
+            DEAD = 1 << 12,
+            ATTACK_DECIDED = 1 << 13,
+            ATTACK_AT_HIT_POINT = 1 << 14,
         }
 
         public enum EnemyAttackType
@@ -109,6 +110,11 @@ namespace CurseOfNaga.Global
             DEFAULT = 0,
             SAVE_SUCCESSFUL, SAVE_FAILED,
             LOAD_SUCCESSFUL, LOAD_FAILED
+        }
+
+        public enum AnimationClipStatus
+        {
+            PLAYING, FINISHED, REACHED_HIT_POINT
         }
     }
 }

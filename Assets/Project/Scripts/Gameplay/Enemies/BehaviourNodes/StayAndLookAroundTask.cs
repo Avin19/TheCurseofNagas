@@ -47,6 +47,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                 _board.Status &= ~EnemyStatus.PLAYER_VISIBLE;
                 _board.Status &= ~EnemyStatus.LOST_PLAYER;
                 _board.Status &= ~EnemyStatus.INVESTIGATE_AREA;
+                _board.Status &= ~EnemyStatus.ATTACKING_PLAYER;
 
                 _currDuration = 0;
                 _NodeState = NodeState.FAILURE;

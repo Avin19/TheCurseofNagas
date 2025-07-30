@@ -11,7 +11,7 @@ namespace CurseOfNaga.Gameplay.Enemies
     public class TestEnemyController : MonoBehaviour
     {
         private Node _rootNode;
-        [SerializeField] private Transform _playerTransform;
+        [SerializeField] private Transform _playerTransform, _weaponCollider;
 
         [Header("Animation Controls")]
         [SerializeField] private Animator _enemyAnimator;
@@ -56,6 +56,9 @@ namespace CurseOfNaga.Gameplay.Enemies
         private EnemyBoard _mainBoard;
         // private EnemyStatus _mainEnemyStatus;
 
+        private const float xPosFB = 0.05f, zPosFB = 0.57f, colOffset = 0.57f;
+        private const int _PLAYER_LAYER = 6, _ENEMY_LAYER = 7;
+
         int debugIntVar = 0;
         bool _initialized = false;
 
@@ -68,10 +71,34 @@ namespace CurseOfNaga.Gameplay.Enemies
         // For the use of animator
         private void AnimationClipFinished()
         {
-            //An animation is already playing
-            _mainBoard.CurrentDecisionIndex |= EnemyBoard.PLAY_FINISHED;
 
-            Debug.Log($"Finished Clip | Setting Index : {_mainBoard.CurrentDecisionIndex}");
+        }
+
+        private void AnimationClipSatus(AnimationClipStatus status)
+        {
+            switch (status)
+            {
+                case AnimationClipStatus.PLAYING:
+                    break;
+
+                case AnimationClipStatus.FINISHED:
+                    //An animation is already playing
+                    _mainBoard.CurrentDecisionIndex |= EnemyBoard.PLAY_FINISHED;
+                    _mainBoard.Status &= ~EnemyStatus.ATTACK_AT_HIT_POINT;
+
+                    // Debug.Log($"Finished Clip | Setting Index : {_mainBoard.CurrentDecisionIndex}");
+                    break;
+
+                case AnimationClipStatus.REACHED_HIT_POINT:
+                    _mainBoard.Status |= EnemyStatus.ATTACK_AT_HIT_POINT;
+
+                    if ((_mainBoard.Status & EnemyStatus.PLAYER_WITHIN_RANGE) != 0)
+                    {
+                        Debug.Log($"Hit Player");
+                    }
+
+                    break;
+            }
         }
 
         private void InitializeTree()
@@ -159,12 +186,59 @@ namespace CurseOfNaga.Gameplay.Enemies
             _initialized = true;
         }
 
-
+        // public Vector3 _dirVecDebug;
+        // public float _dotProductDebug, _crossProductDebug;
+        // public float RoundXDebug, RoundZDebug;
+        /*
+        *        |                        |      
+        *  [-,+] | [+,+]  Turn 180  [+,-] | [-,-]
+        *  -------------    =>      -------------
+        *  [-,-] | [+,-]            [+,+] | [-,+]
+        *        |                        |      
+        */
         private void Update()
         {
             if (!_initialized) return;
 
             _rootNode.Evaluate(debugIntVar);
+
+            // Face the Player when attacking
+            if ((_mainBoard.Status & EnemyStatus.ATTACKING_PLAYER) != 0)
+            {
+                Vector3 dirVec = (_playerTransform.position - transform.position).normalized;
+                Vector3 colliderPos = _weaponCollider.localPosition;
+                colliderPos.x = Mathf.Round(dirVec.x) * colOffset;
+                colliderPos.z = Mathf.Round(dirVec.z) * colOffset;
+                _weaponCollider.localPosition = colliderPos;
+            }
+
+            // _dirVecDebug = (_playerTransform.position - transform.position).normalized;
+            // RoundXDebug = Mathf.Round(_dirVecDebug.x);
+            // RoundZDebug = Mathf.Round(_dirVecDebug.z);
+
+            // _dotProductDebug = Vector3.Dot(_playerTransform.position, transform.position);
+            // _crossProductDebug = (_playerTransform.position.z * -1f) * transform.position.x +
+            //         _playerTransform.position.x * transform.position.z;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            // Can boxcast instead
+            if (other.gameObject.layer == _PLAYER_LAYER)
+            {
+                Debug.Log($"Hit: {other.name}");
+                _mainBoard.Status |= EnemyStatus.PLAYER_WITHIN_RANGE;
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            // Can boxcast instead
+            if (other.gameObject.layer == _PLAYER_LAYER)
+            {
+                Debug.Log($"Hit: {other.name}");
+                _mainBoard.Status &= ~EnemyStatus.PLAYER_WITHIN_RANGE;
+            }
         }
     }
 }

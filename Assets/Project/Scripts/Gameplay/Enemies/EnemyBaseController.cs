@@ -237,7 +237,7 @@ namespace CurseOfNaga.Gameplay.Enemies
 
                     break;
 
-                case EnemyStatus.ATTACKING:
+                case EnemyStatus.ATTACKING_PLAYER:
                     _enemyAC.SetInteger(_ENEMY_STATUS, (int)enemyStatus);
                     _enemyAC.Play(_ATTACK);
 
@@ -260,9 +260,9 @@ namespace CurseOfNaga.Gameplay.Enemies
 
                     break;
 
-                case EnemyStatus.ATTACKING:
+                case EnemyStatus.ATTACKING_PLAYER:
                     await Task.Delay(500);
-                    _enemyStatus &= ~EnemyStatus.ATTACKING;
+                    _enemyStatus &= ~EnemyStatus.ATTACKING_PLAYER;
 
                     goto case EnemyStatus.IDLE;
             }

@@ -595,6 +595,21 @@
 - Project
     [=] Adding test animation parameter to Enemy AC
 
+- Project
+    [=] Adding Rigibody/Colliders to Test Enemy
+    [=] Changing Collision Layers
+- Scripts
+    [=] TestEnemyController
+        {+} Update WeaponCollider position wrt Player when attacking
+        {+} Adding const Player Layer, Collider Offset
+        {+} Chaning Enemy Status through animation events
+        {+} OnTriggerEnter/Exit logic for setting flag | Player detection
+        {+} Base attack logic 
+    [=] Updating InvestigateAreaTask / StayAndLookAroundTask
+    [=] UniversalConstant
+        {+} Removing ATTACKING from EnemyStatus
+        {+} Adding ATTACK_AT_HIT_POINT / PLAYER_WITHIN_RANGE to EnemyStatus
+        {+} Adding AnimationClipStatus enum
 --------------------------------------------------------------------------------------------------------
                                                 30 JULY, 2025
 --------------------------------------------------------------------------------------------------------
