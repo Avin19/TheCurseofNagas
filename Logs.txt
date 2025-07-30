@@ -603,6 +603,18 @@
         {+} Adding CombatDecision parameter and connecting to transitions
     [=] Adding bones to Skeleton sprite
 
+- Testing Random Enemy Combat Decisions
+- Scripts
+    [=] PerformAttackTask
+        {+} Setting COMBAT_DECISION for animator
+    [=] PerformStrafeTask
+        {+} Separating multipliers for strafe speed and dir speed
+        {+} Going towards the point direciton instead of assigning the position directly
+    [=] PerformAttackTask / PerformDefendTask / PerformStrafeTask
+        {+} Resetting flags properly
+- Project
+    [=] Making test Defend Animation for Enemy
+    [=] Changing Skeleton ordering layers / object positions
 
 --------------------------------------------------------------------------------------------------------
 - [NOW] Weapons logic

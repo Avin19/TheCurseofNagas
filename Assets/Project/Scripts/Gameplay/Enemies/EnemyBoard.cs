@@ -10,7 +10,8 @@ namespace CurseOfNaga.Gameplay.Enemies
     public class EnemyBoard
     {
 
-        public const string PERFORM_ATTACK = "PerformAttack", COMBAT_DECISION = "CombatDecision";
+        public const string PERFORM_ATTACK = "PerformAttack", COMBAT_DECISION = "CombatDecision",
+                LOCK_ANIMATION = "LockAnimation";
 
         public Transform Self;
         public EnemyStatus Status;

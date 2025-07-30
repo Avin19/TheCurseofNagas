@@ -76,9 +76,9 @@ namespace CurseOfNaga.Gameplay.Enemies
             switch (_board.AttackTypeBase)
             {
                 case (byte)EnemyAttackType.MELEE:
-                    Debug.Log($"CurrentAttackIndex: {_board.CurrentDecisionIndex} | MeleeCombos: {_board.MeleeCombos[_board.SelectedCombo]}");
+                    // Debug.Log($"CurrentAttackIndex: {_board.CurrentDecisionIndex} | MeleeCombos: {_board.MeleeCombos[_board.SelectedCombo]}");
 
-                    Time.timeScale = 0.25f;
+                    // Time.timeScale = 0.25f;
                     EnemyAttackType attackType = (EnemyAttackType)_board.MeleeCombos[_board.SelectedCombo]
                                                 .ComboSequence[_board.CurrentDecisionIndex];
 
@@ -92,6 +92,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                         case EnemyAttackType.NORMAL_M4:
                         case EnemyAttackType.NORMAL_M5:
                             _board.DamageMultiplier = 1f;
+                            _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, _board.SelectedCombatDecision);
                             _board.EnemyAnimator.SetInteger(EnemyBoard.PERFORM_ATTACK, (int)attackType);
 
                             /*
@@ -110,6 +111,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                         case EnemyAttackType.HEAVY_M4:
                         case EnemyAttackType.HEAVY_M5:
                             _board.DamageMultiplier = 1.5f;
+                            _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, _board.SelectedCombatDecision);
                             _board.EnemyAnimator.SetInteger(EnemyBoard.PERFORM_ATTACK, (int)attackType);
 
                             /*
@@ -147,7 +149,7 @@ namespace CurseOfNaga.Gameplay.Enemies
 
                 if ((_board.CurrentDecisionIndex & EnemyBoard.PLAY_FINISHED) != 0)
                 {
-                    Debug.Log($"Changing Clip: {_board.CurrentDecisionIndex}");
+                    // Debug.Log($"Changing Clip: {_board.CurrentDecisionIndex}");
                     _board.CurrentDecisionIndex &= ~EnemyBoard.ALREADY_PLAYING;
                     _board.CurrentDecisionIndex &= ~EnemyBoard.PLAY_FINISHED;
 
@@ -163,11 +165,13 @@ namespace CurseOfNaga.Gameplay.Enemies
                         _board.CurrentDecisionIndex = EnemyBoard.NO_DECISION;
                         _NodeState = NodeState.IDLE;
                         _board.EnemyAnimator.SetInteger(EnemyBoard.PERFORM_ATTACK, (int)EnemyAttackType.NOT_ATTACKING);
+                        _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, (int)CombatDecision.NOT_DECIDED);
+                        _board.EnemyAnimator.SetBool(EnemyBoard.LOCK_ANIMATION, false);
                         break;
                     }
                 }
             }
-            Debug.Log($"Clip Changed: {_board.CurrentDecisionIndex}");
+            // Debug.Log($"Clip Changed: {_board.CurrentDecisionIndex}");
         }
 
         public virtual void CheckAttackConditions() { }

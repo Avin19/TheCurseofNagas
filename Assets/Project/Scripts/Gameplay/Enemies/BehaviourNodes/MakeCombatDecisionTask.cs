@@ -75,8 +75,8 @@ namespace CurseOfNaga.Gameplay.Enemies
                 // TODO: Check conditions for determining which combat decision to take
                 // For now, just choosing a random decision
 
-                // _board.SelectedCombatDecision = (byte)Random.Range((int)CombatDecision.ATTACK, (int)CombatDecision.WAIT + 1);
-                _board.SelectedCombatDecision = (byte)CombatDecision.STRAFE;          //TEST
+                _board.SelectedCombatDecision = (byte)Random.Range((int)CombatDecision.ATTACK, (int)CombatDecision.WAIT + 1);
+                // _board.SelectedCombatDecision = (byte)CombatDecision.STRAFE;          //TEST
 
                 switch ((CombatDecision)_board.SelectedCombatDecision)
                 {

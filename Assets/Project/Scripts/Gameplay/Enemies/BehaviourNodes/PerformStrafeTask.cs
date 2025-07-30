@@ -16,11 +16,11 @@ namespace CurseOfNaga.Gameplay.Enemies
 #if !TESTING_BT
         private Transform _self;
         private Transform _target;
-        private float _radius, _speedMult, _minStrafeTime, _maxStrafeTime;          //TODO: Make _minStrafeTime/_maxStrafeTime constant
+        private float _radius, _dirSpeedMult, _strafeSpeedMult, _minStrafeTime, _maxStrafeTime;          //TODO: Make _minStrafeTime/_maxStrafeTime constant
 #else
         public Transform _self;
         public Transform _target;
-        public float _radius, _speedMult, _minStrafeTime, _maxStrafeTime;
+        public float _radius, _dirSpeedMult, _strafeSpeedMult, _minStrafeTime, _maxStrafeTime;
 #endif
 
         private int _dirMult;
@@ -39,14 +39,15 @@ namespace CurseOfNaga.Gameplay.Enemies
         ~PerformStrafeTask() { _cts.Cancel(); }
 
         public PerformStrafeTask(EnemyBoard board, Transform self, Transform target,
-                float strafeRadius, float strafeSpeedMult)
+                float strafeRadius, float dirSpeedMult, float strafeSpeedMult)
         {
             _cts = new CancellationTokenSource();
             _board = board;
             _self = self;
             _target = target;
             _radius = strafeRadius;
-            _speedMult = strafeSpeedMult;
+            _dirSpeedMult = dirSpeedMult;
+            _strafeSpeedMult = strafeSpeedMult;
         }
 
         /*
@@ -70,6 +71,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                 // return NodeState.SUCCESS;
                 _board.CurrentDecisionIndex |= EnemyBoard.ALREADY_PLAYING;
                 _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, _board.SelectedCombatDecision);
+                _board.EnemyAnimator.SetBool(EnemyBoard.LOCK_ANIMATION, false);
 
                 // Strafe to a random angle | Continue strafing for a random interval of time
                 // _selectedAngle = Random.Range(45, 360);
@@ -86,11 +88,13 @@ namespace CurseOfNaga.Gameplay.Enemies
             //Strafe around the player
             Vector3 dirVec = Vector3.zero;
 
-            _selectedAngle += Time.deltaTime * _speedMult * _dirMult;
+            _selectedAngle += Time.deltaTime * _dirSpeedMult * _dirMult;
             dirVec.x = Mathf.Cos(_selectedAngle * Mathf.Deg2Rad) * _radius;
             dirVec.z = Mathf.Sin(_selectedAngle * Mathf.Deg2Rad) * _radius;
 
-            _self.position = _target.position + dirVec;
+            //               Direction to travel (| Point to go to | - | Self Position |)
+            _self.position += ((_target.position + dirVec) - _self.position).normalized * Time.deltaTime * _strafeSpeedMult;
+
             // MakeNewDecision(Random.Range(1f, 3f));
 
             _NodeState = NodeState.SUCCESS;
@@ -102,9 +106,11 @@ namespace CurseOfNaga.Gameplay.Enemies
             await Task.Delay((int)(delayInSec * 1000));
             if (_cts.IsCancellationRequested) return;
 
-            _board.CurrentDecisionIndex &= ~EnemyBoard.ALREADY_PLAYING;
             _NodeState = NodeState.IDLE;
+            _board.CurrentDecisionIndex = EnemyBoard.NO_DECISION;
             _board.SelectedCombatDecision = (byte)CombatDecision.NOT_DECIDED;
+            _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, (int)CombatDecision.NOT_DECIDED);
+            _board.EnemyAnimator.SetBool(EnemyBoard.LOCK_ANIMATION, false);
         }
 
         public virtual void CheckAttackConditions() { }

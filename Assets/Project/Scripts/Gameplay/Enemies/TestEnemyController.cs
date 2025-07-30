@@ -34,9 +34,10 @@ namespace CurseOfNaga.Gameplay.Enemies
         [Header("Attack Controls")]
         [Range(1f, 3f), SerializeField] private float _attackRange;
 
-        [Header("Attack Controls")]
+        [Header("Strafe Controls")]
         [Range(1.5f, 3f), SerializeField] private float _strafeRadius = 1.5f;
-        [Range(20f, 50f), SerializeField] private float _strafeSpeedMult = 30f;
+        [Range(20f, 50f), SerializeField] private float _dirSpeedMult = 30f;
+        [Range(1f, 5f), SerializeField] private float _strafeSpeedMult = 2f;
 
 
         [Header("Behaviour Tree Controls")]
@@ -107,13 +108,16 @@ namespace CurseOfNaga.Gameplay.Enemies
             decideAttackType = new DecideAttackTypeTask(_mainBoard);
             performAttack = new PerformAttackTask(_mainBoard);
             performDefend = new PerformDefendTask(_mainBoard);
-            performStrafe = new PerformStrafeTask(_mainBoard, transform, _playerTransform, _strafeRadius, _strafeSpeedMult);
+            performStrafe = new PerformStrafeTask(_mainBoard, transform, _playerTransform, _strafeRadius, _strafeSpeedMult, 
+                _chaseSpeedMult);
 
-            checkPlayerVisibility = new CheckPlayerRange(_mainBoard, transform, _playerTransform, _playerVisibleRange, _mainBoard);
+            checkPlayerVisibility = new CheckPlayerRange(_mainBoard, transform, _playerTransform, _playerVisibleRange, 
+                _mainBoard);
             chasePlayer = new ChaseTargetTask(transform, _playerTransform, _chaseStopRange, _chaseSpeedMult);
 
             checkIfLostPlayer = new CheckIfLostPlayer(_mainBoard);
-            investigateArea = new InvestigateAreaTask(transform, _mainBoard, _searchRange, _totalSearchDuration, _investigateSpeedMult);
+            investigateArea = new InvestigateAreaTask(transform, _mainBoard, _searchRange, _totalSearchDuration, 
+                _investigateSpeedMult);
             lookAroundArea = new StayAndLookAroundTask(_mainBoard, _totalSearchDuration);
 
             Vector3 patrolPoints = new Vector3[_patrolPoints.Length];
