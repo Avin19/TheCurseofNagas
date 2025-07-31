@@ -149,7 +149,7 @@ Transform:
   m_GameObject: {fileID: 92614188}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7950001, y: 10.49, z: 0}
+  m_LocalPosition: {x: -1.67, y: 6.94, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1200,8 +1200,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b77cc6f14d116a041be73f5ad9c1d39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerTransform: {fileID: 8510273574853525946}
+  _targetTransform: {fileID: 0}
   _weaponCollider: {fileID: 631104313}
+  _playerVisual: {fileID: 1094362326}
+  _baseInfo:
+    Health: 100
+    Damage: 10
   _enemyAnimator: {fileID: 1071581275}
   _animClips:
   - {fileID: 7400000, guid: 6584164876c03dc4eae3a754bc3ecb01, type: 2}
@@ -1263,7 +1267,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1071581274}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -10.5, y: 0, z: 3.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1365,7 +1369,7 @@ Transform:
   m_GameObject: {fileID: 1141561703}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.83, y: 3.655, z: 0}
+  m_LocalPosition: {x: 1.1, y: 3.43, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1678,7 +1682,7 @@ Transform:
   m_GameObject: {fileID: 1441639479}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.59000015, y: 17.475, z: 0}
+  m_LocalPosition: {x: -0.08, y: 7.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1803,8 +1807,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b77cc6f14d116a041be73f5ad9c1d39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerTransform: {fileID: 847042427}
+  _targetTransform: {fileID: 0}
   _weaponCollider: {fileID: 0}
+  _playerVisual: {fileID: 0}
+  _baseInfo:
+    Health: 0
+    Damage: 0
   _enemyAnimator: {fileID: 1573657566}
   _animClips:
   - {fileID: 7400000, guid: 70d8038f28a48d141a50a976764ae0ed, type: 2}
@@ -2105,7 +2113,7 @@ Transform:
   m_GameObject: {fileID: 1843532555}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.483, y: 3.253, z: 0}
+  m_LocalPosition: {x: -0.46, y: 3.02, z: 0}
   m_LocalScale: {x: 1.78, y: 1.78, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2360,7 +2368,7 @@ Transform:
   m_GameObject: {fileID: 2052744062}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.045, y: 11.035, z: 0}
+  m_LocalPosition: {x: 2.52, y: 6.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2467,7 +2475,7 @@ Transform:
   m_GameObject: {fileID: 2084458179}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.0799999, y: 10.335, z: 0}
+  m_LocalPosition: {x: 0.12, y: 4.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2603,7 +2611,7 @@ Transform:
   m_GameObject: {fileID: 2096058938}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.98428905, w: -0.17656492}
-  m_LocalPosition: {x: 1.8050125, y: -2.5784657, z: 0}
+  m_LocalPosition: {x: 2.3048441, y: -2.0860562, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

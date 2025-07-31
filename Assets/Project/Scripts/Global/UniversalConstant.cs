@@ -2,6 +2,12 @@ using UnityEngine;
 
 namespace CurseOfNaga.Global
 {
+    [System.Serializable]
+    public struct EntityInfo
+    {
+        public float Health, Damage;
+    }
+
     public class UniversalConstant
     {
         public enum GameStatus
@@ -37,6 +43,7 @@ namespace CurseOfNaga.Global
             IDLE = 0,
             MOVING = 1 << 0,
             DODGING = 1 << 1,
+            HAVE_A_TARGET = 1 << 2,
             INVESTIGATE_AREA = 1 << 3,
             PLAYER_VISIBLE = 1 << 4,
             LOST_PLAYER = 1 << 5,

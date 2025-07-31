@@ -632,7 +632,27 @@
     [=] Changing Skeleton ordering layers / object positions
 
 --------------------------------------------------------------------------------------------------------
-- [NOW] Weapons logic
+                                                31 JULY, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] TestEnemyController
+        {+} Make Enemy face the Player | Simply flipping Visuals for now
+    [=] MakeCombatDecisionTask
+        {+} Restting Flags for Wait decision
+    [=] EntityInfo struct
+        {+} Container to hold basic Enemy Info | Health/Damage
+    [=] UniversalConstant
+        {+} Adding HAVE_A_TARGET to EnemyStatus
+    [=] IDamageable
+        {+} Interface for all the damageable objects
+- Project
+    [=] File/Folder restructure
+    [=] Making Enemy test animation changes
+
+--------------------------------------------------------------------------------------------------------
+- [NOW] Enemy Combat logic
+    [=] [DO] Shift to boxcast for detecting hit if possible
+    [=] [DO] Defend mechanic
 - [NOW] Behaviour Tree
     [=] [DO] Make StayAndLookAround logic
     [=] [DO] Make DecideAttackTypeTask abstract

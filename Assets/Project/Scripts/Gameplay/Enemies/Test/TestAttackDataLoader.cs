@@ -1,7 +1,7 @@
 using CurseOfNaga.Global.Template;
 using UnityEngine;
 
-namespace CurseOfNaga.Gameplay.Enemies
+namespace CurseOfNaga.Gameplay.Enemies.Test
 {
     public class TestAttackDataLoader : MonoBehaviour
     {

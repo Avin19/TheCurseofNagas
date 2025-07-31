@@ -82,6 +82,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                 {
                     case CombatDecision.ATTACK:
                         _board.AttackTypeBase = (byte)EnemyAttackType.MELEE;
+                        _board.CurrentDecisionIndex = EnemyBoard.NO_DECISION;
 
                         // Select a combo if not selected
                         // Offset due to DEFAULT
@@ -127,7 +128,9 @@ namespace CurseOfNaga.Gameplay.Enemies
             await Task.Delay((int)(delayInSec * 1000));
             if (_cts.IsCancellationRequested) return;
 
+            _board.CurrentDecisionIndex = EnemyBoard.NO_DECISION;
             _board.SelectedCombatDecision = (byte)CombatDecision.NOT_DECIDED;
+            _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, (int)CombatDecision.NOT_DECIDED);
         }
 
         public virtual void CheckAttackConditions() { }

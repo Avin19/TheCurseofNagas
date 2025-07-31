@@ -5,13 +5,17 @@ using UnityEngine;
 using CurseOfNaga.BehaviourTree;
 
 using static CurseOfNaga.Global.UniversalConstant;
+using CurseOfNaga.Global;
 
-namespace CurseOfNaga.Gameplay.Enemies
+namespace CurseOfNaga.Gameplay.Enemies.Test
 {
     public class TestEnemyController : MonoBehaviour
     {
         private Node _rootNode;
-        [SerializeField] private Transform _playerTransform, _weaponCollider;
+        [SerializeField] private Transform _targetTransform, _weaponCollider, _playerVisual;
+
+        [Header("Stats")]
+        [SerializeField] private EntityInfo _baseInfo;
 
         [Header("Animation Controls")]
         [SerializeField] private Animator _enemyAnimator;
@@ -54,6 +58,7 @@ namespace CurseOfNaga.Gameplay.Enemies
         [SerializeField] private PerformStrafeTask performStrafe;
 
         private EnemyBoard _mainBoard;
+        private IDamageable _damageableObject;
         // private EnemyStatus _mainEnemyStatus;
 
         private const float xPosFB = 0.05f, zPosFB = 0.57f, colOffset = 0.57f;
@@ -95,6 +100,11 @@ namespace CurseOfNaga.Gameplay.Enemies
                     if ((_mainBoard.Status & EnemyStatus.PLAYER_WITHIN_RANGE) != 0)
                     {
                         Debug.Log($"Hit Player");
+                        if (_damageableObject.ReceiveDamage(_baseInfo.Damage) <= 0)
+                        {
+                            // _mainBoard.Status &= ~EnemyStatus.HAVE_A_TARGET;
+                            // _targetTransform = null;
+                        }
                     }
 
                     break;
@@ -186,9 +196,6 @@ namespace CurseOfNaga.Gameplay.Enemies
             _initialized = true;
         }
 
-        // public Vector3 _dirVecDebug;
-        // public float _dotProductDebug, _crossProductDebug;
-        // public float RoundXDebug, RoundZDebug;
         /*
         *        |                        |      
         *  [-,+] | [+,+]  Turn 180  [+,-] | [-,-]
@@ -201,24 +208,30 @@ namespace CurseOfNaga.Gameplay.Enemies
             if (!_initialized) return;
 
             _rootNode.Evaluate(debugIntVar);
+        }
+
+        // public Vector3 _dirVecDebug;
+        // public float XDebug, YDebug;
+        private void FixedUpdate()
+        {
+            if (!_initialized) return;
 
             // Face the Player when attacking
             if ((_mainBoard.Status & EnemyStatus.ATTACKING_PLAYER) != 0)
             {
-                Vector3 dirVec = (_playerTransform.position - transform.position).normalized;
+                Vector3 dirVec = (_targetTransform.position - transform.position).normalized;
                 Vector3 colliderPos = _weaponCollider.localPosition;
                 colliderPos.x = Mathf.Round(dirVec.x) * colOffset;
                 colliderPos.z = Mathf.Round(dirVec.z) * colOffset;
                 _weaponCollider.localPosition = colliderPos;
+
+                Vector3 finalRot = Vector3.zero;
+                finalRot.y = 180f * Mathf.Abs(Mathf.Floor(dirVec.x));       //Floor down to get -1 and Abs it
+                _playerVisual.localEulerAngles = finalRot;
             }
-
             // _dirVecDebug = (_playerTransform.position - transform.position).normalized;
-            // RoundXDebug = Mathf.Round(_dirVecDebug.x);
-            // RoundZDebug = Mathf.Round(_dirVecDebug.z);
-
-            // _dotProductDebug = Vector3.Dot(_playerTransform.position, transform.position);
-            // _crossProductDebug = (_playerTransform.position.z * -1f) * transform.position.x +
-            //         _playerTransform.position.x * transform.position.z;
+            // XDebug = Mathf.Round(_dirVecDebug.x);
+            // YDebug = Mathf.Round(_dirVecDebug.y);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -226,8 +239,9 @@ namespace CurseOfNaga.Gameplay.Enemies
             // Can boxcast instead
             if (other.gameObject.layer == _PLAYER_LAYER)
             {
-                Debug.Log($"Hit: {other.name}");
+                Debug.Log($"Trigger Enter: {other.name}");
                 _mainBoard.Status |= EnemyStatus.PLAYER_WITHIN_RANGE;
+                _damageableObject = other.GetComponent<IDamageable>();
             }
         }
 
@@ -236,8 +250,9 @@ namespace CurseOfNaga.Gameplay.Enemies
             // Can boxcast instead
             if (other.gameObject.layer == _PLAYER_LAYER)
             {
-                Debug.Log($"Hit: {other.name}");
+                Debug.Log($"Trigger Exit: {other.name}");
                 _mainBoard.Status &= ~EnemyStatus.PLAYER_WITHIN_RANGE;
+                _damageableObject = null;
             }
         }
     }
