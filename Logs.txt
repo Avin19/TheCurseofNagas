@@ -666,6 +666,16 @@
         {+} Adding BLOCKING_ATTACK to EnemyStatus
     [=] TestEnemyController
         {+} Adding IDamageable
+
+- Project
+    [=] Minimap_RT for rendering Minimap
+    [=] TestMinimap scene
+    [=] Adding Minimap/Ground Layer
+    [=] Adding sprite on top of Enemy/Player for minimap
+    [=] Making bg transperant for the mainCamOther
+- Scripts
+    [=] TestMinimapManager
+        {+} Test script for Minimap
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible
@@ -780,11 +790,11 @@
     [=] It will open a room or conversation dialogue
 
 NEW TASKS
-- 1.    Mini map
-- 2.    Enemy spawner - > Behaviour tree for enemy ( attack , patrol , search ,idle ) 
-- 3.    Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )
-- 4.    audio manager 
-- 5.    Cutsence , Timeline ( dependency on me ) 
-- 5.5   Instruction to play the game 
-- 6.    Modular Dialog  system
-- 7.    singleton for audio manager
+[-] 1.    Mini map
+[x] 2.    Enemy spawner - > Behaviour tree for enemy ( attack , patrol , search ,idle ) 
+[ ] 3.    Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )
+[ ] 4.    audio manager 
+[ ] 5.    Cutsence , Timeline ( dependency on me ) 
+[ ] 5.5   Instruction to play the game 
+[ ] 6.    Modular Dialog  system
+[ ] 7.    singleton for audio manager
