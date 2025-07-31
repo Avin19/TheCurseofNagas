@@ -649,6 +649,11 @@
     [=] File/Folder restructure
     [=] Making Enemy test animation changes
 
+- Scripts
+    [=] EnemyBT_Task scripts
+        {+} Adding target validation for all
+    [=] TestEnemyController
+        {+} Remove target if its health has reached zero
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible

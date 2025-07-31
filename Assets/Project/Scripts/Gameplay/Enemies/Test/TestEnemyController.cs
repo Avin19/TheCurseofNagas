@@ -102,8 +102,8 @@ namespace CurseOfNaga.Gameplay.Enemies.Test
                         Debug.Log($"Hit Player");
                         if (_damageableObject.ReceiveDamage(_baseInfo.Damage) <= 0)
                         {
-                            // _mainBoard.Status &= ~EnemyStatus.HAVE_A_TARGET;
-                            // _targetTransform = null;
+                            _mainBoard.Status &= ~EnemyStatus.HAVE_A_TARGET;
+                            _targetTransform = null;
                         }
                     }
 
@@ -120,6 +120,8 @@ namespace CurseOfNaga.Gameplay.Enemies.Test
             _mainBoard = new EnemyBoard(transform,
                 TestAttackDataLoader.Instance.AttackDataParser.AttackTemplateData.attack_data[0].melee_combos,
                 _enemyAnimator, clipLengths);
+
+            _mainBoard.Status |= EnemyStatus.HAVE_A_TARGET;
 
 #if TESTING_BT
             checkPlayerInAttackRange.Initialize(_mainBoard);
@@ -141,23 +143,22 @@ namespace CurseOfNaga.Gameplay.Enemies.Test
                 patrolArea._patrolPoints[i] = _patrolPoints[i].position;
             }
 #else
-            checkPlayerInAttackRange = new CheckPlayerInAttackRange(_mainBoard, transform, _playerTransform, _attackRange);
-            decideAttackType = new DecideAttackTypeTask(_mainBoard);
+            checkPlayerInAttackRange = new CheckPlayerInAttackRange(_mainBoard, transform, _targetTransform, _attackRange);
+            makeCombatDecision = new MakeCombatDecisionTask(_mainBoard);
             performAttack = new PerformAttackTask(_mainBoard);
             performDefend = new PerformDefendTask(_mainBoard);
-            performStrafe = new PerformStrafeTask(_mainBoard, transform, _playerTransform, _strafeRadius, _strafeSpeedMult, 
+            performStrafe = new PerformStrafeTask(_mainBoard, transform, _targetTransform, _strafeRadius, _strafeSpeedMult,
                 _chaseSpeedMult);
 
-            checkPlayerVisibility = new CheckPlayerRange(_mainBoard, transform, _playerTransform, _playerVisibleRange, 
-                _mainBoard);
-            chasePlayer = new ChaseTargetTask(transform, _playerTransform, _chaseStopRange, _chaseSpeedMult);
+            checkPlayerVisibility = new CheckPlayerRange(_mainBoard, transform, _targetTransform, _playerVisibleRange);
+            chasePlayer = new ChaseTargetTask(_mainBoard, transform, _targetTransform, _chaseStopRange, _chaseSpeedMult);
 
             checkIfLostPlayer = new CheckIfLostPlayer(_mainBoard);
-            investigateArea = new InvestigateAreaTask(transform, _mainBoard, _searchRange, _totalSearchDuration, 
+            investigateArea = new InvestigateAreaTask(transform, _mainBoard, _searchRange, _totalSearchDuration,
                 _investigateSpeedMult);
             lookAroundArea = new StayAndLookAroundTask(_mainBoard, _totalSearchDuration);
 
-            Vector3 patrolPoints = new Vector3[_patrolPoints.Length];
+            Vector3[] patrolPoints = new Vector3[_patrolPoints.Length];
             for (int i = 0; i < _patrolPoints.Length; i++)
             {
                 patrolPoints[i] = _patrolPoints[i].position;
