@@ -56,6 +56,7 @@ namespace CurseOfNaga.Global
             DEAD = 1 << 12,
             ATTACK_DECIDED = 1 << 13,
             ATTACK_AT_HIT_POINT = 1 << 14,
+            BLOCKING_ATTACK = 1 << 15,
         }
 
         public enum EnemyAttackType

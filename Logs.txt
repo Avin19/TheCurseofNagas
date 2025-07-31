@@ -660,6 +660,12 @@
         {+} Checking flags for target validation
 - Project
     [=] Fixing Event Invoke position in Enemy Animation
+
+- Scripts
+    [=] UniversalConstant
+        {+} Adding BLOCKING_ATTACK to EnemyStatus
+    [=] TestEnemyController
+        {+} Adding IDamageable
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible
@@ -776,7 +782,8 @@
 NEW TASKS
 - 1.    Mini map
 - 2.    Enemy spawner - > Behaviour tree for enemy ( attack , patrol , search ,idle ) 
-- 3.    Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )4.  audio manager 
+- 3.    Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )
+- 4.    audio manager 
 - 5.    Cutsence , Timeline ( dependency on me ) 
 - 5.5   Instruction to play the game 
 - 6.    Modular Dialog  system

@@ -57,6 +57,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                 return NodeState.SUCCESS;
             }
 
+            _board.Status |= EnemyStatus.BLOCKING_ATTACK;
             _board.CurrentDecisionIndex |= EnemyBoard.ALREADY_PLAYING;
             _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, _board.SelectedCombatDecision);
             MakeNewDecision(Random.Range(1f, 3f));
@@ -71,6 +72,7 @@ namespace CurseOfNaga.Gameplay.Enemies
             if (_cts.IsCancellationRequested) return;
 
             _NodeState = NodeState.IDLE;
+            _board.Status &= ~EnemyStatus.BLOCKING_ATTACK;
             _board.CurrentDecisionIndex = EnemyBoard.NO_DECISION;
             _board.SelectedCombatDecision = (byte)CombatDecision.NOT_DECIDED;
             _board.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, (int)CombatDecision.NOT_DECIDED);

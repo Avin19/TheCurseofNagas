@@ -9,7 +9,7 @@ using CurseOfNaga.Global;
 
 namespace CurseOfNaga.Gameplay.Enemies.Test
 {
-    public class TestEnemyController : MonoBehaviour
+    public class TestEnemyController : MonoBehaviour, IDamageable
     {
         private Node _rootNode;
         [SerializeField] private Transform _targetTransform, _weaponCollider, _playerVisual;
@@ -256,6 +256,17 @@ namespace CurseOfNaga.Gameplay.Enemies.Test
                 _mainBoard.Status &= ~EnemyStatus.PLAYER_WITHIN_RANGE;
                 _damageableObject = null;
             }
+        }
+
+        public float ReceiveDamage(float damage)
+        {
+            if ((_mainBoard.Status & EnemyStatus.BLOCKING_ATTACK) == 0)
+            {
+                _baseInfo.Health -= damage;
+                return -1f;
+            }
+
+            return _baseInfo.Health;
         }
     }
 }
