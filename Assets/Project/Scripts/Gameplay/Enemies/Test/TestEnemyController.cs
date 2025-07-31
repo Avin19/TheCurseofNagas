@@ -74,11 +74,6 @@ namespace CurseOfNaga.Gameplay.Enemies.Test
         }
 
         // For the use of animator
-        private void AnimationClipFinished()
-        {
-
-        }
-
         private void AnimationClipSatus(AnimationClipStatus status)
         {
             switch (status)
@@ -102,8 +97,14 @@ namespace CurseOfNaga.Gameplay.Enemies.Test
                         Debug.Log($"Hit Player");
                         if (_damageableObject.ReceiveDamage(_baseInfo.Damage) <= 0)
                         {
-                            _mainBoard.Status &= ~EnemyStatus.HAVE_A_TARGET;
+                            // _mainBoard.Status &= ~EnemyStatus.HAVE_A_TARGET;
                             _targetTransform = null;
+
+                            _mainBoard.Status = EnemyStatus.IDLE;
+                            _mainBoard.CurrentDecisionIndex = EnemyBoard.NO_DECISION;
+                            _mainBoard.SelectedCombatDecision = (byte)CombatDecision.NOT_DECIDED;
+                            _mainBoard.EnemyAnimator.SetInteger(EnemyBoard.COMBAT_DECISION, (int)CombatDecision.NOT_DECIDED);
+                            _mainBoard.EnemyAnimator.SetBool(EnemyBoard.LOCK_ANIMATION, false);
                         }
                     }
 

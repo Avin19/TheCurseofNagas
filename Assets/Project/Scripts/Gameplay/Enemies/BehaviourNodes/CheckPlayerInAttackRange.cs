@@ -40,7 +40,12 @@ namespace CurseOfNaga.Gameplay.Enemies
         {
             _CurrCount = currCount;
 
-            if (Vector3.SqrMagnitude(_target.position - _origin.position) <= (_range * _range))
+            if ((_board.Status & EnemyStatus.HAVE_A_TARGET) == 0)
+            {
+                _NodeState = NodeState.FAILURE;
+                return NodeState.FAILURE;
+            }
+            else if (Vector3.SqrMagnitude(_target.position - _origin.position) <= (_range * _range))
             {
                 _board.Status |= EnemyStatus.ATTACKING_PLAYER;
 

@@ -78,7 +78,7 @@ namespace CurseOfNaga.Gameplay.Enemies
                 case (byte)EnemyAttackType.MELEE:
                     // Debug.Log($"CurrentAttackIndex: {_board.CurrentDecisionIndex} | MeleeCombos: {_board.MeleeCombos[_board.SelectedCombo]}");
 
-                    // Time.timeScale = 0.25f;
+                    Time.timeScale = 0.15f;
                     EnemyAttackType attackType = (EnemyAttackType)_board.MeleeCombos[_board.SelectedCombo]
                                                 .ComboSequence[_board.CurrentDecisionIndex];
 
@@ -149,13 +149,13 @@ namespace CurseOfNaga.Gameplay.Enemies
 
                 if ((_board.CurrentDecisionIndex & EnemyBoard.PLAY_FINISHED) != 0)
                 {
-                    // Debug.Log($"Changing Clip: {_board.CurrentDecisionIndex}");
                     _board.CurrentDecisionIndex &= ~EnemyBoard.ALREADY_PLAYING;
                     _board.CurrentDecisionIndex &= ~EnemyBoard.PLAY_FINISHED;
 
                     if (_board.CurrentDecisionIndex < _board.MeleeCombos[_board.SelectedCombo].ComboSequence.Length - 1)
                     {
                         _board.CurrentDecisionIndex++;
+                        // Debug.Log($"Changing Clip: {_board.CurrentDecisionIndex}");
                         break;
                     }
                     else

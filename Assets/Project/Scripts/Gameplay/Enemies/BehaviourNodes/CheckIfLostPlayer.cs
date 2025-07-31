@@ -26,8 +26,13 @@ namespace CurseOfNaga.Gameplay.Enemies
         {
             _CurrCount = currCount;
 
+            if ((_board.Status & EnemyStatus.HAVE_A_TARGET) == 0)
+            {
+                _NodeState = NodeState.FAILURE;
+                return NodeState.FAILURE;
+            }
             //Player was visible and we have lost the player
-            if ((_board.Status & EnemyStatus.PLAYER_VISIBLE) != 0)
+            else if ((_board.Status & EnemyStatus.PLAYER_VISIBLE) != 0)
             {
                 _board.Status |= EnemyStatus.LOST_PLAYER;
 

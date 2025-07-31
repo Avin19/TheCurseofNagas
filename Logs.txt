@@ -654,6 +654,12 @@
         {+} Adding target validation for all
     [=] TestEnemyController
         {+} Remove target if its health has reached zero
+
+- Scripts
+    [=] EnemyBT_Task scripts
+        {+} Checking flags for target validation
+- Project
+    [=] Fixing Event Invoke position in Enemy Animation
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible
