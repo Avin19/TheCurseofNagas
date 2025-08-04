@@ -676,6 +676,23 @@
 - Scripts
     [=] TestMinimapManager
         {+} Test script for Minimap
+
+--------------------------------------------------------------------------------------------------------
+                                                04 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Project
+    [=] Changing Minimap_RT Color Format | Width/Height
+    [=] Adding Environment layer
+- Scene
+    [=] Test
+        {+} Adding test trees
+        {+} Adding Environment to LayerMask | Trees are static for now
+- Scripts
+    [=] TestMinimapManager
+        {+} Keeping a private texture for storing overhead texture
+        {+} Save Image from Texture logic
+        {+} Using same camera to get overhead view of the whole map | Changing settings only
+
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible
