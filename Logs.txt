@@ -702,6 +702,10 @@
         {+} Displaying object position on the minimap
             <~> Offsetting player pos according to the size of the minimapRT
 
+- Scripts
+    [=] TestMinimapManager
+        {+} Offsetting first and then scaling
+        {+} Searching for eays to remove offset on minimap
 
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic

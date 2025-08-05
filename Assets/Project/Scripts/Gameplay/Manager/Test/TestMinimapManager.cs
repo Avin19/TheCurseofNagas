@@ -18,6 +18,7 @@ namespace CurseOfNaga.Gameplay.Managers.Test
 
         [Header("Minimap Settings")]
         [SerializeField, Range(0.1f, 5f)] private float _minimapRefreshRate = 1;
+        [SerializeField, Range(0.1f, 5f)] private float _minimapAddOffsetMult = 1;
         // [SerializeField] private float _scaleFactor = 5;
         [SerializeField] private int _mapDimension = 10, _minimapDimension = 512, _markerDimension = 5;
         [SerializeField] private Color _playerColor;
@@ -107,27 +108,54 @@ namespace CurseOfNaga.Gameplay.Managers.Test
             // _mainCamTerrain.Render();
             // _bgMapTex.ReadPixels(new Rect(0, 0, _minimapRT.width, _minimapRT.height), 0, 0);
 
-            int xOffset = _minimapDimension / 2, yOffset = _minimapDimension / 2;
-            int scaleFactor = _minimapDimension / (_mapDimension * _mapDimension);
-            // int startX = (int)(_obj1.position.x * _scaleFactor) + xOffset
-            //     , startY = (int)(_obj1.position.z * _scaleFactor) + yOffset;
-            int startX = (int)(_player.position.x * scaleFactor) + xOffset
-                , startY = (int)(_player.position.z * scaleFactor) + yOffset;
+            int minimapffset = (_mapDimension * _mapDimension) / 2;
+            float scaleFactor = _minimapDimension / (_mapDimension * _mapDimension);
+            // int startX = (int)(_obj1.position.x * _scaleFactor) + minimapffset
+            //     , startZ = (int)(_obj1.position.z * _scaleFactor) + minimapffset;
 
-            startX -= _markerDimension / 2;
-            startY -= _markerDimension / 2;
+            // int startX = Mathf.CeilToInt(_player.position.x + minimapffset)
+            //     , startZ = Mathf.CeilToInt(_player.position.z + minimapffset);
+            // _bgMapTex.SetPixel(startX, startZ, _playerColor);
 
-            if (_markerDimension % 2 == 1)
+            int startX = Mathf.CeilToInt((_player.position.x + minimapffset) * scaleFactor)
+                , startZ = Mathf.CeilToInt((_player.position.z + minimapffset) * scaleFactor);
+            // int startX = Mathf.RoundToInt((_player.position.x + minimapffset) * scaleFactor)
+            //     , startZ = Mathf.RoundToInt((_player.position.z + minimapffset) * scaleFactor);
+
+            // Debug.Log($"Initial | OgstartX: {(_player.position.x + minimapffset) * scaleFactor} "
+            //     + $"| OgstartX: {(_player.position.z + minimapffset) * scaleFactor} | scaleFactor: {scaleFactor}"
+            //     + $"| startX: {startX} | startZ: {startZ}");
+
+            // float addXOffset = ((_mapDimension * _mapDimension) - (_player.position.x + minimapffset)) / (_mapDimension * _mapDimension);
+            // float addZOffset = ((_mapDimension * _mapDimension) - (_player.position.z + minimapffset)) / (_mapDimension * _mapDimension);
+
+            // startX = (int)(startX * addXOffset);
+            // startZ = (int)(startX * addZOffset);
+            // Debug.Log($"Final | startX: {startX} | addXOffset: {addXOffset} | startZ: {startZ} | addZOffset: {addZOffset}");
+
+            // startX = (int)(startX * _minimapAddOffsetMult);
+            // startZ = (int)(startX * _minimapAddOffsetMult);
+
+            // startZ += _markerDimension / 2;
+            // startX += _markerDimension / 2;
+            // if (_markerDimension % 2 == 1)
+            // {
+            //     startX += 1;
+            // }
+
+            // for (int i = 0; i < _markerDimension; i++)
+            // {
+            //     for (int j = 0; j < _markerDimension; j++)
+            //     {
+            //         _bgMapTex.SetPixel(startX + i, startZ + j, _playerColor);
+            //     }
+            // }
+
+            for (int i = -_markerDimension; i <= _markerDimension; i++)
             {
-                startX -= 1; startY -= 1;
-            }
-
-            // Debug.Log($"startX: {startX} | startY: {startY}");
-            for (int i = 0; i < _markerDimension; i++)
-            {
-                for (int j = 0; j < _markerDimension; j++)
+                for (int j = -_markerDimension; j <= _markerDimension; j++)
                 {
-                    _bgMapTex.SetPixel(startX + i, startY + j, _playerColor);
+                    _bgMapTex.SetPixel(startX + i, startZ + j, _playerColor);
                 }
             }
             _bgMapTex.Apply();
