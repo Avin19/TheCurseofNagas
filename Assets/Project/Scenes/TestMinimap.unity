@@ -874,7 +874,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &554410436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -958,7 +958,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 12288
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 3b644be591e2f7e4a84ddff053ceb672, type: 2}
   m_TargetDisplay: 1
@@ -2921,9 +2921,15 @@ MonoBehaviour:
   _minimapRT: {fileID: 8400000, guid: 3b644be591e2f7e4a84ddff053ceb672, type: 2}
   _minimapImg: {fileID: 56525530}
   _player: {fileID: 8510273574853525946}
+  _minimapRefreshRate: 0.5
+  _mapDimension: 10
+  _minimapDimension: 512
+  _markerDimension: 5
+  _playerColor: {r: 0, g: 0.18948159, b: 0.8867924, a: 1}
+  _obj1: {fileID: 2027483601}
   _bgMask:
     serializedVersion: 2
-    m_Bits: 12288
+    m_Bits: 14336
   _bgRefreshRate: 5
   _playerLocationCullingGroup:
     serializedVersion: 2
