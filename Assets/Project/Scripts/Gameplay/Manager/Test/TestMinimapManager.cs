@@ -65,7 +65,7 @@ namespace CurseOfNaga.Gameplay.Managers.Test
             //_bgMapTex = new Texture2D(_minimapRT.width, _minimapRT.height, gfxFormat, false, true);
 
             _takeOverhead = true;
-            UpdateMinimap();
+            // UpdateMinimap();
             UpdateBGTexture();
         }
 

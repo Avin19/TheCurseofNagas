@@ -722,6 +722,24 @@
 - Scripts
     [=] SimpleEnemyTest
         {+} Test script for minimap tests
+
+- Preparing for merges with main branch
+- Scripts
+    [=] MainGameplayManager
+        {+} Adding MiniMapManager
+    [=] MiniMapManager
+        {+} Main Manager for mini-maps | removing test logic from TestMinimapManager
+    [=] SaveSystem
+        {+} Fixing
+- Project
+    [=] Adding MinimapSymbol on tree/Building prefabs
+- Demo Scene
+    [=] Adding MiniMap to Canvas
+    [=] Adding ortho camera for Mini-Map
+    [=] MAking Boundaries | Scaling Ground | Adding Layer tags | Changing Sorting Layer
+    [=] [IMP] Ground sprite is not working properly with Render Texture
+        <~> Maybe due to Multiple Sprite Mode
+        <~> Using Mesh for Ground
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible

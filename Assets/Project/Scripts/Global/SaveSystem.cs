@@ -73,11 +73,6 @@ namespace CurseOfNaga.Global
         {
             if (_instance == null)
                 _instance = this;
-            else
-            {
-                _instance = null;
-                return;
-            }
         }
 
         // get_persistentDataPath is not allowed to be called during serialization

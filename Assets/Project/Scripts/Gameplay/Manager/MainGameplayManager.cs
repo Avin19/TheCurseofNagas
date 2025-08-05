@@ -52,6 +52,17 @@ namespace CurseOfNaga.Gameplay.Managers
         [SerializeField] private GameplayEventManager _gameplayEventManager;
         private SaveSystem _saveSystem;             //TEST
 
+        [Header("MiniMap Controls")]
+        [SerializeField] private Camera _mmOrthoCam;
+        [SerializeField] private RenderTexture _mmRenderTex;
+        [SerializeField] private UnityEngine.UI.RawImage _mmImg;
+
+        [SerializeField, Range(0.1f, 5f)] private float _mmRefreshRate = 1;
+        [SerializeField, Range(1, 5)] private int _markerDimension = 5;        //TODO: Make this constant
+        [SerializeField, Range(0.1f, 5f)] private float _mmBgRefreshRate = 5;             //TODO: Make this constant
+
+        [SerializeField] private MiniMapManager _miniMapManager;
+
         private CancellationTokenSource _cts;
         public Action<PlayerStatus> OnObjectiveVisible;
         // public Action<PlayerStatus, InteractionType, int> OnPlayerInteraction;
@@ -80,6 +91,8 @@ namespace CurseOfNaga.Gameplay.Managers
 #endif
 
             _gameplayEventManager.InitializeCallbacks();
+            _miniMapManager.Initialize(_mmOrthoCam, _mmRenderTex, _mmImg, ref _mmRefreshRate,
+                ref _mmBgRefreshRate, ref _markerDimension);
 
             _cts = new CancellationTokenSource();
             _inactiveObjectives = new List<ObjectiveInfo>();
@@ -88,6 +101,7 @@ namespace CurseOfNaga.Gameplay.Managers
         void Update()
         {
             CheckObjectivesVisibility();
+            _miniMapManager.Update();
         }
 
         public GameStatus SetGameStatus(GameStatus gameStatus)
@@ -159,6 +173,8 @@ namespace CurseOfNaga.Gameplay.Managers
         private void SaveGameState_Test()
         {
             PlayerState playerState = new PlayerState(PlayerTransform.position, 100f, 0f);
+
+            // Debug.Log($"Null: {SaveSystem.Instance == null}");
 
             SaveSystem.Instance.SavePlayerState(playerState, (saveStatus, opResult) =>
             {
