@@ -718,6 +718,10 @@
 
     [=] PlayerTest
         {+} Test script for Player testing
+
+- Scripts
+    [=] SimpleEnemyTest
+        {+} Test script for minimap tests
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible
