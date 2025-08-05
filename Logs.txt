@@ -707,6 +707,17 @@
         {+} Offsetting first and then scaling
         {+} Searching for eays to remove offset on minimap
 
+- Scripts
+    [=] TestMinimapManager
+        {+} Fixing offset position
+        {+} Storing original Bg Texture and replacing prev set pixels with original
+        {+} Moving RenderCameraHelper to Update
+        {+} Adding class TrackableEntity | Entity Position / Color / Prev Position
+        {+} Array to contain multiple TrackableEntities
+        {+} Logic for multiple TrackableEntities
+
+    [=] PlayerTest
+        {+} Test script for Player testing
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible
