@@ -2,13 +2,16 @@
 // #define DEBUG_WORLD_POINT
 #define TEST_CUTSCENE
 #define TEST_GAME_1
-#define TEST_SAVE_SYTEM
+// #define TEST_SAVE_SYTEM
 
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using CurseOfNaga.Gameplay.Enemies;
 using CurseOfNaga.Global;
+
 using UnityEngine;
 
 using static CurseOfNaga.Global.UniversalConstant;
@@ -63,6 +66,12 @@ namespace CurseOfNaga.Gameplay.Managers
 
         [SerializeField] private MiniMapManager _miniMapManager;
 
+        [Header("EnemySpawner Controls")]
+        [SerializeField, Range(1f, 5f)] private float _enspSpawnRadius;
+        [SerializeField, Range(1, 10)] private int _enspMaxSpawnCount;
+        [SerializeField, Range(0.25f, 5f)] private float _enspSpawnInterval;
+        [SerializeField] private EnemySpawner _enemySpawner;
+
         private CancellationTokenSource _cts;
         public Action<PlayerStatus> OnObjectiveVisible;
         // public Action<PlayerStatus, InteractionType, int> OnPlayerInteraction;
@@ -93,6 +102,10 @@ namespace CurseOfNaga.Gameplay.Managers
             _gameplayEventManager.InitializeCallbacks();
             _miniMapManager.Initialize(_mmOrthoCam, _mmRenderTex, _mmImg, ref _mmRefreshRate,
                 ref _mmBgRefreshRate, ref _markerDimension);
+            _enemySpawner.Initialize(ref _enspSpawnRadius, ref _enspMaxSpawnCount, ref _enspSpawnInterval);
+
+            GameObject _enemyHolder = new GameObject("Enemy Holder");
+            _enemySpawner.SpawnEnemies(_enemyHolder.transform);
 
             _cts = new CancellationTokenSource();
             _inactiveObjectives = new List<ObjectiveInfo>();

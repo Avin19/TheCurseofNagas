@@ -753,7 +753,16 @@
         {+} For testing EnemySpawner
 - TestMinimap Scene
     [=] Using this scene to test EnemySpawner
+
+- Scripts
+    [=] EnemySpawner
+        {+} Adding SpawnInterval to enemy spawn
+    [=] MainGameplayManager
+        {+} Integrating EnemySpawner here
+- [IMP] Need to make dynamic selection of patrol points for enemies
 --------------------------------------------------------------------------------------------------------
+- [DO] Enemis
+    [=] [DO] Runtime patrol point selection
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible
     [=] [DO] Defend mechanic

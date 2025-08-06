@@ -3837,7 +3837,6 @@ Transform:
   - {fileID: 860372985}
   - {fileID: 994506202}
   - {fileID: 281040099}
-  - {fileID: 1646063698}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &899871253
@@ -6453,9 +6452,9 @@ MonoBehaviour:
     - {fileID: 860372985}
     - {fileID: 994506202}
     - {fileID: 281040099}
-    - {fileID: 1646063698}
-    _spawnRadius: 5
-    _maxSpawnCount: 10
+  _enspSpawnRadius: 5
+  _enspMaxSpawnCount: 5
+  _enspSpawnInterval: 2
 --- !u!1 &1383699052
 GameObject:
   m_ObjectHideFlags: 0
@@ -7786,37 +7785,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1646063697
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1646063698}
-  m_Layer: 0
-  m_Name: SP_5
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1646063698
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1646063697}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.9, y: 0, z: -35.7}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 898540722}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1647967814
 GameObject:
   m_ObjectHideFlags: 0
