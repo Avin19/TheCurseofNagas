@@ -740,6 +740,19 @@
     [=] [IMP] Ground sprite is not working properly with Render Texture
         <~> Maybe due to Multiple Sprite Mode
         <~> Using Mesh for Ground
+
+--------------------------------------------------------------------------------------------------------
+                                                06 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Enemy Spawner
+- Scripts
+    [=] EnemySpawner
+        {+} List of Enemy prefabs / Spawn points
+        {+} Basic logic to spawn around a point
+    [=] TestEnemySpawner
+        {+} For testing EnemySpawner
+- TestMinimap Scene
+    [=] Using this scene to test EnemySpawner
 --------------------------------------------------------------------------------------------------------
 - [NOW] Enemy Combat logic
     [=] [DO] Shift to boxcast for detecting hit if possible
@@ -854,11 +867,12 @@
     [=] It will open a room or conversation dialogue
 
 NEW TASKS
-[-] 1.    Mini map
-[x] 2.    Enemy spawner - > Behaviour tree for enemy ( attack , patrol , search ,idle ) 
-[ ] 3.    Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )
-[ ] 4.    audio manager 
-[ ] 5.    Cutsence , Timeline ( dependency on me ) 
-[ ] 5.5   Instruction to play the game 
-[ ] 6.    Modular Dialog  system
-[ ] 7.    singleton for audio manager
+[x] 1.    Mini map
+[-] 2.    Enemy spawner - >
+[x] 2.    Behaviour tree for enemy ( attack , patrol , search ,idle ) 
+[ ] 4.    Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )
+[ ] 5.    audio manager 
+[ ] 6.    Cutsence , Timeline ( dependency on me ) 
+[ ] 6.5   Instruction to play the game 
+[ ] 7.    Modular Dialog  system
+[ ] 8.    singleton for audio manager
