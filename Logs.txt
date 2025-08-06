@@ -760,6 +760,21 @@
     [=] MainGameplayManager
         {+} Integrating EnemySpawner here
 - [IMP] Need to make dynamic selection of patrol points for enemies
+
+- Scripts
+    [=] AudioManager
+        {+} Making this singleton for now
+        {+} Basic Audio Manager implementation
+        {+} Making enum SFXClip
+        {+} String constants for exposed param of AudioMixers
+    [=] AudioSettings
+        {+} ScriptableObject to contain persisting audio settings between scenes
+- Demo Scene
+    [=] Adding AudioManager
+        {+} Adding AudioSources for player, enemy, bgm
+- Project
+    [=] Making a Audio Mixer for Audio Sources and exposing parameters for control
+    [=] Making a AudioSettings SO
 --------------------------------------------------------------------------------------------------------
 - [DO] Enemis
     [=] [DO] Runtime patrol point selection
@@ -877,11 +892,20 @@
 
 NEW TASKS
 [x] 1.    Mini map
-[-] 2.    Enemy spawner - >
-[x] 2.    Behaviour tree for enemy ( attack , patrol , search ,idle ) 
+[x] 2.    Enemy spawner - >
+[x] 2.    Behaviour tree for enemy ( attack , patrol , search ,idle )
 [ ] 4.    Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )
-[ ] 5.    audio manager 
+[-] 5.    audio manager
 [ ] 6.    Cutsence , Timeline ( dependency on me ) 
 [ ] 6.5   Instruction to play the game 
 [ ] 7.    Modular Dialog  system
-[ ] 8.    singleton for audio manager
+[-] 8.    singleton for audio manager
+
+-------------------------------------------------------------------------------------------------------------------------
+
+[-] https://pixabay.com/sound-effects/walk-on-wood-73212/
+[-] https://pixabay.com/sound-effects/footsteps-dirt-02-73773/
+[-] https://pixabay.com/sound-effects/running-on-dirt-road-345729/
+[-] https://pixabay.com/sound-effects/walking-in-water-199418/
+[-] https://pixabay.com/sound-effects/metal-impact-247482/
+[-] https://pixabay.com/sound-effects/metallic-clang-100473/
