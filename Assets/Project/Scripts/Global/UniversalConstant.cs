@@ -36,6 +36,7 @@ namespace CurseOfNaga.Global
             INTERACTING = 1 << 10,
             USING_ITEM = 1 << 11,
             ENEMY_FOUND = 1 << 12,
+            ACTIVATE_INTERACTION = 1 << 13,
         }
 
         public enum EnemyStatus

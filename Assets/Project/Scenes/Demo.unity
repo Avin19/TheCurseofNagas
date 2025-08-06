@@ -6734,7 +6734,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mainAudioSettings: {fileID: 11400000, guid: f8efa2be6e123ce4ab20d125c63219b0, type: 2}
-  _sfxClips: []
+  _sfxClips:
+  - {fileID: 8300000, guid: f5eade4e0e742ee49927472bb3fa41d4, type: 3}
+  - {fileID: 8300000, guid: 9f10ebf82ac9bac4092855745dcfb6e1, type: 3}
   _playerSFXSource: {fileID: 1562011500}
   _enemySFXSource: {fileID: 1755452026}
   _bgmSource: {fileID: 2062450198}

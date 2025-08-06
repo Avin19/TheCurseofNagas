@@ -775,6 +775,19 @@
 - Project
     [=] Making a Audio Mixer for Audio Sources and exposing parameters for control
     [=] Making a AudioSettings SO
+
+- Project
+    [=] Adding test sfx files
+- Scripts
+    [=] Player
+        {+} Testing AudioManager
+        {+} Adding CancellationTokenSource logic
+        {+} Fixing Interaction bug | Checking if interaction is available
+        {+} Fixing TriggerDetection
+    [=] GameplayEventManager
+        {+} Fixing RespondToPlayer
+    [=] UniversalConstant
+        {+} Adding "ACTIVATE_INTERACTION" to PlayerStatus
 --------------------------------------------------------------------------------------------------------
 - [DO] Enemis
     [=] [DO] Runtime patrol point selection
@@ -909,3 +922,4 @@ NEW TASKS
 [-] https://pixabay.com/sound-effects/walking-in-water-199418/
 [-] https://pixabay.com/sound-effects/metal-impact-247482/
 [-] https://pixabay.com/sound-effects/metallic-clang-100473/
+[-] https://pixabay.com/sound-effects/clean-fast-swooshaiff-14784/

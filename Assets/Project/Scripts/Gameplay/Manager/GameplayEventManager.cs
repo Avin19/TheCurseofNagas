@@ -68,8 +68,8 @@ namespace CurseOfNaga.Gameplay.Managers
 
             //         break;
             // }
-
-            switch ((InteractionType)value)
+            // Debug.Log($"GameplayEventManager Called | interactionType: {interactionType} | value: {value}");
+            switch (interactionType)
             {
                 case InteractionType.INTERACTING_WITH_NPC:
 

@@ -10,6 +10,7 @@ using CurseOfNaga.Gameplay.Enemies;
 using CurseOfNaga.Gameplay.Managers;
 using CurseOfNaga.Global;
 using static CurseOfNaga.Global.UniversalConstant;
+using System.Threading;
 
 namespace CurseOfNaga.Gameplay.Player
 {
@@ -43,6 +44,9 @@ namespace CurseOfNaga.Gameplay.Player
         private InteractionType _currentInteractionStatus;
         private IInteractable _currentInteractable;
 
+        private int _audioTime;
+        private CancellationTokenSource _cts;
+
         // private readonly Vector3 _LEFTFACING = new Vector3(-40f, 180f, 0f);
         // private readonly Vector3 _RIGHTFACING = new Vector3(40f, 0f, 0f);
         private const float _LEFT_FACING_WEAPON_PLACEMENT = 1.45f;
@@ -58,6 +62,7 @@ namespace CurseOfNaga.Gameplay.Player
         {
             MainGameplayManager.Instance.OnObjectiveVisible -= UpdatePlayerStatus;
             gameInput.OnInputDone -= HandleInput;
+            if (_cts != null) _cts.Cancel();
             // MainGameplayManager.Instance.OnEnemyStatusUpdate -= UpdateEnemyInfo;
         }
 
@@ -66,6 +71,8 @@ namespace CurseOfNaga.Gameplay.Player
 #if TESTING
             _movSpeed = 25f;
 #endif
+            _cts = new CancellationTokenSource();
+
             _playerRb = GetComponent<Rigidbody>();
             // _playerAC = GetComponent<Animator>();
 
@@ -104,6 +111,7 @@ namespace CurseOfNaga.Gameplay.Player
             switch (other.gameObject.layer)                   //other.gameobject can be a bit consuming
             {
                 case (int)Layer.ENEMY:
+                    _playerStatus |= PlayerStatus.ACTIVATE_INTERACTION;
                     colliderID = other.transform.parent.GetInstanceID();
                     MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.ENEMY_WITHIN_PLAYER_RANGE, colliderID, 1);
                     Debug.Log($"Instance ID: {other.transform.parent.GetInstanceID()}");
@@ -111,6 +119,7 @@ namespace CurseOfNaga.Gameplay.Player
                     break;
 
                 case (int)Layer.INTERACTABLE:
+                    _playerStatus |= PlayerStatus.ACTIVATE_INTERACTION;
                     // colliderID = other.transform.parent.GetInstanceID();
                     MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 1);
                     _currentInteractionStatus = InteractionType.PROMPT_TRIGGERED;
@@ -118,8 +127,10 @@ namespace CurseOfNaga.Gameplay.Player
 
                     break;
 
+                //This will automatically Activate
                 case (int)Layer.TRIGGER:
-                    colliderID = other.transform.parent.GetInstanceID();
+                    // _playerStatus |= PlayerStatus.ACTIVATE_INTERACTION;
+                    colliderID = other.transform.GetInstanceID();
                     MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.INVOKE_TRIGGER, colliderID);
                     Debug.Log($"Instance ID: {other.transform.parent.GetInstanceID()}");
 
@@ -221,6 +232,7 @@ namespace CurseOfNaga.Gameplay.Player
                         _animationController.PlayAnimation(PlayerStatus.ATTACKING);
                         UnsetAction_Async(PlayerStatus.ATTACKING);
 
+                        AudioManager.Instance.PlayPlayerSFXClipOnce(AudioManager.SFXClip.SWORD_SWOOSH_0);
                         // Check for Enemy-Hit
                         MainGameplayManager.Instance.OnEnemyStatusUpdate?.Invoke(EnemyStatus.PLAYER_ATTACKING, -1, 10f);
                     }
@@ -253,7 +265,7 @@ namespace CurseOfNaga.Gameplay.Player
                 *       {+} Eg: Attack can be done while running
                 */
                 case PlayerStatus.INTERACTING:
-                    if (value > 0
+                    if (value > 0 && (_playerStatus & PlayerStatus.ACTIVATE_INTERACTION) != 0
                         && (_playerStatus & PlayerStatus.INTERACTING) == 0)
                     {
                         MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 0);
@@ -304,6 +316,7 @@ namespace CurseOfNaga.Gameplay.Player
                 case PlayerStatus.ROLLING:
                     {
                         await Task.Delay(500);
+                        if (_cts.IsCancellationRequested) return;
 
                         //REset values
                         Vector3 finalVec;
@@ -331,6 +344,8 @@ namespace CurseOfNaga.Gameplay.Player
 
                 case PlayerStatus.INTERACTING:
                     await Task.Delay(500);
+                    if (_cts.IsCancellationRequested) return;
+
                     _playerStatus &= ~PlayerStatus.INTERACTING;
                     _playerStatus &= ~PlayerStatus.PERFORMING_ACTION;
                     _currentInteractionStatus = InteractionType.NONE;
@@ -339,6 +354,8 @@ namespace CurseOfNaga.Gameplay.Player
 
                 case PlayerStatus.JUMPING:
                     await Task.Delay(500);
+                    if (_cts.IsCancellationRequested) return;
+
                     _playerStatus &= ~PlayerStatus.JUMPING;
                     _playerStatus &= ~PlayerStatus.PERFORMING_ACTION;
 
@@ -346,6 +363,8 @@ namespace CurseOfNaga.Gameplay.Player
 
                 case PlayerStatus.ATTACKING:
                     await Task.Delay(500);
+                    if (_cts.IsCancellationRequested) return;
+
                     _playerStatus &= ~PlayerStatus.ATTACKING;
                     _playerStatus &= ~PlayerStatus.PERFORMING_ADDITIVE_ACTION;
 
@@ -362,6 +381,9 @@ namespace CurseOfNaga.Gameplay.Player
             {
                 // if ((_playerStatus & PlayerStatus.MOVING) == 0)
                 {
+                    if ((_playerStatus & PlayerStatus.MOVING) == 0)
+                        MovementSFXHelper();
+
                     _playerStatus &= ~PlayerStatus.IDLE;
                     _playerStatus |= PlayerStatus.MOVING;
 
@@ -413,6 +435,24 @@ namespace CurseOfNaga.Gameplay.Player
 
             moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
             transform.position += moveDir * _movSpeed * Time.deltaTime;
+        }
+
+        private async void MovementSFXHelper()
+        {
+            _audioTime = 2310;
+            while ((_playerStatus & PlayerStatus.IDLE) == 0)
+            {
+                if (_audioTime > 2300)
+                {
+                    AudioManager.Instance.PlayPlayerSFXClipOnce(AudioManager.SFXClip.WALKING_ON_DIRT);
+                    _audioTime = 0;
+                }
+
+                await Task.Delay(10);             //Length of walk-on-dirt clip
+                if (_cts.IsCancellationRequested) return;
+                _audioTime++;
+            }
+            AudioManager.Instance.StopPlayerSFX();
         }
 
         private void UpdatePlayerStatus(PlayerStatus playerStatus)

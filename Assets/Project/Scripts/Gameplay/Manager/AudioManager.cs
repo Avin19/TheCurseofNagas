@@ -7,11 +7,11 @@ namespace CurseOfNaga.Gameplay.Managers
 {
     public class AudioManager : MonoBehaviour
     {
-        public enum SFXClip { WALKING_ON_DIRT, WALKING_IN_WATER, METAL_CLANG_0, STRETCH_BOW_0, SHOT_ARROW_0 }
+        public enum SFXClip { WALKING_ON_DIRT = 0, WALKING_IN_WATER, METAL_CLANG_0, SWORD_SWOOSH_0 = 1, STRETCH_BOW_0, SHOT_ARROW_0 }
 
         #region Singleton
         private static AudioManager _instance;
-        private static AudioManager Instance { get => _instance; }
+        public static AudioManager Instance { get => _instance; }
 
         private void Awake()
         {
@@ -54,5 +54,8 @@ namespace CurseOfNaga.Gameplay.Managers
         {
             _enemySFXSource.PlayOneShot(_sfxClips[(int)clip]);
         }
+
+        public void StopPlayerSFX() { _playerSFXSource.Stop(); }
+        public void StopEnemySFX() { _enemySFXSource.Stop(); }
     }
 }
