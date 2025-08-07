@@ -788,6 +788,19 @@
         {+} Fixing RespondToPlayer
     [=] UniversalConstant
         {+} Adding "ACTIVATE_INTERACTION" to PlayerStatus
+
+--------------------------------------------------------------------------------------------------------
+                                                07 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- NPCDialogue.json
+    [=] Renaming to Dialogues.json to contain all the dialogues
+    [=] Chaning "npc_dialogues" to "all_dialogues" | "id" to "parent_id"
+    [=] Adding list of objects "dialogue" to "dialogues_list"
+        {+} "dialogue_flags" to check for conditions,
+        {+} "dialogue"/"dialogue_id"/"dialogue_type" contains the Dialogue/ID/Type,
+        {+} "next_dialogue_id" contains the next dialogue to show,
+        {+} "choices" contains list of dialogue to choose from
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Enemis
     [=] [DO] Runtime patrol point selection
@@ -908,11 +921,11 @@ NEW TASKS
 [x] 2.    Enemy spawner - >
 [x] 2.    Behaviour tree for enemy ( attack , patrol , search ,idle )
 [ ] 4.    Have you worked on shader graph - > if yes ,  depth shader graph , adding fireflies (VFX graph )
-[-] 5.    audio manager
+[x] 5.    audio manager
 [ ] 6.    Cutsence , Timeline ( dependency on me ) 
 [ ] 6.5   Instruction to play the game 
-[ ] 7.    Modular Dialog  system
-[-] 8.    singleton for audio manager
+[-] 7.    Modular Dialog  system
+[x] 8.    singleton for audio manager
 
 -------------------------------------------------------------------------------------------------------------------------
 
@@ -923,3 +936,10 @@ NEW TASKS
 [-] https://pixabay.com/sound-effects/metal-impact-247482/
 [-] https://pixabay.com/sound-effects/metallic-clang-100473/
 [-] https://pixabay.com/sound-effects/clean-fast-swooshaiff-14784/
+
+- Dialogue References
+    [=] https://yarnspinner.itch.io/yarn-spinner
+    [=] https://www.reddit.com/r/howdidtheycodeit/comments/131pm2v/dialogue_system_implementations/
+    [=] https://www.youtube.com/watch?v=iZUTOgQuekc&t=2s
+    [=] https://www.youtube.com/watch?v=7KHGH0fPL84
+    [=] https://www.youtube.com/watch?v=A7WXmbkIVRo

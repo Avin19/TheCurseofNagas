@@ -1,0 +1,80 @@
+{
+    "all_dialogues": [
+        {
+            "parent_id": "SA",
+            "name": "Salem",
+            "dialogues_list": [
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "SA1",
+                    "dialogue_type": 1,
+                    "dialogue": "Hey there!",
+                    "next_dialogue_id": "SA2",
+                    "choices": {}
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "SA2",
+                    "dialogue_type": 1,
+                    "dialogue": "I am Salem, nice to meet you!",
+                    "next_dialogue_id": "SA3",
+                    "choices": {}
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "SA3",
+                    "dialogue_type": 1,
+                    "dialogue": "May I know who you are?",
+                    "next_dialogue_id": "SA4",
+                    "choices": {}
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "SA4",
+                    "dialogue_type": 1,
+                    "dialogue": "You can find the village elder over by the pond",
+                    "next_dialogue_id": "EOC",
+                    "choices": {}
+                }
+            ]
+        },
+        {
+            "parent_id": "DE",
+            "name": "Deron",
+            "all_dialogues": [
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "DE1",
+                    "dialogue_type": 1,
+                    "dialogue": "Hey there!",
+                    "next_dialogue_id": "DE2",
+                    "choices": {}
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "DE2",
+                    "dialogue_type": 1,
+                    "dialogue": "I am Deron, nice to meet you!",
+                    "next_dialogue_id": "DE3",
+                    "choices": {}
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "DE3",
+                    "dialogue_type": 1,
+                    "dialogue": "May I know who you are?",
+                    "next_dialogue_id": "DE4",
+                    "choices": {}
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "DE4",
+                    "dialogue_type": 1,
+                    "dialogue": "You can find the village elder over by the pond",
+                    "next_dialogue_id": "EOC",
+                    "choices": {}
+                }
+            ]
+        }
+    ]
+}
