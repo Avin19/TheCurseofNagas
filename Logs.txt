@@ -806,6 +806,7 @@
         {+} Adding enum DialogueType
 - Dialogues.json
     [=] Adding choices template
+    
 - Project
     [=] Making a visual graph tool for dialogues
 --------------------------------------------------------------------------------------------------------
