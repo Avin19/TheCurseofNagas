@@ -10,7 +10,7 @@
                     "dialogue_type": 1,
                     "dialogue": "Hey there!",
                     "next_dialogue_id": "SA2",
-                    "choices": {}
+                    "choices": []
                 },
                 {
                     "dialogue_flags": 1,
@@ -18,23 +18,48 @@
                     "dialogue_type": 1,
                     "dialogue": "I am Salem, nice to meet you!",
                     "next_dialogue_id": "SA3",
-                    "choices": {}
+                    "choices": []
                 },
                 {
                     "dialogue_flags": 1,
                     "dialogue_id": "SA3",
-                    "dialogue_type": 1,
+                    "dialogue_type": 2,
                     "dialogue": "May I know who you are?",
                     "next_dialogue_id": "SA4",
-                    "choices": {}
+                    "choices": []
                 },
                 {
                     "dialogue_flags": 1,
                     "dialogue_id": "SA4",
+                    "dialogue_type": 3,
+                    "dialogue": null,
+                    "next_dialogue_id": null,
+                    "choices": [
+                        {
+                            "dialogue_id": "PL2",
+                            "next_dialogue_id": "SA4_1"
+                        },
+                        {
+                            "dialogue_id": "PL3",
+                            "next_dialogue_id": "SA4_2"
+                        }
+                    ]
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "SA4_1",
                     "dialogue_type": 1,
-                    "dialogue": "You can find the village elder over by the pond",
+                    "dialogue": "No need to be rude about your name",
                     "next_dialogue_id": "EOC",
-                    "choices": {}
+                    "choices": []
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "SA4_2",
+                    "dialogue_type": 1,
+                    "dialogue": "Nice to meet you, {Player}",
+                    "next_dialogue_id": "EOC",
+                    "choices": []
                 }
             ]
         },
@@ -48,7 +73,7 @@
                     "dialogue_type": 1,
                     "dialogue": "Hey there!",
                     "next_dialogue_id": "DE2",
-                    "choices": {}
+                    "choices": []
                 },
                 {
                     "dialogue_flags": 1,
@@ -56,7 +81,7 @@
                     "dialogue_type": 1,
                     "dialogue": "I am Deron, nice to meet you!",
                     "next_dialogue_id": "DE3",
-                    "choices": {}
+                    "choices": []
                 },
                 {
                     "dialogue_flags": 1,
@@ -64,7 +89,7 @@
                     "dialogue_type": 1,
                     "dialogue": "May I know who you are?",
                     "next_dialogue_id": "DE4",
-                    "choices": {}
+                    "choices": []
                 },
                 {
                     "dialogue_flags": 1,
@@ -72,7 +97,53 @@
                     "dialogue_type": 1,
                     "dialogue": "You can find the village elder over by the pond",
                     "next_dialogue_id": "EOC",
-                    "choices": {}
+                    "choices": []
+                }
+            ]
+        },
+        {
+            "parent_id": "PL",
+            "name": "Player",
+            "all_dialogues": [
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "PL1",
+                    "dialogue_type": 1,
+                    "dialogue": "Hey there!",
+                    "next_dialogue_id": "PL2",
+                    "choices": []
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "PL2",
+                    "dialogue_type": 4,
+                    "dialogue": "None of your concern.",
+                    "next_dialogue_id": null,
+                    "choices": []
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "PL3",
+                    "dialogue_type": 4,
+                    "dialogue": "My name is {Player}.",
+                    "next_dialogue_id": null,
+                    "choices": []
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "PL3",
+                    "dialogue_type": 1,
+                    "dialogue": "May I know who you are?",
+                    "next_dialogue_id": "PL4",
+                    "choices": []
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_id": "PL4",
+                    "dialogue_type": 1,
+                    "dialogue": "You can find the village elder over by the pond",
+                    "next_dialogue_id": "EOC",
+                    "choices": []
                 }
             ]
         }

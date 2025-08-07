@@ -125,5 +125,7 @@ namespace CurseOfNaga.Global
         {
             PLAYING, FINISHED, REACHED_HIT_POINT
         }
+
+        public enum DialogueType { SPEECH, QUESTION, ANSWER, CHOICE }
     }
 }

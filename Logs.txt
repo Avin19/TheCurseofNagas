@@ -801,6 +801,13 @@
         {+} "next_dialogue_id" contains the next dialogue to show,
         {+} "choices" contains list of dialogue to choose from
 
+- Scritps
+    [=] UniversalConstant
+        {+} Adding enum DialogueType
+- Dialogues.json
+    [=] Adding choices template
+- Project
+    [=] Making a visual graph tool for dialogues
 --------------------------------------------------------------------------------------------------------
 - [DO] Enemis
     [=] [DO] Runtime patrol point selection
