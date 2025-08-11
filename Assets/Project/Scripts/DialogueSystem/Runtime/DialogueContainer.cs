@@ -7,6 +7,6 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     public class DialogueContainer : ScriptableObject
     {
         public List<DialogueNodeLinkData> NodeLinks = new List<DialogueNodeLinkData>();
-        public List<DialogueNodeData> DialogueDatas = new List<DialogueNodeData>();
+        public List<DialogueNodeData> DialogueNodeDatas = new List<DialogueNodeData>();
     }
 }

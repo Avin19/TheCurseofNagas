@@ -59,6 +59,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
             generatedPort.portName = "Next";
             node.outputContainer.Add(generatedPort);
 
+            node.capabilities = ~Capabilities.Movable;
+
             node.RefreshExpandedState();
             node.RefreshPorts();
 
@@ -87,6 +89,15 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
             var button = new Button(() => { AddChoicePort(dialogueNode); }) { text = "New Choice" };
             dialogueNode.titleContainer.Add(button);
+
+            var dialogueField = new TextField(string.Empty);
+            dialogueField.RegisterValueChangedCallback(evt =>
+            {
+                dialogueNode.DialogueText = evt.newValue;
+                dialogueNode.title = evt.newValue;
+            });
+            dialogueField.SetValueWithoutNotify(dialogueNode.title);
+            dialogueNode.mainContainer.Add(dialogueField);
 
             dialogueNode.RefreshExpandedState();
             dialogueNode.RefreshPorts();
@@ -127,12 +138,17 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         private void RemovePort(DialogueNode dialogueNode, Port generatedPort)
         {
-            var targetEdge = edges.ToList().Where(edge => edge.output.portName == generatedPort.portName && edge.output.node == generatedPort.node);
+            var targetEdge = edges.ToList().Where(edge => edge.output.portName == generatedPort.portName
+                    && edge.output.node == generatedPort.node);
 
-            if (!targetEdge.Any()) return;
-            var edge = targetEdge.First();
-            edge.input.Disconnect(edge);
-            RemoveElement(edge);
+            // Debug.Log($"targetEdge | input: {targetEdge.First().input.node.viewDataKey} "
+            //     + $"| output: {targetEdge.First().output.node.viewDataKey}");
+            if (targetEdge.Count() > 0)
+            {
+                var edge = targetEdge.First();
+                edge.input.Disconnect(edge);
+                RemoveElement(edge);
+            }
 
             dialogueNode.outputContainer.Remove(generatedPort);
             dialogueNode.RefreshPorts();

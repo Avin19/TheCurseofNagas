@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
+using System;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 
 using UnityEngine;
@@ -23,6 +25,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             ConstructGraphView();
             GenerateToolbar();
+            GenerateMiniMap();
+        }
+
+        private void GenerateMiniMap()
+        {
+            var minimap = new MiniMap { anchored = true };
+            minimap.SetPosition(new Rect(10, 30, 200, 140));
+            _graphView.AddElement(minimap);
         }
 
         private void ConstructGraphView()
