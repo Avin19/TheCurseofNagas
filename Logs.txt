@@ -809,6 +809,16 @@
     
 - Project
     [=] Making a visual graph tool for dialogues
+
+--------------------------------------------------------------------------------------------------------
+                                                08 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Project
+    [=] Continue Dialogue Visual graph
+    [=] Save/Load functionality
+    [=] Changing file directories
+
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Enemis
     [=] [DO] Runtime patrol point selection

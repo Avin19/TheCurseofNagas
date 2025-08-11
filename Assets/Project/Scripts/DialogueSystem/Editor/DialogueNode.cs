@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
 
-namespace CurseOfNaga.DialogueSystem
+namespace CurseOfNaga.DialogueSystem.Editor
 {
     public class DialogueNode : Node
     {
