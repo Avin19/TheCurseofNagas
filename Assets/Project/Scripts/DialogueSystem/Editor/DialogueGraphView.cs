@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,7 +10,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 {
     public class DialogueGraphView : GraphView
     {
-        private readonly Vector2 _defaultNodeSize = new Vector2(150, 200);
+        public readonly Vector2 _defaultNodeSize = new Vector2(150, 200);
 
         public DialogueGraphView()
         {
@@ -99,12 +100,12 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             var generatedPort = GeneratePort(dialogueNode, Direction.Output);
 
-            // var oldLabel = generatedPort.contentContainer.Q<Label>("type");
-            // generatedPort.contentContainer.Remove(oldLabel);
+            var oldLabel = generatedPort.contentContainer.Q<Label>("type");
+            generatedPort.contentContainer.Remove(oldLabel);
 
             var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count;
             var choicePortName = string.IsNullOrEmpty(overridenPortName) ?
-                    $"Choice {outputPortCount}" : overridenPortName;
+                    $"Choice {outputPortCount + 1}" : overridenPortName;
 
             var choiceTextField = new TextField
             {
@@ -126,7 +127,16 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         private void RemovePort(DialogueNode dialogueNode, Port generatedPort)
         {
+            var targetEdge = edges.ToList().Where(edge => edge.output.portName == generatedPort.portName && edge.output.node == generatedPort.node);
 
+            if (!targetEdge.Any()) return;
+            var edge = targetEdge.First();
+            edge.input.Disconnect(edge);
+            RemoveElement(edge);
+
+            dialogueNode.outputContainer.Remove(generatedPort);
+            dialogueNode.RefreshPorts();
+            dialogueNode.RefreshExpandedState();
         }
     }
 }

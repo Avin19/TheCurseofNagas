@@ -8,6 +8,7 @@ using UnityEditor.Experimental.GraphView;
 using CurseOfNaga.DialogueSystem.Runtime;
 using UnityEditor;
 using System;
+using UnityEngine.UIElements;
 
 namespace CurseOfNaga.DialogueSystem.Editor
 {
@@ -78,24 +79,34 @@ namespace CurseOfNaga.DialogueSystem.Editor
             }
 
             ClearGraph();
-            GenerateNodes();
-            ConnectNodes();
+            // GenerateNodes();
+            // ConnectNodes();
         }
 
         private void ClearGraph()
         {
             //Set the base EntryPoint node GUID first. Discard existing guid
-            _nodes.Find(x => x.EntryPoint).GUID = _containerCache.NodeLinks[0].BaseNodeGUID;
+            _nodes.Find(node => node.EntryPoint).GUID = _containerCache.NodeLinks[0].BaseNodeGUID;
 
-            for (int i = 1; i < _nodes.Count; i++)
+            // Debug.Log($"Count : {_nodes.Count}");
+            // int totalCount = _nodes.Count;
+            for (int i = 1; i < _nodes.Count;)
             {
-                //Remove all the edges connected to this graph
+                // Debug.Log($"i: [{i}] | Name: {_nodes[i].viewDataKey} | Count: {_nodes.Count}");
+                // if (_nodes[i].EntryPoint)
+                // {
+                //     Debug.Log($"Skipping | i: [{i}] | Name: {_nodes[i].viewDataKey}");
+                //     continue;
+                // }
+
+                // Remove all the edges connected to this graph
                 _edges.Where(edge => edge.input.node == _nodes[i]).ToList()
                             .ForEach(edge => _targetGraphView.RemoveElement(edge));
 
                 //Then finally remove the node
                 _targetGraphView.RemoveElement(_nodes[i]);
             }
+            // Debug.Log($"Count : {_nodes.Count}");
         }
 
         private void GenerateNodes()
@@ -103,23 +114,50 @@ namespace CurseOfNaga.DialogueSystem.Editor
             DialogueNode tempNode;
             List<DialogueNodeLinkData> nodePorts;
 
-            for (int i = 0; i < _nodes.Count; i++)
+            for (int i = 0; i < _containerCache.DialogueDatas.Count; i++)
             {
-                tempNode = _targetGraphView.CreateDialogueNode(_nodes[i].DialogueText);
-                tempNode.GUID = _nodes[i].GUID;
+                tempNode = _targetGraphView.CreateDialogueNode(_containerCache.DialogueDatas[i].DialogueText);
+                tempNode.GUID = _containerCache.DialogueDatas[i].GUID;
                 _targetGraphView.AddElement(tempNode);
 
-                nodePorts = _containerCache.NodeLinks.Where(edge => edge.BaseNodeGUID == _nodes[i].GUID).ToList();
+                nodePorts = _containerCache.NodeLinks.Where(edge => edge.BaseNodeGUID.Equals(_containerCache.DialogueDatas[i].GUID)).ToList();
                 nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, edge.PortName));
             }
         }
 
         private void ConnectNodes()
         {
-            throw new NotImplementedException();
+            DialogueNodeLinkData[] connections;
+            DialogueNode targetNode;
+
+            for (int i = 0; i < _nodes.Count; i++)
+            {
+                connections = _containerCache.NodeLinks.Where(nodeLink => nodeLink.BaseNodeGUID.Equals(_nodes[i].GUID)).ToArray();
+                for (int j = 0; j < connections.Length; j++)
+                {
+                    var targetNodeGuid = connections[j].TargetNodeGUID;
+                    targetNode = _nodes.First(node => node.GUID.Equals(targetNodeGuid));
+                    LinkNodes(_nodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
+
+                    targetNode.SetPosition(new Rect(
+                        _containerCache.DialogueDatas.First(nodeData => nodeData.GUID.Equals(targetNodeGuid)).Position,
+                        _targetGraphView._defaultNodeSize
+                    ));
+                }
+            }
         }
 
-
+        private void LinkNodes(Port output, Port input)
+        {
+            var tempEdge = new Edge
+            {
+                output = output,
+                input = input
+            };
+            tempEdge.input.Connect(tempEdge);
+            tempEdge.output.Connect(tempEdge);
+            _targetGraphView.Add(tempEdge);
+        }
     }
 }
 #endif

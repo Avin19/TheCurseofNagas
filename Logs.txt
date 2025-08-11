@@ -804,7 +804,7 @@
 - Scritps
     [=] UniversalConstant
         {+} Adding enum DialogueType
-- Dialogues.json
+- Dialogues.json  
     [=] Adding choices template
     
 - Project
@@ -817,8 +817,9 @@
     [=] Continue Dialogue Visual graph
     [=] Save/Load functionality
     [=] Changing file directories
-
-
+    
+- Script
+    [=] Fixing Clear logic
 --------------------------------------------------------------------------------------------------------
 - [DO] Enemis
     [=] [DO] Runtime patrol point selection

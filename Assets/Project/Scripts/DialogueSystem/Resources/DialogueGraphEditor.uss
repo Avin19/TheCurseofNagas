@@ -5,3 +5,8 @@ GridBackground
     --thick-line-color: rgba(193, 196, 192, 0.1);
     --spacing: 10;
 }
+
+.output #unity-text-input
+{
+    flex-direction: Column;
+}

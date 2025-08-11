@@ -20,9 +20,9 @@ MonoBehaviour:
     PortName: 
     TargetNodeGUID: 8b01c3ab-bd73-483c-87e6-1b62b97fb7b8
   DialogueDatas:
-  - GUID: 1afa36a4-d7f6-49db-a9d0-0f286815b901
-    DialogueText: Dialogue Node
-    Position: {x: 198, y: 162}
   - GUID: 8b01c3ab-bd73-483c-87e6-1b62b97fb7b8
     DialogueText: Dialogue Node
-    Position: {x: 431, y: 200}
+    Position: {x: 646, y: 200}
+  - GUID: 1afa36a4-d7f6-49db-a9d0-0f286815b901
+    DialogueText: Dialogue Node
+    Position: {x: 297, y: 277}
