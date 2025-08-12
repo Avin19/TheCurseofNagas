@@ -851,6 +851,15 @@
         {+} Removing EntryPoint
 - Dialogues_Test.json / Dialogues.json
     [=] Simplifying key names
+
+- Scripts
+    [=] DialogueGraphEditor / DialogueGraphView / GraphSaveUtility
+        {+} Replacing GUID with viewDataKey
+        {+} Refactoring to remove DialogueNode
+    [=] DialogueGraphView
+        {+} Adding an ID field and changing the title of Node accordingly
+        {+} Adding a DialogueData list to store values from Nodes
+        {+} Attaching remove callback for Node
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

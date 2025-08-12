@@ -30,7 +30,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             ConstructGraphView();
             GenerateToolbar();
-            GenerateMiniMap();
+            // GenerateMiniMap();
         }
 
         private void GenerateMiniMap()

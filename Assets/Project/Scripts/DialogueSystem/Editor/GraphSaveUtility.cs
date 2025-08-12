@@ -20,7 +20,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         private DialogueGraphView _targetGraphView;
         private DialogueContainer _containerCache;
         private List<Edge> _edges => _targetGraphView.edges.ToList();
-        private List<DialogueNode> _nodes => _targetGraphView.nodes.ToList().Cast<DialogueNode>().ToList();
+        private List<Node> _nodes => _targetGraphView.nodes.ToList();//.Cast<DialogueNode>().ToList();
 
         private const string _PARENT_FOLDER_PATH = "Assets/Project";        // Assets/Project/Prefabs/Player/Player.prefab
         private const string _RESOURCES_FOLDER_PATH = "Resources";
@@ -52,14 +52,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
             int totalCount = connectedPorts.Length;
             for (int i = 0; i < totalCount; i++)
             {
-                var outputNode = connectedPorts[i].output.node as DialogueNode;
-                var inputNode = connectedPorts[i].input.node as DialogueNode;
+                var outputNode = connectedPorts[i].output.node;
+                var inputNode = connectedPorts[i].input.node;
 
                 dialogueContainer.NodeLinks.Add(new DialogueNodeLinkData
                 {
-                    BaseNodeGUID = outputNode.GUID,
+                    BaseNodeGUID = outputNode.viewDataKey,
                     PortName = connectedPorts[i].output.name,
-                    TargetNodeGUID = inputNode.GUID
+                    TargetNodeGUID = inputNode.viewDataKey
                 });
             }
 
@@ -68,7 +68,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             {
                 dialogueContainer.DialogueNodeDatas.Add(new DialogueNodeData
                 {
-                    GUID = _nodes[i].GUID,
+                    GUID = _nodes[i].viewDataKey,
                     // DialogueText = _nodes[i].DialogueText,
                     Position = _nodes[i].GetPosition().position
                 });
@@ -105,7 +105,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             //Set the base EntryPoint node GUID first. Discard existing guid
             // _nodes.Find(node => node.EntryPoint).GUID = _containerCache.NodeLinks[0].BaseNodeGUID;
-            _nodes[0].GUID = DialogueGraphView.BASE_NODE;
+            _nodes[0].viewDataKey = DialogueGraphView.BASE_NODE;
 
             for (int i = 1; i < _nodes.Count;)
             {
@@ -120,13 +120,13 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         private void GenerateNodes()
         {
-            DialogueNode tempNode;
+            Node tempNode;
             List<DialogueNodeLinkData> nodePorts;
 
             for (int i = 0; i < _containerCache.DialogueNodeDatas.Count; i++)
             {
                 tempNode = _targetGraphView.CreateDialogueNode(_containerCache.DialogueNodeDatas[i].GUID);
-                tempNode.GUID = _containerCache.DialogueNodeDatas[i].GUID;
+                tempNode.viewDataKey = _containerCache.DialogueNodeDatas[i].GUID;
                 _targetGraphView.AddElement(tempNode);
 
                 nodePorts = _containerCache.NodeLinks.Where(edge => edge.BaseNodeGUID.Equals(_containerCache.DialogueNodeDatas[i].GUID)).ToList();
@@ -137,15 +137,15 @@ namespace CurseOfNaga.DialogueSystem.Editor
         private void ConnectNodes()
         {
             DialogueNodeLinkData[] connections;
-            DialogueNode targetNode;
+            Node targetNode;
 
             for (int i = 0; i < _nodes.Count; i++)
             {
-                connections = _containerCache.NodeLinks.Where(nodeLink => nodeLink.BaseNodeGUID.Equals(_nodes[i].GUID)).ToArray();
+                connections = _containerCache.NodeLinks.Where(nodeLink => nodeLink.BaseNodeGUID.Equals(_nodes[i].viewDataKey)).ToArray();
                 for (int j = 0; j < connections.Length; j++)
                 {
                     var targetNodeGuid = connections[j].TargetNodeGUID;
-                    targetNode = _nodes.First(node => node.GUID.Equals(targetNodeGuid));
+                    targetNode = _nodes.First(node => node.viewDataKey.Equals(targetNodeGuid));
                     LinkNodes(_nodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
 
                     targetNode.SetPosition(new Rect(
@@ -188,7 +188,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             dialogueTemplate = JsonUtility.FromJson<DialogueTemplate>(jsonData);
             // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}");
 
-            DialogueNode tempNode;
+            Node tempNode;
             DialogueData dialogueData;
             // for (int i = 0; i < dialogueTemplate.characters[0].dialogues_list.Count; i++)
             for (int i = 0; i < 2; i++)
@@ -196,7 +196,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 dialogueData = dialogueTemplate.characters[0].dialogues_list[i];
 
                 tempNode = _targetGraphView.CreateDialogueNode(dialogueData.link.id, dialogueData);
-                tempNode.GUID = dialogueData.link.id;
+                tempNode.viewDataKey = dialogueData.link.id;
                 _targetGraphView.AddElement(tempNode);
             }
         }

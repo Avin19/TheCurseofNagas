@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: New Narrative 2
   m_EditorClassIdentifier: 
   NodeLinks:
-  - BaseNodeGUID: 1812c44b-6199-4054-a7d8-67aa12b25ca3
+  - BaseNodeGUID: BASE_NODE
     PortName: 
     TargetNodeGUID: GRAPH_NODE_0
   - BaseNodeGUID: GRAPH_NODE_0
@@ -27,14 +27,10 @@ MonoBehaviour:
     TargetNodeGUID: GRAPH_NODE_3
   DialogueNodeDatas:
   - GUID: GRAPH_NODE_1
-    DialogueText: Dialogue Node
     Position: {x: 666, y: 0}
   - GUID: GRAPH_NODE_3
-    DialogueText: Dialogue Node
     Position: {x: 666, y: 499}
   - GUID: GRAPH_NODE_2
-    DialogueText: Dialogue Node
     Position: {x: 666, y: 200}
   - GUID: GRAPH_NODE_0
-    DialogueText: Dialogue Node
     Position: {x: 339, y: 134}

@@ -17,10 +17,13 @@ namespace CurseOfNaga.DialogueSystem.Editor
         private const string _NOT_SET = "NOT_SET";
         public const string BASE_NODE = "BASE_NODE";
 
+        public List<DialogueData> AddedDialogues;
         private int _nodeCount = 0;
 
         public DialogueGraphView()
         {
+            AddedDialogues = new List<DialogueData>();
+
             styleSheets.Add(Resources.Load<StyleSheet>("DialogueGraphEditor"));
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
@@ -65,7 +68,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
             var node = new Node
             {
-                title = "Start"
+                title = "Start",
+                viewDataKey = BASE_NODE
             };
 
             var generatedPort = GeneratePort(node, Direction.Output);
@@ -87,26 +91,36 @@ namespace CurseOfNaga.DialogueSystem.Editor
             AddElement(CreateDialogueNode(nodeName));
         }
 
-        public DialogueNode CreateDialogueNode(string nodeName, DialogueData dialogueData = null)
+        private void RemoveNodeFromList(DetachFromPanelEvent detachEvent, int nodeIndex)
         {
-            DialogueNode dialogueNode = new DialogueNode();
+            // AddedDialogues.RemoveAt(nodeIndex);
+            AddedDialogues[nodeIndex] = null;
+        }
+
+        //TODO: Update DialogueData only when the user clicks on the save button
+        public Node CreateDialogueNode(string nodeName, DialogueData dialogueData = null)
+        {
+            Node dialogueNode = new Node();
             if (dialogueData == null)
             {
                 dialogueData = new DialogueData();
+                AddedDialogues.Add(dialogueData);
+                dialogueNode.RegisterCallback<DetachFromPanelEvent>((evt) => RemoveNodeFromList(evt, _nodeCount));
 
                 // dialogueNode.DialogueText = nodeName;
                 // dialogueNode.GUID = Guid.NewGuid().ToString();
                 dialogueNode.title = $"GRAPH_NODE_{_nodeCount}";
-                dialogueNode.GUID = $"GRAPH_NODE_{_nodeCount}";
-                Debug.Log($"_noedCount: {_nodeCount} | GUID: {dialogueNode.GUID}");
+                dialogueNode.viewDataKey = $"GRAPH_NODE_{_nodeCount}";
+                // Debug.Log($"_noedCount: {_nodeCount} | GUID: {dialogueNode.viewDataKey}");
                 _nodeCount++;
             }
             else
             {
                 dialogueNode.title = dialogueData.link.id;
                 // dialogueNode.DialogueText = dialogueData.dialogue;
-                dialogueNode.GUID = dialogueData.link.id;
+                dialogueNode.viewDataKey = dialogueData.link.id;
             }
+            dialogueData.link.id = dialogueNode.viewDataKey;
 
             var inputPort = GeneratePort(dialogueNode, Direction.Input, Port.Capacity.Multi);
             inputPort.name = "Input";
@@ -139,10 +153,21 @@ namespace CurseOfNaga.DialogueSystem.Editor
             dialogueField.RegisterValueChangedCallback(evt =>
             {
                 dialogueData.dialogue = evt.newValue;
-                // dialogueNode.DialogueText = evt.newValue;
-                // dialogueNode.title = evt.newValue;
             });
             // dialogueField.SetValueWithoutNotify(dialogueNode.title);
+            dialogueNode.mainContainer.Add(dialogueField);
+
+            dialogueField = new TextField
+            {
+                label = "ID",
+                value = dialogueData.link.id
+            };
+            dialogueField.RegisterValueChangedCallback(evt =>
+            {
+                dialogueData.link.id = evt.newValue;
+                dialogueNode.title = evt.newValue;
+            });
+            dialogueField.SetValueWithoutNotify(dialogueNode.title);
             dialogueNode.mainContainer.Add(dialogueField);
 
             // var foldoutField = new Foldout() { text = "Dialogue" };
@@ -157,7 +182,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             return dialogueNode;
         }
 
-        public void AddChoicePort(DialogueNode dialogueNode, string overridenPortName = "")
+        public void AddChoicePort(Node dialogueNode, string overridenPortName = "")
         {
             var generatedPort = GeneratePort(dialogueNode, Direction.Output);
 
@@ -186,7 +211,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             dialogueNode.RefreshPorts();
         }
 
-        private void RemovePort(DialogueNode dialogueNode, Port generatedPort)
+        private void RemovePort(Node dialogueNode, Port generatedPort)
         {
             var targetEdge = edges.ToList().Where(edge => edge.output.portName == generatedPort.portName
                     && edge.output.node == generatedPort.node);
