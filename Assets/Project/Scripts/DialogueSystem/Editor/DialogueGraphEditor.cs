@@ -17,7 +17,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         internal enum DataOperation { SAVE, LOAD, LOAD_JSON }
 
         private DialogueGraphView _graphView;
-        private string _fileName = "New Narrative";
+        private string _fileName = "New Narrative 2";
 
         [MenuItem("Graph/Dialogue Graph")]
         public static void OpenDialogueGraphWindow()

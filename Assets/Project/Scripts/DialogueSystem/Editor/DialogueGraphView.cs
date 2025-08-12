@@ -14,6 +14,10 @@ namespace CurseOfNaga.DialogueSystem.Editor
     public class DialogueGraphView : GraphView
     {
         public readonly Vector2 _defaultNodeSize = new Vector2(150, 200);
+        private const string _NOT_SET = "NOT_SET";
+        public const string BASE_NODE = "BASE_NODE";
+
+        private int _nodeCount = 0;
 
         public DialogueGraphView()
         {
@@ -43,19 +47,25 @@ namespace CurseOfNaga.DialogueSystem.Editor
             return compatiblePorts;
         }
 
-        private Port GeneratePort(DialogueNode node, Direction portDirection, Port.Capacity capacity = Port.Capacity.Single)
+        private Port GeneratePort(Node node, Direction portDirection, Port.Capacity capacity = Port.Capacity.Single)
         {
             return node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, typeof(float));        //Arbitrary type
         }
 
-        private DialogueNode GenerateEntryPointNode()
+        private Node GenerateEntryPointNode()
         {
-            var node = new DialogueNode
+            // var node = new DialogueNode
+            // {
+            //     title = "Start",
+            //     GUID = BASE_NODE,
+            //     // GUID = Guid.NewGuid().ToString(),
+            //     // DialogueText = "BANANA",
+            //     // EntryPoint = true
+            // };
+
+            var node = new Node
             {
-                title = "Start",
-                GUID = Guid.NewGuid().ToString(),
-                DialogueText = "BANANA",
-                EntryPoint = true
+                title = "Start"
             };
 
             var generatedPort = GeneratePort(node, Direction.Output);
@@ -79,15 +89,24 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         public DialogueNode CreateDialogueNode(string nodeName, DialogueData dialogueData = null)
         {
+            DialogueNode dialogueNode = new DialogueNode();
             if (dialogueData == null)
+            {
                 dialogueData = new DialogueData();
 
-            var dialogueNode = new DialogueNode
+                // dialogueNode.DialogueText = nodeName;
+                // dialogueNode.GUID = Guid.NewGuid().ToString();
+                dialogueNode.title = $"GRAPH_NODE_{_nodeCount}";
+                dialogueNode.GUID = $"GRAPH_NODE_{_nodeCount}";
+                Debug.Log($"_noedCount: {_nodeCount} | GUID: {dialogueNode.GUID}");
+                _nodeCount++;
+            }
+            else
             {
-                title = nodeName,
-                DialogueText = nodeName,
-                GUID = Guid.NewGuid().ToString()
-            };
+                dialogueNode.title = dialogueData.link.id;
+                // dialogueNode.DialogueText = dialogueData.dialogue;
+                dialogueNode.GUID = dialogueData.link.id;
+            }
 
             var inputPort = GeneratePort(dialogueNode, Direction.Input, Port.Capacity.Multi);
             inputPort.name = "Input";
@@ -99,17 +118,17 @@ namespace CurseOfNaga.DialogueSystem.Editor
             var intField = new IntegerField
             {
                 label = "Flags",
-                value = dialogueData.dialogue_flags
+                value = dialogueData.flags
             };
-            // intField.RegisterValueChangedCallback(evt => { dialogueNode.DialogueText = evt.newValue; });
+            intField.RegisterValueChangedCallback(evt => { dialogueData.flags = evt.newValue; });
             dialogueNode.mainContainer.Add(intField);
 
             intField = new IntegerField
             {
                 label = "Type",
-                value = dialogueData.dialogue_type
+                value = dialogueData.type
             };
-            // intField.RegisterValueChangedCallback(evt => { dialogueNode.DialogueText = evt.newValue; });
+            intField.RegisterValueChangedCallback(evt => { dialogueData.type = evt.newValue; });
             dialogueNode.mainContainer.Add(intField);
 
             var dialogueField = new TextField
@@ -119,7 +138,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
             };
             dialogueField.RegisterValueChangedCallback(evt =>
             {
-                dialogueNode.DialogueText = evt.newValue;
+                dialogueData.dialogue = evt.newValue;
+                // dialogueNode.DialogueText = evt.newValue;
                 // dialogueNode.title = evt.newValue;
             });
             // dialogueField.SetValueWithoutNotify(dialogueNode.title);

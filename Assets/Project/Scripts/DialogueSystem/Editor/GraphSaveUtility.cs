@@ -1,4 +1,5 @@
 // #define TEST_BTS
+// #define TEST_TO_JSON
 
 #if UNITY_EDITOR
 using System.Collections.Generic;
@@ -35,13 +36,21 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         public void SaveGraph(string fileName)
         {
+            //TEST
+            /*{
+                for (int i = 0; i < _nodes.Count; i++)
+                    Debug.Log($"i: [{i}]| Node EntryPoint: {_nodes[i].EntryPoint}");
+                return;
+            }*/
+
             if (!_edges.Any()) return;       //if there are no edges(no connections) then return
-            Debug.Log($"Saving Graph");
+            Debug.Log($"Saving Graph: {fileName}");
 
             var dialogueContainer = ScriptableObject.CreateInstance<DialogueContainer>();
             var connectedPorts = _edges.Where(e => e.input.node != null).ToArray();
 
-            for (int i = 0; i < connectedPorts.Length; i++)
+            int totalCount = connectedPorts.Length;
+            for (int i = 0; i < totalCount; i++)
             {
                 var outputNode = connectedPorts[i].output.node as DialogueNode;
                 var inputNode = connectedPorts[i].input.node as DialogueNode;
@@ -54,13 +63,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 });
             }
 
-            foreach (var dialogueNode in _nodes.Where(node => !node.EntryPoint))
+            totalCount = _nodes.Count;
+            for (int i = 1; i < totalCount; i++)
             {
                 dialogueContainer.DialogueNodeDatas.Add(new DialogueNodeData
                 {
-                    GUID = dialogueNode.GUID,
-                    DialogueText = dialogueNode.DialogueText,
-                    Position = dialogueNode.GetPosition().position
+                    GUID = _nodes[i].GUID,
+                    // DialogueText = _nodes[i].DialogueText,
+                    Position = _nodes[i].GetPosition().position
                 });
             }
 
@@ -94,7 +104,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
         private void ClearGraph()
         {
             //Set the base EntryPoint node GUID first. Discard existing guid
-            _nodes.Find(node => node.EntryPoint).GUID = _containerCache.NodeLinks[0].BaseNodeGUID;
+            // _nodes.Find(node => node.EntryPoint).GUID = _containerCache.NodeLinks[0].BaseNodeGUID;
+            _nodes[0].GUID = DialogueGraphView.BASE_NODE;
 
             for (int i = 1; i < _nodes.Count;)
             {
@@ -114,7 +125,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
             for (int i = 0; i < _containerCache.DialogueNodeDatas.Count; i++)
             {
-                tempNode = _targetGraphView.CreateDialogueNode(_containerCache.DialogueNodeDatas[i].DialogueText);
+                tempNode = _targetGraphView.CreateDialogueNode(_containerCache.DialogueNodeDatas[i].GUID);
                 tempNode.GUID = _containerCache.DialogueNodeDatas[i].GUID;
                 _targetGraphView.AddElement(tempNode);
 
@@ -184,12 +195,13 @@ namespace CurseOfNaga.DialogueSystem.Editor
             {
                 dialogueData = dialogueTemplate.characters[0].dialogues_list[i];
 
-                tempNode = _targetGraphView.CreateDialogueNode(dialogueData.dialogueLink.dialogue_id, dialogueData);
-                tempNode.GUID = dialogueData.dialogueLink.dialogue_id;
+                tempNode = _targetGraphView.CreateDialogueNode(dialogueData.link.id, dialogueData);
+                tempNode.GUID = dialogueData.link.id;
                 _targetGraphView.AddElement(tempNode);
             }
         }
 
+#if TEST_TO_JSON
         private void TestToJson()
         {
             string data = "";
@@ -227,6 +239,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             data = JsonUtility.ToJson(dialogueTemplate);
             Debug.Log($"Json Data: {data}");
         }
+#endif
 
 #if TEST_BTS
         public void CheckAssetFolder()

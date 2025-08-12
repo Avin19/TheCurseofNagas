@@ -842,6 +842,15 @@
     [=] Refractoring values
 - DialoguesTest.json
     [=] Test json
+
+- Script
+    [=] DialogueTemplate
+        {+} Simplifying field names
+    [=] DialogueNodeData / DialogueNode
+        {+} Removing DialogueText
+        {+} Removing EntryPoint
+- Dialogues_Test.json / Dialogues.json
+    [=] Simplifying key names
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

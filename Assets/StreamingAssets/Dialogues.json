@@ -5,70 +5,70 @@
             "character_name": "Salem",
             "dialogues_list": [
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "SA_0",
-                        "next_dialogue_id": "SA_1"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "SA_0",
+                        "next_id": "SA_1"
                     },
                     "dialogue": "Hey there!",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "SA_1",
-                        "next_dialogue_id": "SA_2"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "SA_1",
+                        "next_id": "SA_2"
                     },
                     "dialogue": "I am Salem, nice to meet you!",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 2,
-                    "dialogueLink": {
-                        "dialogue_id": "SA_2",
-                        "next_dialogue_id": "SA_3"
+                    "flags": 1,
+                    "type": 2,
+                    "link": {
+                        "id": "SA_2",
+                        "next_id": "SA_3"
                     },
                     "dialogue": "May I know who you are?",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 3,
-                    "dialogueLink": {
-                        "dialogue_id": "SA_3",
-                        "next_dialogue_id": null
+                    "flags": 1,
+                    "type": 3,
+                    "link": {
+                        "id": "SA_3",
+                        "next_id": null
                     },
                     "dialogue": null,
                     "choices": [
                         {
-                            "dialogue_id": "PL_2",
-                            "next_dialogue_id": "SA_3_0"
+                            "id": "PL_2",
+                            "next_id": "SA_3_0"
                         },
                         {
-                            "dialogue_id": "PL_3",
-                            "next_dialogue_id": "SA_3_1"
+                            "id": "PL_3",
+                            "next_id": "SA_3_1"
                         }
                     ]
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "SA_3_0",
-                        "next_dialogue_id": "EOC"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "SA_3_0",
+                        "next_id": "EOC"
                     },
                     "dialogue": "No need to be rude about your name",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "SA_3_1",
-                        "next_dialogue_id": "EOC"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "SA_3_1",
+                        "next_id": "EOC"
                     },
                     "dialogue": "Nice to meet you, {Player}",
                     "choices": []
@@ -80,41 +80,41 @@
             "character_name": "Deron",
             "dialogues_list": [
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "DE1",
-                        "next_dialogue_id": "DE2"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "DE1",
+                        "next_id": "DE2"
                     },
                     "dialogue": "Hey there!",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "DE2",
-                        "next_dialogue_id": "DE3"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "DE2",
+                        "next_id": "DE3"
                     },
                     "dialogue": "I am Deron, nice to meet you!",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "DE3",
-                        "next_dialogue_id": "DE4"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "DE3",
+                        "next_id": "DE4"
                     },
                     "dialogue": "May I know who you are?",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "DE4",
-                        "next_dialogue_id": "EOC"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "DE4",
+                        "next_id": "EOC"
                     },
                     "dialogue": "You can find the village elder over by the pond",
                     "choices": []
@@ -126,51 +126,51 @@
             "character_name": "Player",
             "dialogues_list": [
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "PL1",
-                        "next_dialogue_id": "PL2"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "PL1",
+                        "next_id": "PL2"
                     },
                     "dialogue": "Hey there!",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 4,
-                    "dialogueLink": {
-                        "dialogue_id": "PL2",
-                        "next_dialogue_id": null
+                    "flags": 1,
+                    "type": 4,
+                    "link": {
+                        "id": "PL2",
+                        "next_id": null
                     },
                     "dialogue": "None of your concern.",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 4,
-                    "dialogueLink": {
-                        "dialogue_id": "PL3",
-                        "next_dialogue_id": null
+                    "flags": 1,
+                    "type": 4,
+                    "link": {
+                        "id": "PL3",
+                        "next_id": null
                     },
                     "dialogue": "My name is {Player}.",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "PL3",
-                        "next_dialogue_id": "PL4"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "PL3",
+                        "next_id": "PL4"
                     },
                     "dialogue": "May I know who you are?",
                     "choices": []
                 },
                 {
-                    "dialogue_flags": 1,
-                    "dialogue_type": 1,
-                    "dialogueLink": {
-                        "dialogue_id": "PL4",
-                        "next_dialogue_id": "EOC"
+                    "flags": 1,
+                    "type": 1,
+                    "link": {
+                        "id": "PL4",
+                        "next_id": "EOC"
                     },
                     "dialogue": "You can find the village elder over by the pond",
                     "choices": []
