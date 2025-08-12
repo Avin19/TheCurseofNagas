@@ -6,10 +6,17 @@ GridBackground
     --spacing: 10;
 }
 
+DialogueNode #unity-text-input{
+    width: 64px;
+}
+
 .output #unity-text-input
 {
     flex-direction: Column;
+    width: 64px;
 }
+
+
 
 DialogueNode #title{
     background-color: rgba(0, 132, 0, 1);

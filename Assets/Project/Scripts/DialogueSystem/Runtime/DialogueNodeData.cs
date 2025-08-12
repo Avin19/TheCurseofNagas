@@ -7,4 +7,12 @@ namespace CurseOfNaga.DialogueSystem.Runtime
         public string DialogueText;
         public UnityEngine.Vector2 Position;
     }
+
+    [System.Serializable]
+    public class DialogueNodeLinkData
+    {
+        public string BaseNodeGUID;
+        public string PortName;
+        public string TargetNodeGUID;
+    }
 }

@@ -90,14 +90,18 @@ namespace CurseOfNaga.DialogueSystem.Editor
             var button = new Button(() => { AddChoicePort(dialogueNode); }) { text = "New Choice" };
             dialogueNode.titleContainer.Add(button);
 
-            var dialogueField = new TextField(string.Empty);
+            var dialogueField = new TextField(string.Empty);        // {label = "Dialogue"}
             dialogueField.RegisterValueChangedCallback(evt =>
             {
                 dialogueNode.DialogueText = evt.newValue;
                 dialogueNode.title = evt.newValue;
             });
             dialogueField.SetValueWithoutNotify(dialogueNode.title);
-            dialogueNode.mainContainer.Add(dialogueField);
+            // dialogueNode.mainContainer.Add(dialogueField);
+
+            var foldoutField = new Foldout() { text = "Dialogue" };
+            foldoutField.Add(dialogueField);
+            dialogueNode.mainContainer.Add(foldoutField);
 
             dialogueNode.RefreshExpandedState();
             dialogueNode.RefreshPorts();

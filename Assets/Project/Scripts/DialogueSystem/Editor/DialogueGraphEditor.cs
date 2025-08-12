@@ -27,14 +27,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             ConstructGraphView();
             GenerateToolbar();
-            // GenerateMiniMap();
+            GenerateMiniMap();
         }
 
         private void GenerateMiniMap()
         {
             var minimap = new MiniMap { anchored = true };
-            minimap.SetPosition(new Rect(10, 30, 200, 140));
-            _graphView.AddElement(minimap);
+            minimap.SetPosition(new Rect(10, 30, 120, 100));
+            _graphView.Add(minimap);
         }
 
         private void ConstructGraphView()

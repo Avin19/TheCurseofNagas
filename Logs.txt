@@ -828,7 +828,11 @@
     [=] GraphSaveUtility
         {+} Fix resource folder creation
 
+- Script
+    [=] Removing DialogueNodeLinkData file and placing it under DialogueNodeData file
 --------------------------------------------------------------------------------------------------------
+- [DO] Dialogue System
+    [=] Process all the information parallely
 - [DO] Enemis
     [=] [DO] Runtime patrol point selection
 - [NOW] Enemy Combat logic
