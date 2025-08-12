@@ -1,0 +1,69 @@
+{
+    "characters": [
+        {
+            "parent_id": "SA",
+            "character_name": "Salem",
+            "dialogues_list": [
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_type": 1,
+                    "dialogueLink": {
+                        "dialogue_id": "SA_0",
+                        "next_dialogue_id": "SA_1"
+                    },
+                    "dialogue": "Hey there!",
+                    "choices": []
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_type": 1,
+                    "dialogueLink": {
+                        "dialogue_id": "SA_1",
+                        "next_dialogue_id": "SA_2"
+                    },
+                    "dialogue": "I am Salem, nice to meet you!",
+                    "choices": []
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_type": 3,
+                    "dialogueLink": {
+                        "dialogue_id": "SA_2",
+                        "next_dialogue_id": null
+                    },
+                    "dialogue": null,
+                    "choices": [
+                        {
+                            "dialogue_id": "PL_2",
+                            "next_dialogue_id": "SA_2_0"
+                        },
+                        {
+                            "dialogue_id": "PL_3",
+                            "next_dialogue_id": "SA_2_1"
+                        }
+                    ]
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_type": 1,
+                    "dialogueLink": {
+                        "dialogue_id": "SA_2_0",
+                        "next_dialogue_id": "EOC"
+                    },
+                    "dialogue": "No need to be rude about your name",
+                    "choices": []
+                },
+                {
+                    "dialogue_flags": 1,
+                    "dialogue_type": 1,
+                    "dialogueLink": {
+                        "dialogue_id": "SA_2_1",
+                        "next_dialogue_id": "EOC"
+                    },
+                    "dialogue": "Nice to meet you, {Player}",
+                    "choices": []
+                }
+            ]
+        }
+    ]
+}

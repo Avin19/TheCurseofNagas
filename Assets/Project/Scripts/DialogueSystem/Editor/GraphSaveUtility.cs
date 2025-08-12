@@ -10,6 +10,7 @@ using UnityEditor.Experimental.GraphView;
 using CurseOfNaga.DialogueSystem.Runtime;
 using UnityEditor;
 using UnityEngine.UIElements;
+using CurseOfNaga.Utils;
 
 namespace CurseOfNaga.DialogueSystem.Editor
 {
@@ -22,6 +23,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         private const string _PARENT_FOLDER_PATH = "Assets/Project";        // Assets/Project/Prefabs/Player/Player.prefab
         private const string _RESOURCES_FOLDER_PATH = "Resources";
+        private const string _DIALOGUE_JSON = "Dialogues_Test.json";
 
         public static GraphSaveUtility GetInstance(DialogueGraphView targetGraphView)
         {
@@ -153,6 +155,77 @@ namespace CurseOfNaga.DialogueSystem.Editor
             tempEdge.input.Connect(tempEdge);
             tempEdge.output.Connect(tempEdge);
             _targetGraphView.Add(tempEdge);
+        }
+
+        public async void LoadDialogueJson()
+        {
+            string pathToJson = System.IO.Path.Join(Application.streamingAssetsPath, _DIALOGUE_JSON);
+            Debug.Log($"Loadiing Json from: {pathToJson}");
+
+            if (!System.IO.File.Exists(pathToJson))
+            {
+                EditorUtility.DisplayDialog("Invalid file path", "Please enter a valid file path to Dialogues.json", "OK");
+                return;
+            }
+
+            // TestToJson(); return;            //TEST
+
+            FileDataHelper fileDataHelper = new FileDataHelper();
+            string jsonData = await fileDataHelper.GetFileData_Async(pathToJson);
+
+            DialogueTemplate dialogueTemplate;
+            dialogueTemplate = JsonUtility.FromJson<DialogueTemplate>(jsonData);
+            // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}");
+
+            DialogueNode tempNode;
+            DialogueData dialogueData;
+            // for (int i = 0; i < dialogueTemplate.characters[0].dialogues_list.Count; i++)
+            for (int i = 0; i < 2; i++)
+            {
+                dialogueData = dialogueTemplate.characters[0].dialogues_list[i];
+
+                tempNode = _targetGraphView.CreateDialogueNode(dialogueData.dialogueLink.dialogue_id, dialogueData);
+                tempNode.GUID = dialogueData.dialogueLink.dialogue_id;
+                _targetGraphView.AddElement(tempNode);
+            }
+        }
+
+        private void TestToJson()
+        {
+            string data = "";
+            DialogueTemplate dialogueTemplate = new DialogueTemplate();
+            dialogueTemplate.characters = new List<CharacterData>();
+
+            CharacterData character = new CharacterData();
+            character.character_name = "Test1";
+            character.parent_id = "TS";
+            character.dialogues_list = new List<DialogueData>();
+
+            DialogueData dialogue = new DialogueData();
+            dialogue.dialogue_flags = 124;
+            dialogue.dialogue_type = 1;
+            dialogue.dialogueLink.dialogue_id = "TS_0";
+            dialogue.dialogueLink.next_dialogue_id = "TS_1";
+            dialogue.dialogue = "This is a test dialogue";
+            character.dialogues_list.Add(dialogue);
+
+            dialogue = new DialogueData();
+            dialogue.dialogue_flags = 2667;
+            dialogue.dialogue_type = 2;
+            dialogue.dialogueLink.dialogue_id = "TS_1";
+            dialogue.dialogueLink.next_dialogue_id = "EOC";
+            dialogue.dialogue = "This is a test dialogue 2";
+            dialogue.choices = new List<DialogueLink>
+            {
+                new DialogueLink("PL_1", "TS_1_0"),
+                new DialogueLink("PL_2", "TS_1_1")
+            };
+            character.dialogues_list.Add(dialogue);
+
+            dialogueTemplate.characters.Add(character);
+
+            data = JsonUtility.ToJson(dialogueTemplate);
+            Debug.Log($"Json Data: {data}");
         }
 
 #if TEST_BTS

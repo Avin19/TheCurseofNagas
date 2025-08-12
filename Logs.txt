@@ -830,6 +830,18 @@
 
 - Script
     [=] Removing DialogueNodeLinkData file and placing it under DialogueNodeData file
+
+- Scripts
+    [=] GraphSaveUtility / DialogueGraphEditor
+        {+} Parsing Dialogues JSON
+    [=] DialogueTemplate
+        {+} Template to parse Dialogues.json
+    [=] DialogueGraphView
+        {+} Adding fields from Dialogues.json
+- Dialogues.json
+    [=] Refractoring values
+- DialoguesTest.json
+    [=] Test json
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

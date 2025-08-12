@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+
+using CurseOfNaga.DialogueSystem.Runtime;
 
 namespace CurseOfNaga.DialogueSystem.Editor
 {
@@ -74,8 +77,11 @@ namespace CurseOfNaga.DialogueSystem.Editor
             AddElement(CreateDialogueNode(nodeName));
         }
 
-        public DialogueNode CreateDialogueNode(string nodeName)
+        public DialogueNode CreateDialogueNode(string nodeName, DialogueData dialogueData = null)
         {
+            if (dialogueData == null)
+                dialogueData = new DialogueData();
+
             var dialogueNode = new DialogueNode
             {
                 title = nodeName,
@@ -90,18 +96,38 @@ namespace CurseOfNaga.DialogueSystem.Editor
             var button = new Button(() => { AddChoicePort(dialogueNode); }) { text = "New Choice" };
             dialogueNode.titleContainer.Add(button);
 
-            var dialogueField = new TextField(string.Empty);        // {label = "Dialogue"}
+            var intField = new IntegerField
+            {
+                label = "Flags",
+                value = dialogueData.dialogue_flags
+            };
+            // intField.RegisterValueChangedCallback(evt => { dialogueNode.DialogueText = evt.newValue; });
+            dialogueNode.mainContainer.Add(intField);
+
+            intField = new IntegerField
+            {
+                label = "Type",
+                value = dialogueData.dialogue_type
+            };
+            // intField.RegisterValueChangedCallback(evt => { dialogueNode.DialogueText = evt.newValue; });
+            dialogueNode.mainContainer.Add(intField);
+
+            var dialogueField = new TextField
+            {
+                label = "Dialogue",
+                value = dialogueData.dialogue
+            };
             dialogueField.RegisterValueChangedCallback(evt =>
             {
                 dialogueNode.DialogueText = evt.newValue;
-                dialogueNode.title = evt.newValue;
+                // dialogueNode.title = evt.newValue;
             });
-            dialogueField.SetValueWithoutNotify(dialogueNode.title);
-            // dialogueNode.mainContainer.Add(dialogueField);
+            // dialogueField.SetValueWithoutNotify(dialogueNode.title);
+            dialogueNode.mainContainer.Add(dialogueField);
 
-            var foldoutField = new Foldout() { text = "Dialogue" };
-            foldoutField.Add(dialogueField);
-            dialogueNode.mainContainer.Add(foldoutField);
+            // var foldoutField = new Foldout() { text = "Dialogue" };
+            // foldoutField.Add(dialogueField);
+            // dialogueNode.mainContainer.Add(foldoutField);
 
             dialogueNode.RefreshExpandedState();
             dialogueNode.RefreshPorts();

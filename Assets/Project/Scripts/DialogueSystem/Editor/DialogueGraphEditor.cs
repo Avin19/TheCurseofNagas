@@ -1,4 +1,5 @@
 // #define TEST_BTS
+#define TEST_DIALOGUE_PARSER
 
 #if UNITY_EDITOR
 using System;
@@ -13,6 +14,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
 {
     public class DialogueGraphEditor : EditorWindow
     {
+        internal enum DataOperation { SAVE, LOAD, LOAD_JSON }
+
         private DialogueGraphView _graphView;
         private string _fileName = "New Narrative";
 
@@ -58,10 +61,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
             fileNameTextField.RegisterValueChangedCallback(evt => _fileName = evt.newValue);
             toolbar.Add(fileNameTextField);
 
-            toolbar.Add(new Button(() => RequestDataOperation(true)) { text = "Save Data" });
-            toolbar.Add(new Button(() => RequestDataOperation(false)) { text = "Load Data" });
+            toolbar.Add(new Button(() => RequestDataOperation(DataOperation.SAVE)) { text = "Save Data" });
+            toolbar.Add(new Button(() => RequestDataOperation(DataOperation.LOAD)) { text = "Load Data" });
 #if TEST_BTS
-            toolbar.Add(new Button(() => TestBt(0)) { text = "Check Asset Folder" });
+            toolbar.Add(new Button(() => CheckAssetFolder()) { text = "Check Asset Folder" });
+#endif
+
+#if TEST_DIALOGUE_PARSER
+            toolbar.Add(new Button(() => RequestDataOperation(DataOperation.LOAD_JSON)) { text = "Load Dialogue JSON" });
 #endif
 
             var nodeCreateButton = new Button(() => { _graphView.CreateNode("Dialogue Node"); });
@@ -71,19 +78,30 @@ namespace CurseOfNaga.DialogueSystem.Editor
             rootVisualElement.Add(toolbar);
         }
 
-        private void RequestDataOperation(bool save)
+        private void RequestDataOperation(DataOperation dataOpType)
         {
-            if (string.IsNullOrEmpty(_fileName))
-            {
-                EditorUtility.DisplayDialog("Invalid file name", "Please enter a valid file name", "OK");
-                return;
-            }
-
             var saveutility = GraphSaveUtility.GetInstance(_graphView);
-            if (save)
-                saveutility.SaveGraph(_fileName);
-            else
-                saveutility.LoadGraph(_fileName);
+            switch (dataOpType)
+            {
+                case DataOperation.SAVE:
+                case DataOperation.LOAD:
+                    if (string.IsNullOrEmpty(_fileName))
+                    {
+                        EditorUtility.DisplayDialog("Invalid file name", "Please enter a valid file name", "OK");
+                        return;
+                    }
+
+                    if (dataOpType == DataOperation.SAVE)
+                        saveutility.SaveGraph(_fileName);
+                    else
+                        saveutility.LoadGraph(_fileName);
+
+                    break;
+
+                case DataOperation.LOAD_JSON:
+                    saveutility.LoadDialogueJson();
+                    break;
+            }
         }
 
         private void OnDisable()
@@ -92,15 +110,10 @@ namespace CurseOfNaga.DialogueSystem.Editor
         }
 
 #if TEST_BTS
-        private void TestBt(int btTestIndex)
+        private void CheckAssetFolder()
         {
             var saveutility = GraphSaveUtility.GetInstance(_graphView);
-            switch (btTestIndex)
-            {
-                case 0:
                     saveutility.CheckAssetFolder();
-                    break;
-            }
         }
 #endif
     }
