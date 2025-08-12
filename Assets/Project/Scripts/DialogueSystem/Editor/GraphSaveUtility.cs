@@ -1,3 +1,5 @@
+// #define TEST_BTS
+
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,6 @@ using UnityEditor.Experimental.GraphView;
 
 using CurseOfNaga.DialogueSystem.Runtime;
 using UnityEditor;
-using System;
 using UnityEngine.UIElements;
 
 namespace CurseOfNaga.DialogueSystem.Editor
@@ -19,7 +20,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         private List<Edge> _edges => _targetGraphView.edges.ToList();
         private List<DialogueNode> _nodes => _targetGraphView.nodes.ToList().Cast<DialogueNode>().ToList();
 
-        private const string _PARENT_FOLDER_PATH = "Assets/Project";
+        private const string _PARENT_FOLDER_PATH = "Assets/Project";        // Assets/Project/Prefabs/Player/Player.prefab
         private const string _RESOURCES_FOLDER_PATH = "Resources";
 
         public static GraphSaveUtility GetInstance(DialogueGraphView targetGraphView)
@@ -62,9 +63,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
             }
 
             //Check if the Reources folder exists in the project or not
-            if (AssetDatabase.IsValidFolder(_PARENT_FOLDER_PATH + "/" + _RESOURCES_FOLDER_PATH))
+            if (!AssetDatabase.IsValidFolder(_PARENT_FOLDER_PATH + "/" + _RESOURCES_FOLDER_PATH))
+            {
+                Debug.Log($"Resources Folder not found | Creating folder at: "
+                    + $"{_PARENT_FOLDER_PATH}/{_RESOURCES_FOLDER_PATH}");
                 AssetDatabase.CreateFolder(_PARENT_FOLDER_PATH, _RESOURCES_FOLDER_PATH);
+            }
 
+            //TODO: Change this, change the data in the existing asset instead of creating a new one
             AssetDatabase.CreateAsset(dialogueContainer, $"{_PARENT_FOLDER_PATH}/{_RESOURCES_FOLDER_PATH}/{fileName}.asset");
             AssetDatabase.SaveAssets();
         }
@@ -92,10 +98,10 @@ namespace CurseOfNaga.DialogueSystem.Editor
             {
                 // Remove all the edges connected to this graph
                 _edges.Where(edge => edge.input.node == _nodes[i]).ToList()
-                            .ForEach(edge => _targetGraphView.RemoveElement(edge));         //This is connected to the _nodes List
+                            .ForEach(edge => _targetGraphView.RemoveElement(edge));
 
                 //Then finally remove the node
-                _targetGraphView.RemoveElement(_nodes[i]);
+                _targetGraphView.RemoveElement(_nodes[i]);         //This is connected to the _nodes List
             }
         }
 
@@ -148,6 +154,42 @@ namespace CurseOfNaga.DialogueSystem.Editor
             tempEdge.output.Connect(tempEdge);
             _targetGraphView.Add(tempEdge);
         }
+
+#if TEST_BTS
+        public void CheckAssetFolder()
+        {
+            // Debug.Log($"Current Directory: {System.IO.Directory.GetCurrentDirectory()}");
+
+            /*
+            string[] paths2 = AssetDatabase.GetSubFolders("Assets");
+            Debug.Log($"Paths2 Length: {paths2.Length}");
+            for (int i = 0; i < paths2.Length; i++)
+            {
+                Debug.Log($"i: [{i}] | path: {paths2[i]}");
+            }
+            */
+
+            // string pathToFolder = System.IO.Path.Join(_PARENT_FOLDER_PATH, _RESOURCES_FOLDER_PATH);
+            string pathToFolder = "Assets/Project";
+            if (!System.IO.Directory.Exists(pathToFolder))
+            {
+                Debug.Log($"Resources Folder not found: {pathToFolder}");
+                // AssetDatabase.CreateFolder("Assets", "Project");
+                return;
+            }
+            Debug.Log($"Valid Path: {pathToFolder}");
+
+            /*
+            string[] paths = AssetDatabase.GetAllAssetPaths();
+            int i = 0;
+            foreach (var path in paths)
+            {
+                Debug.Log($"i : [{i}] | path: {path}");
+                i++;
+            }
+            */
+        }
+#endif
     }
 }
 #endif

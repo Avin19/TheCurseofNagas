@@ -1,3 +1,5 @@
+// #define TEST_BTS
+
 #if UNITY_EDITOR
 using System;
 using UnityEditor;
@@ -25,7 +27,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             ConstructGraphView();
             GenerateToolbar();
-            GenerateMiniMap();
+            // GenerateMiniMap();
         }
 
         private void GenerateMiniMap()
@@ -58,6 +60,9 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
             toolbar.Add(new Button(() => RequestDataOperation(true)) { text = "Save Data" });
             toolbar.Add(new Button(() => RequestDataOperation(false)) { text = "Load Data" });
+#if TEST_BTS
+            toolbar.Add(new Button(() => TestBt(0)) { text = "Check Asset Folder" });
+#endif
 
             var nodeCreateButton = new Button(() => { _graphView.CreateNode("Dialogue Node"); });
             nodeCreateButton.text = "Create Node";
@@ -85,6 +90,19 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             rootVisualElement.Remove(_graphView);
         }
+
+#if TEST_BTS
+        private void TestBt(int btTestIndex)
+        {
+            var saveutility = GraphSaveUtility.GetInstance(_graphView);
+            switch (btTestIndex)
+            {
+                case 0:
+                    saveutility.CheckAssetFolder();
+                    break;
+            }
+        }
+#endif
     }
 }
 #endif
