@@ -9,7 +9,7 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     }
 
     [System.Serializable]
-    public class DialogueNodeLinkData
+    public class DialogueNodePortData
     {
         public string BaseNodeGUID;
         public string PortName;

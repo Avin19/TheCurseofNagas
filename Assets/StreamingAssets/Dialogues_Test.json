@@ -7,61 +7,60 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "SA_0",
-                        "next_id": "SA_1"
-                    },
+                    "base_uid": "SA_0",
                     "dialogue": "Hey there!",
-                    "choices": []
-                },
-                {
-                    "flags": 1,
-                    "type": 1,
-                    "link": {
-                        "id": "SA_1",
-                        "next_id": "SA_2"
-                    },
-                    "dialogue": "I am Salem, nice to meet you!",
-                    "choices": []
-                },
-                {
-                    "flags": 1,
-                    "type": 3,
-                    "link": {
-                        "id": "SA_2",
-                        "next_id": null
-                    },
-                    "dialogue": null,
-                    "choices": [
+                    "ports": [
                         {
-                            "id": "PL_2",
-                            "next_id": "SA_2_0"
-                        },
-                        {
-                            "id": "PL_3",
-                            "next_id": "SA_2_1"
+                            "base_uid": "SA_0",
+                            "name": "Next Choice",
+                            "target_uid": "SA_1"
                         }
                     ]
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "SA_2_0",
-                        "next_id": "EOC"
-                    },
-                    "dialogue": "No need to be rude about your name",
-                    "choices": []
+                    "base_uid": "SA_1",
+                    "dialogue": "I am Salem, nice to meet you!",
+                    "ports": [
+                        {
+                            "base_uid": "SA_1",
+                            "name": "Next Choice",
+                            "target_uid": "SA_2"
+                        }
+                    ]
+                },
+                {
+                    "flags": 1,
+                    "type": 3,
+                    "base_uid": "SA_2",
+                    "dialogue": null,
+                    "ports": [
+                        {
+                            "base_uid": "SA_2",
+                            "name": "Next Choice",
+                            "target_uid": "PL_2"
+                        },
+                        {
+                            "base_uid": "SA_2",
+                            "name": "Next Choice",
+                            "target_uid": "PL_3"
+                        }
+                    ]
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "SA_2_1",
-                        "next_id": "EOC"
-                    },
+                    "base_uid": "SA_2_0",
+                    "dialogue": "No need to be rude about your name",
+                    "ports": []
+                },
+                {
+                    "flags": 1,
+                    "type": 1,
+                    "base_uid": "SA_2_1",
                     "dialogue": "Nice to meet you, {Player}",
-                    "choices": []
+                    "ports": []
                 }
             ]
         }

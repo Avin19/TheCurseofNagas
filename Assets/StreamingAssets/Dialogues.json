@@ -7,9 +7,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "SA_0",
-                        "next_id": "SA_1"
+                    "port": {
+                        "base_uid": "SA_0",
+                        "target_uid": "SA_1"
                     },
                     "dialogue": "Hey there!",
                     "choices": []
@@ -17,9 +17,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "SA_1",
-                        "next_id": "SA_2"
+                    "port": {
+                        "base_uid": "SA_1",
+                        "target_uid": "SA_2"
                     },
                     "dialogue": "I am Salem, nice to meet you!",
                     "choices": []
@@ -27,9 +27,9 @@
                 {
                     "flags": 1,
                     "type": 2,
-                    "link": {
-                        "id": "SA_2",
-                        "next_id": "SA_3"
+                    "port": {
+                        "base_uid": "SA_2",
+                        "target_uid": "SA_3"
                     },
                     "dialogue": "May I know who you are?",
                     "choices": []
@@ -37,28 +37,28 @@
                 {
                     "flags": 1,
                     "type": 3,
-                    "link": {
-                        "id": "SA_3",
-                        "next_id": null
+                    "port": {
+                        "base_uid": "SA_3",
+                        "target_uid": null
                     },
                     "dialogue": null,
                     "choices": [
                         {
-                            "id": "PL_2",
-                            "next_id": "SA_3_0"
+                            "base_uid": "PL_2",
+                            "target_uid": "SA_3_0"
                         },
                         {
-                            "id": "PL_3",
-                            "next_id": "SA_3_1"
+                            "base_uid": "PL_3",
+                            "target_uid": "SA_3_1"
                         }
                     ]
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "SA_3_0",
-                        "next_id": "EOC"
+                    "port": {
+                        "base_uid": "SA_3_0",
+                        "target_uid": "EOC"
                     },
                     "dialogue": "No need to be rude about your name",
                     "choices": []
@@ -66,9 +66,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "SA_3_1",
-                        "next_id": "EOC"
+                    "port": {
+                        "base_uid": "SA_3_1",
+                        "target_uid": "EOC"
                     },
                     "dialogue": "Nice to meet you, {Player}",
                     "choices": []
@@ -82,9 +82,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "DE1",
-                        "next_id": "DE2"
+                    "port": {
+                        "base_uid": "DE1",
+                        "target_uid": "DE2"
                     },
                     "dialogue": "Hey there!",
                     "choices": []
@@ -92,9 +92,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "DE2",
-                        "next_id": "DE3"
+                    "port": {
+                        "base_uid": "DE2",
+                        "target_uid": "DE3"
                     },
                     "dialogue": "I am Deron, nice to meet you!",
                     "choices": []
@@ -102,9 +102,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "DE3",
-                        "next_id": "DE4"
+                    "port": {
+                        "base_uid": "DE3",
+                        "target_uid": "DE4"
                     },
                     "dialogue": "May I know who you are?",
                     "choices": []
@@ -112,9 +112,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "DE4",
-                        "next_id": "EOC"
+                    "port": {
+                        "base_uid": "DE4",
+                        "target_uid": "EOC"
                     },
                     "dialogue": "You can find the village elder over by the pond",
                     "choices": []
@@ -128,9 +128,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "PL1",
-                        "next_id": "PL2"
+                    "port": {
+                        "base_uid": "PL1",
+                        "target_uid": "PL2"
                     },
                     "dialogue": "Hey there!",
                     "choices": []
@@ -138,9 +138,9 @@
                 {
                     "flags": 1,
                     "type": 4,
-                    "link": {
-                        "id": "PL2",
-                        "next_id": null
+                    "port": {
+                        "base_uid": "PL2",
+                        "target_uid": null
                     },
                     "dialogue": "None of your concern.",
                     "choices": []
@@ -148,9 +148,9 @@
                 {
                     "flags": 1,
                     "type": 4,
-                    "link": {
-                        "id": "PL3",
-                        "next_id": null
+                    "port": {
+                        "base_uid": "PL3",
+                        "target_uid": null
                     },
                     "dialogue": "My name is {Player}.",
                     "choices": []
@@ -158,9 +158,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "PL3",
-                        "next_id": "PL4"
+                    "port": {
+                        "base_uid": "PL3",
+                        "target_uid": "PL4"
                     },
                     "dialogue": "May I know who you are?",
                     "choices": []
@@ -168,9 +168,9 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "link": {
-                        "id": "PL4",
-                        "next_id": "EOC"
+                    "port": {
+                        "base_uid": "PL4",
+                        "target_uid": "EOC"
                     },
                     "dialogue": "You can find the village elder over by the pond",
                     "choices": []

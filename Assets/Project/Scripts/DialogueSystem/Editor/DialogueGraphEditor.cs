@@ -1,8 +1,7 @@
-// #define TEST_BTS
+#define TEST_BTS
 #define TEST_DIALOGUE_PARSER
 
 #if UNITY_EDITOR
-using System;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -16,6 +15,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
     {
         internal enum DataOperation { SAVE, LOAD, LOAD_JSON }
 
+        private GraphSaveUtility graphSaveUtility;
         private DialogueGraphView _graphView;
         private string _fileName = "New Narrative 2";
 
@@ -31,6 +31,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
             ConstructGraphView();
             GenerateToolbar();
             // GenerateMiniMap();
+
+            graphSaveUtility = GraphSaveUtility.GetInstance(_graphView);
         }
 
         private void GenerateMiniMap()
@@ -65,6 +67,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             toolbar.Add(new Button(() => RequestDataOperation(DataOperation.LOAD)) { text = "Load Data" });
 #if TEST_BTS
             toolbar.Add(new Button(() => CheckAssetFolder()) { text = "Check Asset Folder" });
+            toolbar.Add(new Button(() => CallClearGraph()) { text = "Clear Graph" });
 #endif
 
 #if TEST_DIALOGUE_PARSER
@@ -80,7 +83,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         private void RequestDataOperation(DataOperation dataOpType)
         {
-            var saveutility = GraphSaveUtility.GetInstance(_graphView);
+            graphSaveUtility = GraphSaveUtility.GetInstance(_graphView);
             switch (dataOpType)
             {
                 case DataOperation.SAVE:
@@ -92,14 +95,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
                     }
 
                     if (dataOpType == DataOperation.SAVE)
-                        saveutility.SaveGraph(_fileName);
+                        graphSaveUtility.SaveGraph(_fileName);
                     else
-                        saveutility.LoadGraph(_fileName);
+                        graphSaveUtility.LoadGraph(_fileName);
 
                     break;
 
                 case DataOperation.LOAD_JSON:
-                    saveutility.LoadDialogueJson();
+                    graphSaveUtility.LoadDialogueJson();
                     break;
             }
         }
@@ -112,8 +115,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
 #if TEST_BTS
         private void CheckAssetFolder()
         {
-            var saveutility = GraphSaveUtility.GetInstance(_graphView);
-                    saveutility.CheckAssetFolder();
+            graphSaveUtility = GraphSaveUtility.GetInstance(_graphView);
+            // graphSaveUtility.CheckAssetFolder();
+        }
+
+        private void CallClearGraph()
+        {
+            graphSaveUtility = GraphSaveUtility.GetInstance(_graphView);
+            graphSaveUtility.ClearGraph();
         }
 #endif
     }

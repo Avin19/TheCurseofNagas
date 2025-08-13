@@ -12,17 +12,19 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     }
 
     [System.Serializable]
-    public class DialogueLink
+    public class DialoguePort
     {
-        public string id;
-        public string next_id;
+        public string base_uid;
+        public string name;
+        public string target_uid;
 
         // public DialogueLink() { dialogue_id = "NOT_SET"; next_dialogue_id = "NOT_SET"; }
 
-        public DialogueLink(string dialogueID = "NOT_SET", string nextDialogueID = "NOT_SET")
+        public DialoguePort(string dialogueID = "NOT_SET", string portName = "NOT_SET", string targetDialogueID = "NOT_SET")
         {
-            id = dialogueID;
-            next_id = nextDialogueID;
+            base_uid = dialogueID;
+            name = portName;
+            target_uid = targetDialogueID;
         }
     }
 
@@ -31,16 +33,19 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     {
         public int flags;
         public int type;
-        public DialogueLink link;
+        public int nodeIndex;                   // Store the index of the node in the GraphView | Not needed in JSON
+        // public DialoguePort port;
+        public string base_uid;
         public string dialogue;
-        public List<DialogueLink> choices;
+        public List<DialoguePort> ports;
 
         public DialogueData()
         {
             flags = 0;
             type = 0;
-            link = new DialogueLink();
-            choices = null;
+            // port = new DialoguePort();
+            base_uid = "NOT_SET";
+            ports = new List<DialoguePort>();
             dialogue = "Enter Dialogue";
         }
     }

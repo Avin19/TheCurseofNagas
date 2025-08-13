@@ -55,7 +55,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 var outputNode = connectedPorts[i].output.node;
                 var inputNode = connectedPorts[i].input.node;
 
-                dialogueContainer.NodeLinks.Add(new DialogueNodeLinkData
+                dialogueContainer.NodePorts.Add(new DialogueNodePortData
                 {
                     BaseNodeGUID = outputNode.viewDataKey,
                     PortName = connectedPorts[i].output.name,
@@ -66,11 +66,11 @@ namespace CurseOfNaga.DialogueSystem.Editor
             totalCount = _nodes.Count;
             for (int i = 1; i < totalCount; i++)
             {
-                dialogueContainer.DialogueNodeDatas.Add(new DialogueNodeData
+                dialogueContainer.NodeDatas.Add(new DialogueNodeData
                 {
                     GUID = _nodes[i].viewDataKey,
                     // DialogueText = _nodes[i].DialogueText,
-                    Position = _nodes[i].GetPosition().position
+                    Position = _nodes[i].GetPosition().position,
                 });
             }
 
@@ -101,7 +101,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             ConnectNodes();
         }
 
-        private void ClearGraph()
+        public void ClearGraph()
         {
             //Set the base EntryPoint node GUID first. Discard existing guid
             // _nodes.Find(node => node.EntryPoint).GUID = _containerCache.NodeLinks[0].BaseNodeGUID;
@@ -110,38 +110,44 @@ namespace CurseOfNaga.DialogueSystem.Editor
             for (int i = 1; i < _nodes.Count;)
             {
                 // Remove all the edges connected to this graph
-                _edges.Where(edge => edge.input.node == _nodes[i]).ToList()
-                            .ForEach(edge => _targetGraphView.RemoveElement(edge));
+                // _edges.Where(edge => edge.input.node == _nodes[i]).ToList()
+                //             .ForEach(edge => _targetGraphView.RemoveElement(edge));
 
                 //Then finally remove the node
                 _targetGraphView.RemoveElement(_nodes[i]);         //This is connected to the _nodes List
             }
+
+            // Remove all the edges connected to this graph
+            for (int i = 0; i < _edges.Count;)
+                _targetGraphView.RemoveElement(_edges[i]);
+
+            _targetGraphView.ResetGraph();
         }
 
         private void GenerateNodes()
         {
             Node tempNode;
-            List<DialogueNodeLinkData> nodePorts;
+            List<DialogueNodePortData> nodePorts;
 
-            for (int i = 0; i < _containerCache.DialogueNodeDatas.Count; i++)
+            for (int i = 0; i < _containerCache.NodeDatas.Count; i++)
             {
-                tempNode = _targetGraphView.CreateDialogueNode(_containerCache.DialogueNodeDatas[i].GUID);
-                tempNode.viewDataKey = _containerCache.DialogueNodeDatas[i].GUID;
+                tempNode = _targetGraphView.CreateDialogueNode(_containerCache.NodeDatas[i].GUID);
+                tempNode.viewDataKey = _containerCache.NodeDatas[i].GUID;
                 _targetGraphView.AddElement(tempNode);
 
-                nodePorts = _containerCache.NodeLinks.Where(edge => edge.BaseNodeGUID.Equals(_containerCache.DialogueNodeDatas[i].GUID)).ToList();
-                nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, edge.PortName));
+                nodePorts = _containerCache.NodePorts.Where(edge => edge.BaseNodeGUID.Equals(_containerCache.NodeDatas[i].GUID)).ToList();
+                // nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, edge.PortName));          //TODO: FIX THISD
             }
         }
 
         private void ConnectNodes()
         {
-            DialogueNodeLinkData[] connections;
+            DialogueNodePortData[] connections;
             Node targetNode;
 
             for (int i = 0; i < _nodes.Count; i++)
             {
-                connections = _containerCache.NodeLinks.Where(nodeLink => nodeLink.BaseNodeGUID.Equals(_nodes[i].viewDataKey)).ToArray();
+                connections = _containerCache.NodePorts.Where(nodeLink => nodeLink.BaseNodeGUID.Equals(_nodes[i].viewDataKey)).ToArray();
                 for (int j = 0; j < connections.Length; j++)
                 {
                     var targetNodeGuid = connections[j].TargetNodeGUID;
@@ -149,7 +155,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                     LinkNodes(_nodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
 
                     targetNode.SetPosition(new Rect(
-                        _containerCache.DialogueNodeDatas.First(nodeData => nodeData.GUID.Equals(targetNodeGuid)).Position,
+                        _containerCache.NodeDatas.First(nodeData => nodeData.GUID.Equals(targetNodeGuid)).Position,
                         _targetGraphView._defaultNodeSize
                     ));
                 }
@@ -170,6 +176,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         public async void LoadDialogueJson()
         {
+            #region LoadJSON
             string pathToJson = System.IO.Path.Join(Application.streamingAssetsPath, _DIALOGUE_JSON);
             Debug.Log($"Loadiing Json from: {pathToJson}");
 
@@ -187,18 +194,29 @@ namespace CurseOfNaga.DialogueSystem.Editor
             DialogueTemplate dialogueTemplate;
             dialogueTemplate = JsonUtility.FromJson<DialogueTemplate>(jsonData);
             // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}");
+            #endregion LoadJSON
 
+            #region CreateNode
             Node tempNode;
             DialogueData dialogueData;
-            // for (int i = 0; i < dialogueTemplate.characters[0].dialogues_list.Count; i++)
-            for (int i = 0; i < 2; i++)
+            List<DialoguePort> nodePorts;
+            // for (int dialogueIndex = 0; dialogueIndex < dialogueTemplate.characters[0].dialogues_list.Count; dialogueIndex++)
+            for (int dialogueIndex = 0; dialogueIndex < 2; dialogueIndex++)
             {
-                dialogueData = dialogueTemplate.characters[0].dialogues_list[i];
+                dialogueData = dialogueTemplate.characters[0].dialogues_list[dialogueIndex];
 
-                tempNode = _targetGraphView.CreateDialogueNode(dialogueData.link.id, dialogueData);
-                tempNode.viewDataKey = dialogueData.link.id;
+                tempNode = _targetGraphView.CreateDialogueNode(dialogueData.base_uid, dialogueData);
+                tempNode.viewDataKey = dialogueData.base_uid;
                 _targetGraphView.AddElement(tempNode);
+
+                //TODO: FIX THISD
+                // nodePorts = _containerCache.NodePorts.Where(edge => edge.BaseNodeGUID.Equals(_containerCache.NodeDatas[i].GUID)).ToList();
+                // nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, edge.PortName));
+
+                nodePorts = dialogueTemplate.characters[0].dialogues_list[dialogueIndex].ports;
+                nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, dialogueIndex, edge.name));
             }
+            #endregion CreateNode
         }
 
 #if TEST_TO_JSON

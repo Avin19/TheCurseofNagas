@@ -91,6 +91,12 @@ namespace CurseOfNaga.DialogueSystem.Editor
             AddElement(CreateDialogueNode(nodeName));
         }
 
+        public void ResetGraph()
+        {
+            _nodeCount = 0;
+            AddedDialogues.Clear();
+        }
+
         private void RemoveNodeFromList(DetachFromPanelEvent detachEvent, int nodeIndex)
         {
             // AddedDialogues.RemoveAt(nodeIndex);
@@ -104,8 +110,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             if (dialogueData == null)
             {
                 dialogueData = new DialogueData();
-                AddedDialogues.Add(dialogueData);
-                dialogueNode.RegisterCallback<DetachFromPanelEvent>((evt) => RemoveNodeFromList(evt, _nodeCount));
+                dialogueData.nodeIndex = _nodeCount;
 
                 // dialogueNode.DialogueText = nodeName;
                 // dialogueNode.GUID = Guid.NewGuid().ToString();
@@ -116,18 +121,28 @@ namespace CurseOfNaga.DialogueSystem.Editor
             }
             else
             {
-                dialogueNode.title = dialogueData.link.id;
+                dialogueNode.title = dialogueData.base_uid;
                 // dialogueNode.DialogueText = dialogueData.dialogue;
-                dialogueNode.viewDataKey = dialogueData.link.id;
+                dialogueNode.viewDataKey = dialogueData.base_uid;
             }
-            dialogueData.link.id = dialogueNode.viewDataKey;
+            dialogueNode.RegisterCallback<DetachFromPanelEvent>((evt) =>
+            {
+                RemoveNodeFromList(evt, dialogueData.nodeIndex);
+            });
+            AddedDialogues.Add(dialogueData);
+            dialogueData.base_uid = dialogueNode.viewDataKey;
 
             var inputPort = GeneratePort(dialogueNode, Direction.Input, Port.Capacity.Multi);
             inputPort.name = "Input";
             dialogueNode.inputContainer.Add(inputPort);
 
-            var button = new Button(() => { AddChoicePort(dialogueNode); }) { text = "New Choice" };
-            dialogueNode.titleContainer.Add(button);
+            var newChoiceBt = new Button(() =>
+            {
+                AddChoicePort(dialogueNode, dialogueData.nodeIndex);
+                // AddChoicePort(dialogueNode);
+            });
+            newChoiceBt.text = "New Choice";
+            dialogueNode.titleContainer.Add(newChoiceBt);
 
             var intField = new IntegerField
             {
@@ -160,11 +175,11 @@ namespace CurseOfNaga.DialogueSystem.Editor
             dialogueField = new TextField
             {
                 label = "ID",
-                value = dialogueData.link.id
+                value = dialogueData.base_uid
             };
             dialogueField.RegisterValueChangedCallback(evt =>
             {
-                dialogueData.link.id = evt.newValue;
+                dialogueData.base_uid = evt.newValue;
                 dialogueNode.title = evt.newValue;
             });
             dialogueField.SetValueWithoutNotify(dialogueNode.title);
@@ -182,7 +197,9 @@ namespace CurseOfNaga.DialogueSystem.Editor
             return dialogueNode;
         }
 
-        public void AddChoicePort(Node dialogueNode, string overridenPortName = "")
+        //TODO: Can offset the UID on the name to contain both the Base UID and the name in one place
+        public void AddChoicePort(Node dialogueNode, int nodeIndex, string overridenPortName = "")
+        // public void AddChoicePort(Node dialogueNode, string overridenPortName = "")
         {
             var generatedPort = GeneratePort(dialogueNode, Direction.Output);
 
@@ -193,12 +210,25 @@ namespace CurseOfNaga.DialogueSystem.Editor
             var choicePortName = string.IsNullOrEmpty(overridenPortName) ?
                     $"Choice {outputPortCount + 1}" : overridenPortName;
 
+            int portCount = AddedDialogues[nodeIndex].ports.Count;
+            DialoguePort choicePort = new DialoguePort
+            {
+                base_uid = AddedDialogues[nodeIndex].base_uid,
+                name = choicePortName,
+                target_uid = _NOT_SET
+            };
+            AddedDialogues[nodeIndex].ports.Add(choicePort);
+
             var choiceTextField = new TextField
             {
                 name = string.Empty,
                 value = choicePortName
             };
-            choiceTextField.RegisterValueChangedCallback(evt => generatedPort.portName = evt.newValue);
+            choiceTextField.RegisterValueChangedCallback(evt =>
+            {
+                generatedPort.portName = evt.newValue;
+                choicePort.name = evt.newValue;
+            });
             generatedPort.contentContainer.Add(new Label("  "));
             generatedPort.contentContainer.Add(choiceTextField);
 
