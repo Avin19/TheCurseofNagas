@@ -87,6 +87,104 @@ namespace CurseOfNaga.DialogueSystem.Editor
             AssetDatabase.SaveAssets();
         }
 
+        public async void SaveDialogueJson(string fileName)
+        {
+            if (!_edges.Any()) return;       //if there are no edges(no connections) then return
+
+            var connectedPorts = _edges.Where(e => e.input != null).ToArray();
+            DialogueTemplate dialogueTemplateToSave = new DialogueTemplate();
+
+            #region SaveJSON
+            fileName += ".json";
+            string pathToJson = System.IO.Path.Join(Application.streamingAssetsPath, fileName);
+            Debug.Log($"Saving Json to: {pathToJson}");
+
+            Dictionary<string, CharacterData> characters = new Dictionary<string, CharacterData>();
+            CharacterData charData;
+
+            int totalCount = connectedPorts.Length;
+            int dialogueCount = 0, portCount = 0;
+            bool portFound = false;
+            string parentID;
+            for (int i = 0; i < totalCount; i++)
+            {
+                var outputNode = connectedPorts[i].output.node;
+                var inputNode = connectedPorts[i].input.node;
+
+                parentID = outputNode.viewDataKey.Substring(0, 2);
+                if (!characters.ContainsKey(parentID))
+                {
+                    charData = new CharacterData()
+                    {
+                        parent_id = parentID,
+                        character_name = parentID,
+                        dialogues_list = new List<DialogueData>()
+                    };
+                    characters.Add(parentID, charData);
+                }
+                else
+                {
+                    characters.TryGetValue(parentID, out charData);
+                    charData.dialogues_list.Add(_targetGraphView.AddedDialogues[]);
+                }
+
+                //Find port in the AddedDialogues
+                dialogueCount = _targetGraphView.AddedDialogues.Count;
+                for (int x = 0; x < dialogueCount && !portFound; x++)
+                {
+                    portCount = _targetGraphView.AddedDialogues[dialogueCount].ports.Count;
+                    for (int y = 0; y < portCount; y++)
+                    {
+                        if (_targetGraphView.AddedDialogues[dialogueCount].ports[portCount]
+                            .base_uid.Equals(outputNode.viewDataKey))
+                        {
+                            _targetGraphView.AddedDialogues[dialogueCount].ports[portCount].target_uid = inputNode.viewDataKey;
+                            portFound = true;
+                            break;
+                        }
+                    }
+                }
+                _targetGraphView.AddedDialogues[dialogueCount].ports[portCount].target_uid = null;
+
+
+                // var nodeLinks = _targetGraphView.AddedDialogues.Where(node => 
+                //          node.ports.Where(port => port.base_uid.Equals(outputNode.viewDataKey)))
+
+                // dialogueContainer.NodePorts.Add(new DialogueNodePortData
+                // {
+                //     BaseNodeGUID = outputNode.viewDataKey,
+                //     PortName = connectedPorts[i].output.name,
+                //     TargetNodeGUID = inputNode.viewDataKey
+                // });
+            }
+
+
+            System.IO.FileStream saveStream;
+            if (!System.IO.File.Exists(pathToJson))
+            {
+                saveStream = System.IO.File.Create(pathToJson);
+            }
+            else
+                saveStream = System.IO.File.Open(pathToJson, System.IO.FileMode.Open);
+
+            string dialogueData = JsonUtility.ToJson(dialogueTemplateToSave);
+            byte[] dialogueDataInBytes = System.Text.Encoding.ASCII.GetBytes(dialogueData);
+            try
+            {
+                await saveStream.WriteAsync(dialogueDataInBytes, 0, dialogueDataInBytes.Length);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Error ocurred! | Failed to Save Data to path : {pathToJson} | Error : {ex.Message}");
+            }
+            finally
+            {
+                saveStream.Close();
+            }
+
+            #endregion SaveJSON
+        }
+
         public void LoadGraph(string fileName)
         {
             _containerCache = Resources.Load<DialogueContainer>(fileName);
@@ -173,6 +271,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             tempEdge.output.Connect(tempEdge);
             _targetGraphView.Add(tempEdge);
         }
+
 
         public async void LoadDialogueJson()
         {

@@ -13,7 +13,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 {
     public class DialogueGraphEditor : EditorWindow
     {
-        internal enum DataOperation { SAVE, LOAD, LOAD_JSON }
+        internal enum DataOperation { SAVE, LOAD, LOAD_JSON, SAVE_JSON }
 
         private GraphSaveUtility graphSaveUtility;
         private DialogueGraphView _graphView;
@@ -66,12 +66,13 @@ namespace CurseOfNaga.DialogueSystem.Editor
             toolbar.Add(new Button(() => RequestDataOperation(DataOperation.SAVE)) { text = "Save Data" });
             toolbar.Add(new Button(() => RequestDataOperation(DataOperation.LOAD)) { text = "Load Data" });
 #if TEST_BTS
-            toolbar.Add(new Button(() => CheckAssetFolder()) { text = "Check Asset Folder" });
-            toolbar.Add(new Button(() => CallClearGraph()) { text = "Clear Graph" });
+            // toolbar.Add(new Button(() => CheckAssetFolder()) { text = "Check Asset Folder" });
+            toolbar.Add(new Button(() => CallClearGraph()) { text = "Clear All" });
 #endif
 
 #if TEST_DIALOGUE_PARSER
-            toolbar.Add(new Button(() => RequestDataOperation(DataOperation.LOAD_JSON)) { text = "Load Dialogue JSON" });
+            toolbar.Add(new Button(() => RequestDataOperation(DataOperation.LOAD_JSON)) { text = "Load JSON" });
+            toolbar.Add(new Button(() => RequestDataOperation(DataOperation.SAVE_JSON)) { text = "Save JSON" });
 #endif
 
             var nodeCreateButton = new Button(() => { _graphView.CreateNode("Dialogue Node"); });
@@ -103,6 +104,10 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
                 case DataOperation.LOAD_JSON:
                     graphSaveUtility.LoadDialogueJson();
+                    break;
+
+                case DataOperation.SAVE_JSON:
+                    graphSaveUtility.SaveDialogueJson(_fileName);
                     break;
             }
         }
