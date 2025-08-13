@@ -29,15 +29,19 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     }
 
     [System.Serializable]
+    public struct Vector2Serialized { public float x, y; }
+
+    [System.Serializable]
     public class DialogueData
     {
         public int flags;
         public int type;
         public int nodeIndex;                   // Store the index of the node in the GraphView | Not needed in JSON
         // public DialoguePort port;
-        public string base_uid;
+        public string base_uid;                 //Transform each character to int spaced at 5 bits?
         public string dialogue;
         public List<DialoguePort> ports;
+        public Vector2Serialized position;
 
         public DialogueData()
         {
@@ -54,5 +58,14 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     public class DialogueTemplate
     {
         public List<CharacterData> characters;
+    }
+
+    public static class DialogueExtensions
+    {
+        public static UnityEngine.Vector2 ToVec2(this Vector2Serialized vec2S)
+        {
+            return new UnityEngine.Vector2(vec2S.x, vec2S.y);
+        }
+
     }
 }

@@ -136,7 +136,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 _targetGraphView.AddElement(tempNode);
 
                 nodePorts = _containerCache.NodePorts.Where(edge => edge.BaseNodeGUID.Equals(_containerCache.NodeDatas[i].GUID)).ToList();
-                // nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, edge.PortName));          //TODO: FIX THISD
+                nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, i, edge.PortName));          //TODO: FIX THISD
             }
         }
 
@@ -152,7 +152,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 {
                     var targetNodeGuid = connections[j].TargetNodeGUID;
                     targetNode = _nodes.First(node => node.viewDataKey.Equals(targetNodeGuid));
-                    LinkNodes(_nodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
+                    LinkNodesViaEdge(_nodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
 
                     targetNode.SetPosition(new Rect(
                         _containerCache.NodeDatas.First(nodeData => nodeData.GUID.Equals(targetNodeGuid)).Position,
@@ -162,7 +162,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             }
         }
 
-        private void LinkNodes(Port output, Port input)
+        private void LinkNodesViaEdge(Port output, Port input)
         {
             var tempEdge = new Edge
             {
@@ -193,30 +193,63 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
             DialogueTemplate dialogueTemplate;
             dialogueTemplate = JsonUtility.FromJson<DialogueTemplate>(jsonData);
-            // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}");
+            // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}"); return;         //TEST
             #endregion LoadJSON
 
-            #region CreateNode
-            Node tempNode;
-            DialogueData dialogueData;
+            ClearGraph();
+
+            Node targetNode;
             List<DialoguePort> nodePorts;
-            // for (int dialogueIndex = 0; dialogueIndex < dialogueTemplate.characters[0].dialogues_list.Count; dialogueIndex++)
-            for (int dialogueIndex = 0; dialogueIndex < 2; dialogueIndex++)
+            int totalLoopCount;
+
+            #region CreateNode
+            DialogueData dialogueData;
+            totalLoopCount = dialogueTemplate.characters[0].dialogues_list.Count;
+            // totalLoopCount = 3;
+            for (int dialogueIndex = 0; dialogueIndex < totalLoopCount; dialogueIndex++)
             {
                 dialogueData = dialogueTemplate.characters[0].dialogues_list[dialogueIndex];
 
-                tempNode = _targetGraphView.CreateDialogueNode(dialogueData.base_uid, dialogueData);
-                tempNode.viewDataKey = dialogueData.base_uid;
-                _targetGraphView.AddElement(tempNode);
-
-                //TODO: FIX THISD
-                // nodePorts = _containerCache.NodePorts.Where(edge => edge.BaseNodeGUID.Equals(_containerCache.NodeDatas[i].GUID)).ToList();
-                // nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, edge.PortName));
+                targetNode = _targetGraphView.CreateDialogueNode(dialogueData.base_uid, dialogueData);
+                targetNode.viewDataKey = dialogueData.base_uid;
+                _targetGraphView.AddElement(targetNode);
 
                 nodePorts = dialogueTemplate.characters[0].dialogues_list[dialogueIndex].ports;
-                nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, dialogueIndex, edge.name));
+                for (int portIndex = 0; portIndex < nodePorts.Count; portIndex++)
+                    _targetGraphView.AddChoicePort(targetNode, dialogueIndex, nodePorts[portIndex].name, portIndex);
+                // nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(targetNode, dialogueIndex, edge.name));
+
             }
             #endregion CreateNode
+
+            #region ConnectNode
+
+            //Connecting BASE NODE to 1st Node
+            targetNode = _nodes[1];
+            LinkNodesViaEdge(_nodes[0].outputContainer.Q<Port>(), (Port)_nodes[1].inputContainer[0]);
+            targetNode.SetPosition(new Rect(dialogueTemplate.characters[0].dialogues_list[0].position.ToVec2(),
+                    _targetGraphView._defaultNodeSize));
+
+            // totalLoopCount--;
+            for (int dialogueIndex = 0; dialogueIndex < totalLoopCount; dialogueIndex++)
+            {
+                nodePorts = dialogueTemplate.characters[0].dialogues_list[dialogueIndex].ports;
+
+                for (int j = 0; j < nodePorts.Count; j++)
+                {
+                    var targetNodeGuid = nodePorts[j].target_uid;
+                    targetNode = _nodes.First(node => node.viewDataKey.Equals(targetNodeGuid));
+                    LinkNodesViaEdge(_nodes[dialogueIndex + 1].outputContainer[j].Q<Port>(),
+                        (Port)targetNode.inputContainer[0]);
+
+                    targetNode.SetPosition(new Rect(
+                        dialogueTemplate.characters[0].dialogues_list.First(nodeData =>
+                             nodeData.base_uid.Equals(targetNodeGuid)).position.ToVec2(),
+                        _targetGraphView._defaultNodeSize
+                    ));
+                }
+            }
+            #endregion ConnectNode
         }
 
 #if TEST_TO_JSON

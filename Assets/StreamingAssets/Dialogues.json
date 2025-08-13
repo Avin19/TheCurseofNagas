@@ -7,71 +7,97 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "SA_0",
-                        "target_uid": "SA_1"
-                    },
+                    "base_uid": "SA_0",
                     "dialogue": "Hey there!",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "SA_0",
+                            "name": "Next Choice",
+                            "target_uid": "SA_1"
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "SA_1",
-                        "target_uid": "SA_2"
-                    },
+                    "base_uid": "SA_1",
                     "dialogue": "I am Salem, nice to meet you!",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "SA_1",
+                            "name": "Next Choice",
+                            "target_uid": "SA_2"
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 2,
-                    "port": {
-                        "base_uid": "SA_2",
-                        "target_uid": "SA_3"
-                    },
+                    "base_uid": "SA_2",
                     "dialogue": "May I know who you are?",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "SA_2",
+                            "name": "Next Choice",
+                            "target_uid": "SA_3"
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 3,
-                    "port": {
-                        "base_uid": "SA_3",
-                        "target_uid": null
-                    },
+                    "base_uid": "SA_3",
                     "dialogue": null,
-                    "choices": [
+                    "ports": [
                         {
-                            "base_uid": "PL_2",
-                            "target_uid": "SA_3_0"
+                            "base_uid": "SA_3",
+                            "name": "Next Choice",
+                            "target_uid": "PL_2"
                         },
                         {
-                            "base_uid": "PL_3",
-                            "target_uid": "SA_3_1"
+                            "base_uid": "SA_3",
+                            "name": "Next Choice",
+                            "target_uid": "PL_3"
                         }
-                    ]
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "SA_3_0",
-                        "target_uid": "EOC"
-                    },
+                    "base_uid": "SA_3_0",
                     "dialogue": "No need to be rude about your name",
-                    "choices": []
+                    "ports": [],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "SA_3_1",
-                        "target_uid": "EOC"
-                    },
+                    "base_uid": "SA_3_1",
                     "dialogue": "Nice to meet you, {Player}",
-                    "choices": []
+                    "ports": [],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 }
             ]
         },
@@ -82,42 +108,67 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "DE1",
-                        "target_uid": "DE2"
-                    },
+                    "base_uid": "DE_1",
                     "dialogue": "Hey there!",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "DE_1",
+                            "target_uid": "DE_2"
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "DE2",
-                        "target_uid": "DE3"
-                    },
+                    "base_uid": "DE_2",
                     "dialogue": "I am Deron, nice to meet you!",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "DE_2",
+                            "target_uid": "DE_3"
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "DE3",
-                        "target_uid": "DE4"
-                    },
+                    "base_uid": "DE_3",
                     "dialogue": "May I know who you are?",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "DE_3",
+                            "name": "Next Choice",
+                            "target_uid": "PL_2"
+                        },
+                        {
+                            "base_uid": "DE_3",
+                            "name": "Next Choice",
+                            "target_uid": "PL_3"
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "DE4",
-                        "target_uid": "EOC"
-                    },
+                    "base_uid": "DE4",
                     "dialogue": "You can find the village elder over by the pond",
-                    "choices": []
+                    "ports": [],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 }
             ]
         },
@@ -128,52 +179,72 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "PL1",
-                        "target_uid": "PL2"
-                    },
+                    "base_uid": "PL1",
                     "dialogue": "Hey there!",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "PL1",
+                            "target_uid": "PL2"
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 4,
-                    "port": {
-                        "base_uid": "PL2",
-                        "target_uid": null
-                    },
+                    "base_uid": "PL2",
                     "dialogue": "None of your concern.",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "PL2",
+                            "target_uid": null
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 4,
-                    "port": {
-                        "base_uid": "PL3",
-                        "target_uid": null
-                    },
+                    "base_uid": "PL3",
                     "dialogue": "My name is {Player}.",
-                    "choices": []
+                    "ports": [],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "PL3",
-                        "target_uid": "PL4"
-                    },
+                    "base_uid": "PL3",
                     "dialogue": "May I know who you are?",
-                    "choices": []
+                    "ports": [
+                        {
+                            "base_uid": "PL3",
+                            "target_uid": "PL4"
+                        }
+                    ],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
-                    "port": {
-                        "base_uid": "PL4",
-                        "target_uid": "EOC"
-                    },
+                    "base_uid": "PL4",
                     "dialogue": "You can find the village elder over by the pond",
-                    "choices": []
+                    "ports": [],
+                    "position": {
+                        "x": 100,
+                        "y": 134
+                    }
                 }
             ]
         }

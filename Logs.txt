@@ -881,7 +881,16 @@
 - Dialogues.json / Dialogues_Test.json
     [=] Renaming/Changing keys accordingly
 
-
+- Scripts
+    [=] GraphSaveUtility
+        {+} Port generation fix
+        {+} Connecting ports / Setting Node positions
+    [=] DialogueTemplate
+        {+} Adding position field to store Node positions
+    [=] DialogueGraphView
+        {+} Existing/New port validation
+- Dialogues_Test.json
+    [=] Adding positions
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

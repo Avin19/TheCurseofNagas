@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -110,7 +109,6 @@ namespace CurseOfNaga.DialogueSystem.Editor
             if (dialogueData == null)
             {
                 dialogueData = new DialogueData();
-                dialogueData.nodeIndex = _nodeCount;
 
                 // dialogueNode.DialogueText = nodeName;
                 // dialogueNode.GUID = Guid.NewGuid().ToString();
@@ -125,6 +123,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 // dialogueNode.DialogueText = dialogueData.dialogue;
                 dialogueNode.viewDataKey = dialogueData.base_uid;
             }
+
+            dialogueData.nodeIndex = _nodeCount;
             dialogueNode.RegisterCallback<DetachFromPanelEvent>((evt) =>
             {
                 RemoveNodeFromList(evt, dialogueData.nodeIndex);
@@ -198,7 +198,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         }
 
         //TODO: Can offset the UID on the name to contain both the Base UID and the name in one place
-        public void AddChoicePort(Node dialogueNode, int nodeIndex, string overridenPortName = "")
+        public void AddChoicePort(Node dialogueNode, int nodeIndex, string overridenPortName = "", int portIndex = 0)
         // public void AddChoicePort(Node dialogueNode, string overridenPortName = "")
         {
             var generatedPort = GeneratePort(dialogueNode, Direction.Output);
@@ -207,17 +207,28 @@ namespace CurseOfNaga.DialogueSystem.Editor
             generatedPort.contentContainer.Remove(oldLabel);
 
             var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count;
-            var choicePortName = string.IsNullOrEmpty(overridenPortName) ?
-                    $"Choice {outputPortCount + 1}" : overridenPortName;
 
-            int portCount = AddedDialogues[nodeIndex].ports.Count;
-            DialoguePort choicePort = new DialoguePort
+            // var choicePortName = string.IsNullOrEmpty(overridenPortName) ?
+            //         $"Choice {outputPortCount + 1}" : overridenPortName;
+
+            // int portCount = AddedDialogues[nodeIndex].ports.Count;
+            string choicePortName = null;
+            DialoguePort choicePort;
+            if (string.IsNullOrEmpty(overridenPortName))
             {
-                base_uid = AddedDialogues[nodeIndex].base_uid,
-                name = choicePortName,
-                target_uid = _NOT_SET
-            };
-            AddedDialogues[nodeIndex].ports.Add(choicePort);
+                choicePort = new DialoguePort();
+                AddedDialogues[nodeIndex].ports.Add(choicePort);
+
+                choicePortName = $"Choice {outputPortCount + 1}";
+                choicePort.base_uid = AddedDialogues[nodeIndex].base_uid;
+                choicePort.name = choicePortName;
+            }
+            else
+            {
+                choicePortName = overridenPortName;
+
+                choicePort = AddedDialogues[nodeIndex].ports[portIndex];
+            }
 
             var choiceTextField = new TextField
             {

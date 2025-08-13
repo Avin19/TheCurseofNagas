@@ -15,7 +15,11 @@
                             "name": "Next Choice",
                             "target_uid": "SA_1"
                         }
-                    ]
+                    ],
+                    "position": {
+                        "x": 339,
+                        "y": 134
+                    }
                 },
                 {
                     "flags": 1,
@@ -28,7 +32,11 @@
                             "name": "Next Choice",
                             "target_uid": "SA_2"
                         }
-                    ]
+                    ],
+                    "position": {
+                        "x": 666,
+                        "y": 200
+                    }
                 },
                 {
                     "flags": 1,
@@ -39,28 +47,40 @@
                         {
                             "base_uid": "SA_2",
                             "name": "Next Choice",
-                            "target_uid": "PL_2"
+                            "target_uid": "SA_2_0"
                         },
                         {
                             "base_uid": "SA_2",
                             "name": "Next Choice",
-                            "target_uid": "PL_3"
+                            "target_uid": "SA_2_1"
                         }
-                    ]
+                    ],
+                    "position": {
+                        "x": 1051,
+                        "y": 149
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
                     "base_uid": "SA_2_0",
                     "dialogue": "No need to be rude about your name",
-                    "ports": []
+                    "ports": [],
+                    "position": {
+                        "x": 1305,
+                        "y": 23
+                    }
                 },
                 {
                     "flags": 1,
                     "type": 1,
                     "base_uid": "SA_2_1",
                     "dialogue": "Nice to meet you, {Player}",
-                    "ports": []
+                    "ports": [],
+                    "position": {
+                        "x": 1305,
+                        "y": 287
+                    }
                 }
             ]
         }
