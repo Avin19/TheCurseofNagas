@@ -891,6 +891,16 @@
         {+} Existing/New port validation
 - Dialogues_Test.json
     [=] Adding positions
+
+--------------------------------------------------------------------------------------------------------
+                                                14 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Taking leaf nodes separately will take too long or a roundabout approach
+- Scripts
+    [=] DialogueGraphView
+        {+} 4 characters for the node viewDataKey 
+        {+} Replacing nodeCount with AddedDialogues count
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

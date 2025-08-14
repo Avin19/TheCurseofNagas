@@ -17,7 +17,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         private GraphSaveUtility graphSaveUtility;
         private DialogueGraphView _graphView;
-        private string _fileName = "New Narrative 2";
+        private string _fileName = "Dialogues_SerializeTest";
 
         [MenuItem("Graph/Dialogue Graph")]
         public static void OpenDialogueGraphWindow()

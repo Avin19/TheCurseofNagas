@@ -17,7 +17,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         public const string BASE_NODE = "BASE_NODE";
 
         public List<DialogueData> AddedDialogues;
-        private int _nodeCount = 0;
+        // private int _nodeCount = 0;
 
         public DialogueGraphView()
         {
@@ -92,7 +92,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         public void ResetGraph()
         {
-            _nodeCount = 0;
+            // _nodeCount = 0;
             AddedDialogues.Clear();
         }
 
@@ -106,16 +106,16 @@ namespace CurseOfNaga.DialogueSystem.Editor
         public Node CreateDialogueNode(string nodeName, DialogueData dialogueData = null)
         {
             Node dialogueNode = new Node();
+            int nodeCount = AddedDialogues.Count;
             if (dialogueData == null)
             {
                 dialogueData = new DialogueData();
 
                 // dialogueNode.DialogueText = nodeName;
                 // dialogueNode.GUID = Guid.NewGuid().ToString();
-                dialogueNode.title = $"GRAPH_NODE_{_nodeCount}";
-                dialogueNode.viewDataKey = $"GRAPH_NODE_{_nodeCount}";
+                dialogueNode.title = $"GRAPH_NODE_{nodeCount}";
+                dialogueNode.viewDataKey = $"GRNO_{nodeCount}";
                 // Debug.Log($"_noedCount: {_nodeCount} | GUID: {dialogueNode.viewDataKey}");
-                _nodeCount++;
             }
             else
             {
@@ -124,7 +124,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 dialogueNode.viewDataKey = dialogueData.base_uid;
             }
 
-            dialogueData.nodeIndex = _nodeCount;
+            // dialogueData.nodeIndex = _nodeCount;
+            dialogueData.nodeIndex = nodeCount;
             dialogueNode.RegisterCallback<DetachFromPanelEvent>((evt) =>
             {
                 RemoveNodeFromList(evt, dialogueData.nodeIndex);
@@ -193,7 +194,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             dialogueNode.RefreshPorts();
 
             dialogueNode.SetPosition(new Rect(Vector2.zero, _defaultNodeSize));
-
+            // _nodeCount++;
             return dialogueNode;
         }
 
