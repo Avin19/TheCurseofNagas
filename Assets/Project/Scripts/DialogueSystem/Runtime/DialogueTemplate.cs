@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CurseOfNaga.Global;
 
 namespace CurseOfNaga.DialogueSystem.Runtime
 {
@@ -20,7 +21,8 @@ namespace CurseOfNaga.DialogueSystem.Runtime
 
         // public DialogueLink() { dialogue_id = "NOT_SET"; next_dialogue_id = "NOT_SET"; }
 
-        public DialoguePort(string dialogueID = "NOT_SET", string portName = "NOT_SET", string targetDialogueID = "NOT_SET")
+        public DialoguePort(string dialogueID = UniversalConstant.NOT_SET, string portName = UniversalConstant.NOT_SET
+            , string targetDialogueID = UniversalConstant.NOT_SET)
         {
             base_uid = dialogueID;
             name = portName;

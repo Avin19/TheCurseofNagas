@@ -127,5 +127,7 @@ namespace CurseOfNaga.Global
         }
 
         public enum DialogueType { SPEECH, QUESTION, ANSWER, CHOICE }
+
+        public const string NOT_SET = "NOT_SET";
     }
 }

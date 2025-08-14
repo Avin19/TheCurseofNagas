@@ -113,8 +113,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
                 // dialogueNode.DialogueText = nodeName;
                 // dialogueNode.GUID = Guid.NewGuid().ToString();
-                dialogueNode.title = $"GRAPH_NODE_{nodeCount}";
-                dialogueNode.viewDataKey = $"GRNO_{nodeCount}";
+                dialogueNode.title = $"000GN_{nodeCount:000}";
+                dialogueNode.viewDataKey = $"000GN_{nodeCount:000}";                   // 24x24 combinations possible
                 // Debug.Log($"_noedCount: {_nodeCount} | GUID: {dialogueNode.viewDataKey}");
             }
             else
@@ -182,6 +182,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             {
                 dialogueData.base_uid = evt.newValue;
                 dialogueNode.title = evt.newValue;
+                dialogueNode.viewDataKey = evt.newValue;
             });
             dialogueField.SetValueWithoutNotify(dialogueNode.title);
             dialogueNode.mainContainer.Add(dialogueField);
@@ -204,8 +205,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             var generatedPort = GeneratePort(dialogueNode, Direction.Output);
 
-            var oldLabel = generatedPort.contentContainer.Q<Label>("type");
-            generatedPort.contentContainer.Remove(oldLabel);
+            // var oldLabel = generatedPort.contentContainer.Q<Label>("type");
+            // generatedPort.contentContainer.Remove(oldLabel);
 
             var outputPortCount = dialogueNode.outputContainer.Query("connector").ToList().Count;
 
@@ -231,7 +232,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 choicePort = AddedDialogues[nodeIndex].ports[portIndex];
             }
 
-            var choiceTextField = new TextField
+            /*var choiceTextField = new TextField
             {
                 name = string.Empty,
                 value = choicePortName
@@ -240,14 +241,15 @@ namespace CurseOfNaga.DialogueSystem.Editor
             {
                 generatedPort.portName = evt.newValue;
                 choicePort.name = evt.newValue;
-            });
+            });*/
             generatedPort.contentContainer.Add(new Label("  "));
-            generatedPort.contentContainer.Add(choiceTextField);
+            // generatedPort.contentContainer.Add(choiceTextField);
 
             var deleteBt = new Button(() => RemovePort(dialogueNode, generatedPort)) { text = "X" };
             generatedPort.contentContainer.Add(deleteBt);
 
             generatedPort.portName = choicePortName;
+            // generatedPort.title = choicePortName;
             dialogueNode.outputContainer.Add(generatedPort);
             dialogueNode.RefreshExpandedState();
             dialogueNode.RefreshPorts();

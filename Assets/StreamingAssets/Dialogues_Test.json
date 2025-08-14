@@ -1,19 +1,19 @@
 {
     "characters": [
         {
-            "parent_id": "SA",
+            "parent_id": "000SA",
             "character_name": "Salem",
             "dialogues_list": [
                 {
                     "flags": 1,
                     "type": 1,
-                    "base_uid": "SA_0",
+                    "base_uid": "000SA_000",
                     "dialogue": "Hey there!",
                     "ports": [
                         {
-                            "base_uid": "SA_0",
+                            "base_uid": "000SA_000",
                             "name": "Next Choice",
-                            "target_uid": "SA_1"
+                            "target_uid": "000SA_001"
                         }
                     ],
                     "position": {
@@ -24,13 +24,13 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "base_uid": "SA_1",
+                    "base_uid": "000SA_001",
                     "dialogue": "I am Salem, nice to meet you!",
                     "ports": [
                         {
-                            "base_uid": "SA_1",
+                            "base_uid": "000SA_001",
                             "name": "Next Choice",
-                            "target_uid": "SA_2"
+                            "target_uid": "000SA_002"
                         }
                     ],
                     "position": {
@@ -41,18 +41,18 @@
                 {
                     "flags": 1,
                     "type": 3,
-                    "base_uid": "SA_2",
+                    "base_uid": "000SA_002",
                     "dialogue": null,
                     "ports": [
                         {
-                            "base_uid": "SA_2",
+                            "base_uid": "000SA_002",
                             "name": "Next Choice",
-                            "target_uid": "SA_2_0"
+                            "target_uid": "000SA_003"
                         },
                         {
-                            "base_uid": "SA_2",
+                            "base_uid": "000SA_002",
                             "name": "Next Choice",
-                            "target_uid": "SA_2_1"
+                            "target_uid": "000SA_004"
                         }
                     ],
                     "position": {
@@ -63,7 +63,7 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "base_uid": "SA_2_0",
+                    "base_uid": "000SA_003",
                     "dialogue": "No need to be rude about your name",
                     "ports": [],
                     "position": {
@@ -74,7 +74,7 @@
                 {
                     "flags": 1,
                     "type": 1,
-                    "base_uid": "SA_2_1",
+                    "base_uid": "000SA_004",
                     "dialogue": "Nice to meet you, {Player}",
                     "ports": [],
                     "position": {

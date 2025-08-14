@@ -906,6 +906,19 @@
     [=] DialogueTemplate
         {+} Adding/Fillin up Dictionary with characters as value and "parent_id" as key
 
+- Changing ID structure
+- Scripts
+    [=] DialogueTemplate
+        {+} Changing ids to int
+    [=] GraphSaveUtility
+        {+} Changing logic for ids | Fixing logic
+    [=] DialogueGraphView
+        {+} Changing logic for ids
+        {+} Using 3 numbers as parent_id and base_uid
+        {+} Removing TextField from Choice port
+    [=] UniversalConstant
+        {+} Adding NOT_SET constant
+    
 
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System

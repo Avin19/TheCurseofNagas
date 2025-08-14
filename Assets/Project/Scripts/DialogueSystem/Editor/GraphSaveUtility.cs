@@ -14,6 +14,7 @@ using CurseOfNaga.DialogueSystem.Runtime;
 using UnityEditor;
 using UnityEngine.UIElements;
 using CurseOfNaga.Utils;
+using CurseOfNaga.Global;
 
 namespace CurseOfNaga.DialogueSystem.Editor
 {
@@ -96,15 +97,13 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
             var connectedPorts = _edges.Where(e => e.input != null).ToArray();
 
-
 #if TEST_SAVE_JSON_1
             for (int i = 0; i < connectedPorts.Length; i++)
             {
                 Debug.Log($"i: [{i}] | Output ID: {connectedPorts[i].output.node.viewDataKey}, {connectedPorts[i].output.node.title} "
                     + $"| Input ID: {connectedPorts[i].input.node.viewDataKey}, {connectedPorts[i].input.node.title} "
-                    + $"| nodeID: {connectedPorts[i].output.node.viewDataKey.Substring(0, 4)}");
+                    + $"| nodeID: {connectedPorts[i].output.node.viewDataKey.Substring(0, 1)}");
             }
-
             return;             //TEST
 #endif
 
@@ -114,11 +113,12 @@ namespace CurseOfNaga.DialogueSystem.Editor
             Debug.Log($"Saving Json to: {pathToJson}");
 
             DialogueTemplate dialogueTemplateToSave = new DialogueTemplate();
-            dialogueTemplateToSave.CharactersDict = new Dictionary<string, CharacterData>();
-            // Dictionary<string, CharacterData> characters = new Dictionary<string, CharacterData>();
+
+            Dictionary<string, CharacterData> characters = new Dictionary<string, CharacterData>();
+            List<CharacterData> charactersList = new List<CharacterData>();
             CharacterData charData;
 
-            // CharactersDict.Add(_LEAF_NODES, new CharacterData()
+            // characters.Add(_LEAF_NODES, new CharacterData()
             // {
             //     parent_id = _LEAF_NODES,
             //     character_name = _LEAF_NODES,
@@ -129,64 +129,90 @@ namespace CurseOfNaga.DialogueSystem.Editor
             int dialogueCount = 0, portCount = 0;
             int dIndex = 0, pIndex = 0;
             bool portFound = false;
-            string parentID;
+            int parentID, nodeID;
+            string parentIDStr;
             for (int cpIndex = 0; cpIndex < totalCount; cpIndex++)
             {
                 portFound = false;
                 var outputNode = connectedPorts[cpIndex].output.node;
                 var inputNode = connectedPorts[cpIndex].input.node;
 
-                parentID = outputNode.viewDataKey.Substring(0, 2);
-                if (!dialogueTemplateToSave.CharactersDict.ContainsKey(parentID))
+                if (outputNode.viewDataKey.Equals(DialogueGraphView.BASE_NODE))
+                    continue;
+
+                parentIDStr = outputNode.viewDataKey.Substring(0, 3);
+                // Extract parent_id of the character to which the DialogueNode belongs
+                if (!int.TryParse(parentIDStr, out parentID))
+                {
+                    Debug.LogError($"Bad parentID: {parentIDStr} | viewDataKey: {outputNode.viewDataKey} "
+                        + $"| Edge Index: {cpIndex} | Node Name: {outputNode.title}");
+                    return;
+                }
+
+                // Found a new Character | size offset
+                if ((parentID + 1) <= charactersList.Count)
+                {
+                    charData = charactersList[parentID];
+                }
+                // Character already exists
+                else
                 {
                     charData = new CharacterData()
                     {
-                        parent_id = parentID,
-                        character_name = parentID,
+                        parent_id = parentIDStr,
+                        character_name = parentIDStr,
                         dialogues_list = new List<DialogueData>()
                     };
-                    dialogueTemplateToSave.CharactersDict.Add(parentID, charData);
-                }
-                else
-                {
-                    dialogueTemplateToSave.CharactersDict.TryGetValue(parentID, out charData);
+                    charactersList.Add(charData);
                 }
 
 #if DEBUG_SAVE_JSON_FOUND_NODE
                 Debug.Log($"To Find | cpIndex: [{cpIndex}] "
-                    + $"| Output ID: {connectedPorts[cpIndex].output.node.viewDataKey}, {connectedPorts[cpIndex].output.node.title} "
-                    + $"| Input ID: {connectedPorts[cpIndex].input.node.viewDataKey}, {connectedPorts[cpIndex].input.node.title} ");
+                + $"| Output ID: {connectedPorts[cpIndex].output.node.viewDataKey}, {connectedPorts[cpIndex].output.node.title} "
+                + $"| Input ID: {connectedPorts[cpIndex].input.node.viewDataKey}, {connectedPorts[cpIndex].input.node.title} ");
 #endif
+                // Find the node which is input of the current edge in the AddedDialogues
+                // The DialogueData already has the number of ports added
+                // All ports are set at creation to the base_id and name
+                // We only need to set the target_id
 
-                //Find the current port in the AddedDialogues
                 dialogueCount = _targetGraphView.AddedDialogues.Count;
                 for (dIndex = 0; dIndex < dialogueCount && !portFound; dIndex++)
                 {
-                    portCount = _targetGraphView.AddedDialogues[dIndex].ports.Count;
-                    for (pIndex = 0; pIndex < portCount; pIndex++)
+                    if (_targetGraphView.AddedDialogues[dIndex].base_uid.Equals(outputNode.viewDataKey))
                     {
-                        if (_targetGraphView.AddedDialogues[dIndex].ports[pIndex]
-                            .base_uid.Equals(outputNode.viewDataKey))
-                        {
-                            // _targetGraphView.AddedDialogues[dIndex].ports[pIndex].target_uid = inputNode.viewDataKey;        //No point, This will be the same
+                        int.TryParse(_targetGraphView.AddedDialogues[dIndex].base_uid.Substring(6, 3), out nodeID);
+
+                        // List Size Offset
+                        if ((nodeID + 1) > charData.dialogues_list.Count)
                             charData.dialogues_list.Add(_targetGraphView.AddedDialogues[dIndex]);
 
-                            // Add to Leaf Nodes list for the nodes which do not have a target_uid
-                            if (inputNode.outputContainer.childCount == 0)
+                        portCount = _targetGraphView.AddedDialogues[dIndex].ports.Count;
+                        for (pIndex = 0; pIndex < portCount; pIndex++)
+                        {
+                            if (_targetGraphView.AddedDialogues[dIndex].ports[pIndex]
+                                .target_uid.Equals(UniversalConstant.NOT_SET))
                             {
+                                _targetGraphView.AddedDialogues[dIndex].ports[pIndex].target_uid = inputNode.viewDataKey;        //No point, This will be the same
 
-                            }
+                                // Add to Leaf Nodes list for the nodes which do not have a target_uid
+                                if (inputNode.outputContainer.childCount == 0)
+                                {
 
-                            portFound = true;
+                                }
+
+                                portFound = true;
 
 #if DEBUG_SAVE_JSON_FOUND_NODE
-                            Debug.Log($"Found Node in AddedDialogues | dIndex: {dIndex} "
-                                + $"| target_uid: {_targetGraphView.AddedDialogues[dIndex].ports[pIndex].target_uid}"
-                                + $"| target outPut: {inputNode.outputContainer.childCount}"
-                                );
+                                Debug.Log($"Found Node in AddedDialogues | dIndex: {dIndex} "
+                                    + $"| target_uid: {_targetGraphView.AddedDialogues[dIndex].ports[pIndex].target_uid}"
+                                    + $"| target outPut: {inputNode.outputContainer.childCount}"
+                                    );
 #endif
-                            break;
+                                break;
+                            }
                         }
+                        break;
                     }
                 }
                 // if (!portFound)
@@ -207,7 +233,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 // });
             }
             return;     //TEST
-            // dialogueTemplateToSave.characters = characters.Values.ToList();
+            dialogueTemplateToSave.characters = characters.Values.ToList();
 
             System.IO.FileStream saveStream;
             if (!System.IO.File.Exists(pathToJson))
