@@ -114,17 +114,16 @@ namespace CurseOfNaga.DialogueSystem.Editor
             Debug.Log($"Saving Json to: {pathToJson}");
 
             DialogueTemplate dialogueTemplateToSave = new DialogueTemplate();
-            dialogueTemplateToSave.characters = new List<CharacterData>();
-
-            Dictionary<string, CharacterData> characters = new Dictionary<string, CharacterData>();
+            dialogueTemplateToSave.CharactersDict = new Dictionary<string, CharacterData>();
+            // Dictionary<string, CharacterData> characters = new Dictionary<string, CharacterData>();
             CharacterData charData;
 
-            characters.Add(_LEAF_NODES, new CharacterData()
-            {
-                parent_id = _LEAF_NODES,
-                character_name = _LEAF_NODES,
-                dialogues_list = new List<DialogueData>()
-            });
+            // CharactersDict.Add(_LEAF_NODES, new CharacterData()
+            // {
+            //     parent_id = _LEAF_NODES,
+            //     character_name = _LEAF_NODES,
+            //     dialogues_list = new List<DialogueData>()
+            // });
 
             int totalCount = connectedPorts.Length;
             int dialogueCount = 0, portCount = 0;
@@ -138,7 +137,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 var inputNode = connectedPorts[cpIndex].input.node;
 
                 parentID = outputNode.viewDataKey.Substring(0, 2);
-                if (!characters.ContainsKey(parentID))
+                if (!dialogueTemplateToSave.CharactersDict.ContainsKey(parentID))
                 {
                     charData = new CharacterData()
                     {
@@ -146,11 +145,11 @@ namespace CurseOfNaga.DialogueSystem.Editor
                         character_name = parentID,
                         dialogues_list = new List<DialogueData>()
                     };
-                    characters.Add(parentID, charData);
+                    dialogueTemplateToSave.CharactersDict.Add(parentID, charData);
                 }
                 else
                 {
-                    characters.TryGetValue(parentID, out charData);
+                    dialogueTemplateToSave.CharactersDict.TryGetValue(parentID, out charData);
                 }
 
 #if DEBUG_SAVE_JSON_FOUND_NODE
@@ -158,6 +157,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                     + $"| Output ID: {connectedPorts[cpIndex].output.node.viewDataKey}, {connectedPorts[cpIndex].output.node.title} "
                     + $"| Input ID: {connectedPorts[cpIndex].input.node.viewDataKey}, {connectedPorts[cpIndex].input.node.title} ");
 #endif
+
                 //Find the current port in the AddedDialogues
                 dialogueCount = _targetGraphView.AddedDialogues.Count;
                 for (dIndex = 0; dIndex < dialogueCount && !portFound; dIndex++)
@@ -206,9 +206,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 //     TargetNodeGUID = inputNode.viewDataKey
                 // });
             }
-            //Add leaf nodes back to dialogueTemplate
             return;     //TEST
-            dialogueTemplateToSave.characters = characters.Values.ToList();
+            // dialogueTemplateToSave.characters = characters.Values.ToList();
 
             System.IO.FileStream saveStream;
             if (!System.IO.File.Exists(pathToJson))

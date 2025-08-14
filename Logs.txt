@@ -901,6 +901,12 @@
         {+} 4 characters for the node viewDataKey 
         {+} Replacing nodeCount with AddedDialogues count
 
+- Changing ID approach for DialogueNodes
+- Scripts
+    [=] DialogueTemplate
+        {+} Adding/Fillin up Dictionary with characters as value and "parent_id" as key
+
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

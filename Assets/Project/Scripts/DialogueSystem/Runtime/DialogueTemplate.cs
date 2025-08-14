@@ -58,6 +58,17 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     public class DialogueTemplate
     {
         public List<CharacterData> characters;
+
+        public Dictionary<string, CharacterData> CharactersDict;
+        public void FillDictionary()
+        {
+            characters = null;
+            CharactersDict = new Dictionary<string, CharacterData>();
+
+            int charactersCount = characters.Count;
+            for (int i = 0; i < charactersCount; i++)
+                CharactersDict.Add(characters[i].parent_id, characters[i]);
+        }
     }
 
     public static class DialogueExtensions
