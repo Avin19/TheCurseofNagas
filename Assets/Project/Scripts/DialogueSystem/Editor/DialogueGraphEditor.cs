@@ -1,4 +1,4 @@
-#define TEST_BTS
+// #define TEST_BTS
 #define TEST_DIALOGUE_PARSER
 
 #if UNITY_EDITOR
@@ -13,7 +13,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
 {
     public class DialogueGraphEditor : EditorWindow
     {
-        internal enum DataOperation { SAVE, LOAD, LOAD_JSON, SAVE_JSON }
+        internal enum DataOperation { SAVE, LOAD, LOAD_JSON, SAVE_JSON, CLEAR_GRAPH }
 
         private GraphSaveUtility graphSaveUtility;
         private DialogueGraphView _graphView;
@@ -67,8 +67,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
             toolbar.Add(new Button(() => RequestDataOperation(DataOperation.LOAD)) { text = "Load Data" });
 #if TEST_BTS
             // toolbar.Add(new Button(() => CheckAssetFolder()) { text = "Check Asset Folder" });
-            toolbar.Add(new Button(() => CallClearGraph()) { text = "Clear All" });
 #endif
+            toolbar.Add(new Button(() => RequestDataOperation(DataOperation.CLEAR_GRAPH)) { text = "Clear All" });
 
 #if TEST_DIALOGUE_PARSER
             toolbar.Add(new Button(() => RequestDataOperation(DataOperation.LOAD_JSON)) { text = "Load JSON" });
@@ -109,6 +109,13 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 case DataOperation.SAVE_JSON:
                     graphSaveUtility.SaveDialogueJson(_fileName);
                     break;
+
+                case DataOperation.CLEAR_GRAPH:
+                    bool clear = EditorUtility.DisplayDialog("Clear Graph?",
+                        "Proceed to clear graph? No Progress save", "Clear", "Cancel");
+                    if (clear) graphSaveUtility.ClearGraph();
+
+                    break;
             }
         }
 
@@ -121,13 +128,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         private void CheckAssetFolder()
         {
             graphSaveUtility = GraphSaveUtility.GetInstance(_graphView);
-            // graphSaveUtility.CheckAssetFolder();
-        }
-
-        private void CallClearGraph()
-        {
-            graphSaveUtility = GraphSaveUtility.GetInstance(_graphView);
-            graphSaveUtility.ClearGraph();
+            graphSaveUtility.CheckAssetFolder();
         }
 #endif
     }

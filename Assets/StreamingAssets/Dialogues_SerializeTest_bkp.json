@@ -23,8 +23,8 @@
                         }
                     ],
                     "position": {
-                        "x": 238.0,
-                        "y": 154.0
+                        "x": 258.0,
+                        "y": 149.0
                     }
                 },
                 {
@@ -35,7 +35,7 @@
                     "dialogue": "Enter Dialogue",
                     "ports": [],
                     "position": {
-                        "x": 540.0,
+                        "x": 567.0,
                         "y": 47.0
                     }
                 },
@@ -47,8 +47,8 @@
                     "dialogue": "Enter Dialogue",
                     "ports": [],
                     "position": {
-                        "x": 549.0,
-                        "y": 231.0
+                        "x": 567.0,
+                        "y": 260.0
                     }
                 }
             ]

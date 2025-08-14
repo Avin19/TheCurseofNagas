@@ -919,7 +919,18 @@
     [=] UniversalConstant
         {+} Adding NOT_SET constant
     
-
+- Scripts
+    [=] DialogueGraphEditor
+        {+} Changing Clear Graph logic
+    [=] DialogueGraphView
+        {+} Using RemoveAt instead of null assignment
+    [=] GraphSaveUtility
+        {+} Fixing Save logic
+        {+} Logic for adding Leaf Nodes
+        {+} Saving position of Nodes
+        {+} Creating backup of previous Json
+    [=] DialogueTemplate
+        {+} Extension methods | Vector2Serialized -> Vector2
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

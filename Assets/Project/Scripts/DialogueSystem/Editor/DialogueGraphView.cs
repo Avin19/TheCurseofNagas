@@ -17,6 +17,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         public const string BASE_NODE = "BASE_NODE";
 
         public List<DialogueData> AddedDialogues;
+        public bool TotalReset = false;
         // private int _nodeCount = 0;
 
         public DialogueGraphView()
@@ -94,12 +95,15 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             // _nodeCount = 0;
             AddedDialogues.Clear();
+            TotalReset = false;
         }
 
         private void RemoveNodeFromList(DetachFromPanelEvent detachEvent, int nodeIndex)
         {
-            // AddedDialogues.RemoveAt(nodeIndex);
-            AddedDialogues[nodeIndex] = null;
+            if (!TotalReset)
+                AddedDialogues.RemoveAt(nodeIndex);
+            else
+                AddedDialogues[nodeIndex] = null;
         }
 
         //TODO: Update DialogueData only when the user clicks on the save button

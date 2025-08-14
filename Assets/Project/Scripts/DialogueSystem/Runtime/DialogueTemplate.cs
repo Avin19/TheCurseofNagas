@@ -31,7 +31,12 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     }
 
     [System.Serializable]
-    public struct Vector2Serialized { public float x, y; }
+    public struct Vector2Serialized
+    {
+        public float x, y;
+        public Vector2Serialized(int x, int y) { this.x = x; this.y = y; }
+        public Vector2Serialized(UnityEngine.Vector2 vec2) { x = vec2.x; y = vec2.y; }
+    }
 
     [System.Serializable]
     public class DialogueData
@@ -80,5 +85,9 @@ namespace CurseOfNaga.DialogueSystem.Runtime
             return new UnityEngine.Vector2(vec2S.x, vec2S.y);
         }
 
+        public static Vector2Serialized ToVec2Srlz(this UnityEngine.Vector2 vec2)
+        {
+            return new Vector2Serialized(vec2);
+        }
     }
 }
