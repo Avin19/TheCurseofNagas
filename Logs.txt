@@ -944,6 +944,10 @@
     [=] GraphSaveUtility
         {+} Removing Old functions / Refactoring
 
+- Testing loading/unloading Dialogues at runtime
+- Scripts
+    [=] DialogueManager
+        {+} Basic JSON loading
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely
