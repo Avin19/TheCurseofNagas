@@ -2,10 +2,10 @@
     "characters": [
         {
             "parent_id": "000",
-            "character_name": "Salem",
+            "character_name": "000",
             "dialogues_list": [
                 {
-                    "flags": 1,
+                    "flags": 0,
                     "type": 1,
                     "nodeIndex": 0,
                     "base_uid": "000SA_000",
@@ -23,11 +23,11 @@
                     }
                 },
                 {
-                    "flags": 1,
+                    "flags": 0,
                     "type": 3,
                     "nodeIndex": 1,
                     "base_uid": "000SA_001",
-                    "dialogue": null,
+                    "dialogue": "",
                     "ports": [
                         {
                             "base_uid": "000SA_001",
@@ -41,8 +41,8 @@
                         }
                     ],
                     "position": {
-                        "x": 238.0,
-                        "y": 154.0
+                        "x": 509.0,
+                        "y": 130.0
                     }
                 },
                 {
@@ -53,20 +53,20 @@
                     "dialogue": "I am fine",
                     "ports": [],
                     "position": {
-                        "x": 540.0,
-                        "y": 47.0
+                        "x": 809.0,
+                        "y": 63.0
                     }
                 },
                 {
-                    "flags": 7,
+                    "flags": 8,
                     "type": 1,
                     "nodeIndex": 3,
                     "base_uid": "000SA_003",
                     "dialogue": "The road is over there",
                     "ports": [],
                     "position": {
-                        "x": 549.0,
-                        "y": 231.0
+                        "x": 818.0,
+                        "y": 247.0
                     }
                 }
             ]

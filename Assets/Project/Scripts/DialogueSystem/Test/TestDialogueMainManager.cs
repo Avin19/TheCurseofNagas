@@ -19,6 +19,8 @@ namespace CurseOfNaga.DialogueSystem.Test
         }
         #endregion Singleton
 
+        public TestConditionFlags flag1 = TestConditionFlags.NOT_SET;
+
         public Action<InteractionType, int, int> OnPlayerInteraction;
         public Action<string> OnShowDialogue;
     }

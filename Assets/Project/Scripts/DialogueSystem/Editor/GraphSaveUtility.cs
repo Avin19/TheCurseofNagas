@@ -132,7 +132,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                         for (pIndex = 0; pIndex < portCount; pIndex++)
                         {
                             if (_targetGraphView.AddedDialogues[dIndex].ports[pIndex]
-                                .target_uid.Equals(UniversalConstant.NOT_SET))
+                                .target_uid.Equals(UniversalConstant.NOT_SET_STR))
                             {
 #if DEBUG_SAVE_JSON_FOUND_NODE
                                 Debug.Log($"Found Node in AddedDialogues | dIndex: {dIndex} "

@@ -24,12 +24,13 @@ namespace CurseOfNaga.DialogueSystem.Test
         */
 
         private DialogueTemplate _dialogueTemplate;
-        private int _currDialogueIndex = 0;
+        // private int _currDialogueIndex = 0;
 
         // IMP: Assumption made that the NPC will be in the same order as the Dialogue JSON or something defined
         [SerializeField] private int[] _npcDialogueTracker;
 
         private const string _FILENAME = "Dialogues_SerializeTest.json";
+        private const int SET_VAL = 1, DEFAULT_VAL = 1, UNSET_VAL = -1;
 
         private void OnDisable()
         {
@@ -77,13 +78,72 @@ namespace CurseOfNaga.DialogueSystem.Test
         {
             if (type != InteractionType.INTERACTING_WITH_NPC) return;
 
-            //Evaluate the conditions to show correct dialogue
+            /*
+            * - What can be there to evaluate for a dialogue before presenting
+            *   [=] No Condition Check
+            *       {+} Conversation is straightforward / back-forth
+            *       {+} Go from one node to another untill the end
+            *   [=] Conditions need to be checked
+            *       {+} Quest In Progress | Hint Needed
+            *   [=] Condition one-time Check
+            *       {+} Quest In Progress
+            *       {+} Quest Completed / Failed
+            *   [=] [BOTH] Condition multi/one-time Check
+            *       {+} Have conversation with the NPCs that require something first
+            */
+
+            DialogueData dialogueData = _dialogueTemplate.characters[npcID].dialogues_list[_npcDialogueTracker[uid]];
+
+            //TODO: Configure this in the future if needed
+            //Check dialogue type
+            int dialogueType = dialogueData.type;
+            switch (dialogueType)
+            {
+                case (int)DialogueType.SPEECH:
+                    break;
+
+                case (int)DialogueType.QUESTION:
+                    break;
+
+                case (int)DialogueType.ANSWER:
+                    break;
+
+                //We would have to iterate over every choice and check if the requirements are met or not
+                case (int)DialogueType.CHOICE:
+
+                    break;
+
+                case 420:
+                    //Evaluate the conditions to show correct dialogue
+                    int flagToCheck = dialogueData.flags;
+
+                    //Check if the flag is set for the current dialogue
+                    if (((int)TestDialogueMainManager.Instance.flag1 & flagToCheck) == 0)
+                    {
+                        //Check if there are any alternatives to the current dialogue
+                        return;
+                    }
+                    break;
+            }
+
             //Get the dialogue
-            string dialogue = _dialogueTemplate.characters[npcID].dialogues_list[_npcDialogueTracker[uid]].dialogue;
-            TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(dialogue);
+            string tempString = dialogueData.dialogue;
+            TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString);
+
+            //Get the Next Node ID
+            if (dialogueData.ports == null)     //Reached End Of Conversation
+            {
+                TestDialogueMainManager.Instance.OnPlayerInteraction?
+                    .Invoke(InteractionType.INTERACTING_WITH_NPC, DEFAULT_VAL, UNSET_VAL);
+                return;
+            }
+
+            int nextDIndex;
+            tempString = dialogueData.ports[0].target_uid;
+            int.TryParse(tempString.Substring(6, 3), out nextDIndex);
 
             // Update tracker value
-            _npcDialogueTracker[npcID] = _currDialogueIndex;
+            _npcDialogueTracker[npcID] = nextDIndex;
         }
     }
 }
