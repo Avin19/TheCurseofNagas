@@ -965,6 +965,16 @@
     [=] Player
         {+} NPC Interaction logic
 - TestDialogueSystem for testing DialogueSystem
+
+- Scripts
+    [=] TestDialogueSystemCanvas
+        {+} Test script for canvas
+    [=] TestDialogueMainManager
+        {+} Test script for MainManager
+    [=] PlayerTest
+        {+} Adding Interactable test code
+- Dialogues_SerializesTest.json
+    [=] Filling dummy values for testing
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

@@ -8,7 +8,7 @@ using static CurseOfNaga.Global.UniversalConstant;
 namespace CurseOfNaga.DialogueSystem.Test
 {
     //TODO: This will be a non-monobehaviour script
-    public class DialogueManager : MonoBehaviour
+    public class TestDialogueManager : MonoBehaviour
     {
         /*
         * - This will contain all the dialogue information/data to be used in the game
@@ -33,19 +33,24 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         private void OnDisable()
         {
-            MainGameplayManager.Instance.OnPlayerInteraction -= EvaluateAndLoadDialogue;
+            TestDialogueMainManager.Instance.OnPlayerInteraction -= EvaluateAndLoadDialogue;
         }
-
 
         private void OnEnable()
         {
-            MainGameplayManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
+            Invoke(nameof(Initialize), 1f);
+            LoadDialoguesJson();
+        }
+
+        private void Initialize()
+        {
+            TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
         }
 
         public void Initialize(int totalNPCCount)
         {
             _npcDialogueTracker = new int[totalNPCCount];
-            MainGameplayManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
+            TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
         }
 
         public async void LoadDialoguesJson()
@@ -75,7 +80,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             //Evaluate the conditions to show correct dialogue
             //Get the dialogue
             string dialogue = _dialogueTemplate.characters[npcID].dialogues_list[_npcDialogueTracker[uid]].dialogue;
-            MainGameplayManager.Instance.OnShowDialogue?.Invoke(dialogue);
+            TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(dialogue);
 
             // Update tracker value
             _npcDialogueTracker[npcID] = _currDialogueIndex;

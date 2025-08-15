@@ -8,8 +8,8 @@ namespace CurseOfNaga.Gameplay.NPC
     //TODO: Make this abstract
     public class BaseNPCController : MonoBehaviour, IInteractable
     {
-        protected int _UID, _NpcID;
-        protected string _Name;
+        [SerializeField] protected int _UID, _NpcID;                //UID : id by array | npcID : id by character
+        [SerializeField] protected string _Name;
         private void Start()
         {
 

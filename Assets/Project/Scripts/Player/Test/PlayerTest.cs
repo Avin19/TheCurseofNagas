@@ -1,6 +1,14 @@
 // #define TESTING
+#define INTERACTABLE_NPC
 
 using UnityEngine;
+using static CurseOfNaga.Global.UniversalConstant;
+
+
+#if INTERACTABLE_NPC
+using CurseOfNaga.Global;
+using CurseOfNaga.DialogueSystem.Test;
+#endif
 
 namespace CurseOfNaga.Gameplay.Player.Test
 {
@@ -10,10 +18,21 @@ namespace CurseOfNaga.Gameplay.Player.Test
         [SerializeField] private float _movSpeed = 7f;
         [SerializeField] private Transform _camera;
 
+#if INTERACTABLE_NPC
+        private InteractionType _currInteractableType;
+        private IInteractable _currentInteractable;
+        private const int _NOT_ACTIVE = 0, _DUMMY_VALUE = -1;
+#endif
+
         private void Start()
         {
             playerInput = new PlayerController();
             playerInput.Player.Enable();
+
+#if INTERACTABLE_NPC
+            playerInput.Player.Interact.performed += (ctx) => Interact();
+            // playerInput.Player.Interact.canceled += (ctx) => SetAction(ctx, InputStatus.INTERACT);
+#endif
 
 #if TESTING
             _movSpeed = 25f;
@@ -35,6 +54,50 @@ namespace CurseOfNaga.Gameplay.Player.Test
             moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
             transform.position += moveDir * _movSpeed * Time.deltaTime;
         }
+
+#if INTERACTABLE_NPC
+        private void Interact()
+        {
+            Debug.Log($"Player Interact Requested");
+            if (_currentInteractable == null)
+                return;
+
+            int interactionUID, otherID;
+            _currentInteractable.Interact(out _currInteractableType, out interactionUID, out otherID);
+            TestDialogueMainManager.Instance.OnPlayerInteraction?
+                .Invoke(InteractionType.INTERACTING_WITH_NPC, interactionUID, otherID);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            Debug.Log($"Entered Collider: {other.name} | layer: {other.gameObject.layer}");
+            switch (other.gameObject.layer)
+            {
+                case (int)Layer.INTERACTABLE:
+                    TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(
+                            InteractionType.PROMPT_TRIGGERED, 1, _DUMMY_VALUE);
+                    _currInteractableType = InteractionType.PROMPT_TRIGGERED;
+                    _currentInteractable = other.transform.parent.GetComponent<IInteractable>();
+
+                    break;
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            Debug.Log($"Exited Collider: {other.name} | layer: {other.gameObject.layer}");
+            switch (other.gameObject.layer)                   //other.gameobject can be a bit consuming
+            {
+                case (int)Layer.INTERACTABLE:
+                    TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(
+                            InteractionType.PROMPT_TRIGGERED, 0, _DUMMY_VALUE);
+                    _currInteractableType = InteractionType.NONE;
+                    _currentInteractable = null;
+
+                    break;
+            }
+        }
+#endif
 
         private void LateUpdate()
         {

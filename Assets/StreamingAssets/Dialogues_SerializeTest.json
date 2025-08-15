@@ -2,24 +2,19 @@
     "characters": [
         {
             "parent_id": "000",
-            "character_name": "000",
+            "character_name": "Salem",
             "dialogues_list": [
                 {
-                    "flags": 0,
-                    "type": 0,
+                    "flags": 1,
+                    "type": 1,
                     "nodeIndex": 0,
                     "base_uid": "000SA_000",
-                    "dialogue": "Enter Dialogue",
+                    "dialogue": "Hey There!",
                     "ports": [
                         {
-                            "base_uid": "000GN_000",
+                            "base_uid": "000SA_000",
                             "name": "Choice 1",
-                            "target_uid": "000GN_001"
-                        },
-                        {
-                            "base_uid": "000GN_000",
-                            "name": "Choice 2",
-                            "target_uid": "000GN_002"
+                            "target_uid": "000SA_001"
                         }
                     ],
                     "position": {
@@ -28,11 +23,34 @@
                     }
                 },
                 {
-                    "flags": 0,
-                    "type": 0,
+                    "flags": 1,
+                    "type": 3,
                     "nodeIndex": 1,
                     "base_uid": "000SA_001",
-                    "dialogue": "Enter Dialogue",
+                    "dialogue": null,
+                    "ports": [
+                        {
+                            "base_uid": "000SA_001",
+                            "name": "Choice 1",
+                            "target_uid": "000SA_002"
+                        },
+                        {
+                            "base_uid": "000SA_001",
+                            "name": "Choice 2",
+                            "target_uid": "000SA_003"
+                        }
+                    ],
+                    "position": {
+                        "x": 238.0,
+                        "y": 154.0
+                    }
+                },
+                {
+                    "flags": 4,
+                    "type": 1,
+                    "nodeIndex": 2,
+                    "base_uid": "000SA_002",
+                    "dialogue": "I am fine",
                     "ports": [],
                     "position": {
                         "x": 540.0,
@@ -40,11 +58,11 @@
                     }
                 },
                 {
-                    "flags": 0,
-                    "type": 0,
-                    "nodeIndex": 2,
-                    "base_uid": "000SA_002",
-                    "dialogue": "Enter Dialogue",
+                    "flags": 7,
+                    "type": 1,
+                    "nodeIndex": 3,
+                    "base_uid": "000SA_003",
+                    "dialogue": "The road is over there",
                     "ports": [],
                     "position": {
                         "x": 549.0,
