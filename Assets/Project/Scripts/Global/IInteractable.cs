@@ -4,6 +4,6 @@ namespace CurseOfNaga.Global
 {
     public interface IInteractable
     {
-        InteractionType Interact();
+        void Interact(out InteractionType interactionType, out int interactalbeUID, out int otherID);
     }
 }

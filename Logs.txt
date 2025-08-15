@@ -948,6 +948,23 @@
 - Scripts
     [=] DialogueManager
         {+} Basic JSON loading
+
+- Scripts
+    [=] IInteractable
+        {+} Adding out variables to Interact()
+    [=] NPCBaseController
+        {+} Adding UID, NpcID, name fields
+            <~> Using name to get the NpcID
+        {+} Changing Interact logic
+    [=] DialogueManager
+        {+} Adding PlayerInteraction callbacks
+        {+} Array/Logic to track Dialogue progress
+    [=] MainGameplayManager
+        {+} Sending additional ID with OnPlayerInteraction call
+        {+} Adding OnShowDialogue action
+    [=] Player
+        {+} NPC Interaction logic
+- TestDialogueSystem for testing DialogueSystem
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

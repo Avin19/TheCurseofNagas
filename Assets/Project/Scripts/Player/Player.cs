@@ -41,7 +41,7 @@ namespace CurseOfNaga.Gameplay.Player
         private Rigidbody _playerRb;
         private Vector3 inputVector;
 
-        private InteractionType _currentInteractionStatus;
+        private InteractionType _currInteractableType;
         private IInteractable _currentInteractable;
 
         private int _audioTime;
@@ -57,6 +57,8 @@ namespace CurseOfNaga.Gameplay.Player
         private const float _ROLL_COLLIDER_Y_POS = 1.25f, _ROLL_COLLIDER_Y_SIZE = 2.5f;
         private const float _ROLL_COLLIDER_Y_POS_OG = 3.1f, _ROLL_COLLIDER_Y_SIZE_OG = 6.19f;
         #endregion AnimationValues
+
+        private const int _NOT_ACTIVE = 0, _DUMMY_VALUE = -1;
 
         private void OnDisable()
         {
@@ -121,8 +123,8 @@ namespace CurseOfNaga.Gameplay.Player
                 case (int)Layer.INTERACTABLE:
                     _playerStatus |= PlayerStatus.ACTIVATE_INTERACTION;
                     // colliderID = other.transform.parent.GetInstanceID();
-                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 1);
-                    _currentInteractionStatus = InteractionType.PROMPT_TRIGGERED;
+                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 1, _DUMMY_VALUE);
+                    _currInteractableType = InteractionType.PROMPT_TRIGGERED;
                     _currentInteractable = other.transform.parent.GetComponent<IInteractable>();
 
                     break;
@@ -131,7 +133,7 @@ namespace CurseOfNaga.Gameplay.Player
                 case (int)Layer.TRIGGER:
                     // _playerStatus |= PlayerStatus.ACTIVATE_INTERACTION;
                     colliderID = other.transform.GetInstanceID();
-                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.INVOKE_TRIGGER, colliderID);
+                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.INVOKE_TRIGGER, colliderID, _DUMMY_VALUE);
                     Debug.Log($"Instance ID: {other.transform.parent.GetInstanceID()}");
 
                     break;
@@ -150,15 +152,15 @@ namespace CurseOfNaga.Gameplay.Player
                     break;
 
                 case (int)Layer.INTERACTABLE:
-                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 0);
-                    _currentInteractionStatus = InteractionType.NONE;
+                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 0, _DUMMY_VALUE);
+                    _currInteractableType = InteractionType.NONE;
                     _currentInteractable = null;
 
                     break;
 
                 case (int)Layer.TRIGGER:
                     colliderID = other.transform.parent.GetInstanceID();
-                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.LEFT_TRIGGER, colliderID);
+                    MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.LEFT_TRIGGER, colliderID, _DUMMY_VALUE);
 
                     break;
             }
@@ -170,6 +172,17 @@ namespace CurseOfNaga.Gameplay.Player
             // if ((gameInput._currentInputStatus & InputStatus.ATTACK) != 0)
             switch (status)
             {
+                /*
+                * MOVING | JUMPING | ROLLING | INTERACTING
+                *
+                * Actions are divided into 2 types: Additive | Non-Additive
+                *   [=] Non-Additive actions 
+                *       {+} Performed one at a time | continously.
+                *       {+} Eg: Rolling: Player can't attack/interact/jump/use item during rolling
+                *   [=] Additive actions
+                *       {+} Performed continously | One on top of another action | Not more than 2 actions tho
+                *       {+} Eg: Attack can be done while running
+                */
                 case PlayerStatus.JUMPING:
                     if (value > 0)
                     {
@@ -245,8 +258,6 @@ namespace CurseOfNaga.Gameplay.Player
                     break;
 
                 /*
-                * MOVING | JUMPING | ROLLING | INTERACTING
-                *
                 * Flow:
                 *   - Player comes within the range of intertacting with something
                 *   - Player sees a prompt trigger at the top of the screen
@@ -255,20 +266,12 @@ namespace CurseOfNaga.Gameplay.Player
                 *
                 * Conditions:
                 *   - There can be long-press situations also
-                *
-                * Actions are divided into 2 types: Additive | Non-Additive
-                *   [=] Non-Additive actions 
-                *       {+} Performed one at a time | continously.
-                *       {+} Eg: Rolling: Player can't attack/interact/jump/use item during rolling
-                *   [=] Additive actions
-                *       {+} Performed continously | One on top of another action | Not more than 2 actions tho
-                *       {+} Eg: Attack can be done while running
                 */
                 case PlayerStatus.INTERACTING:
-                    if (value > 0 && (_playerStatus & PlayerStatus.ACTIVATE_INTERACTION) != 0
-                        && (_playerStatus & PlayerStatus.INTERACTING) == 0)
+                    if (value > 0 && (_playerStatus & PlayerStatus.ACTIVATE_INTERACTION) != _NOT_ACTIVE
+                        && (_playerStatus & PlayerStatus.INTERACTING) == _NOT_ACTIVE)
                     {
-                        MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, 0);
+                        MainGameplayManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.PROMPT_TRIGGERED, _NOT_ACTIVE, _DUMMY_VALUE);
 
                         _playerStatus |= PlayerStatus.INTERACTING;
                         _playerStatus |= PlayerStatus.PERFORMING_ACTION;
@@ -276,8 +279,12 @@ namespace CurseOfNaga.Gameplay.Player
                         // PlayAnimation(PlayerStatus.INTERACTING);
                         _animationController.PlayAnimation(PlayerStatus.INTERACTING);
 
-                        _currentInteractionStatus = InteractionType.INTERACTION_REQUEST;
-                        _currentInteractionStatus = _currentInteractable.Interact();
+                        // _currentInteractionStatus = InteractionType.INTERACTION_REQUEST;
+                        int interactionUID, otherID;
+                        _currentInteractable.Interact(out _currInteractableType, out interactionUID, out otherID);
+                        MainGameplayManager.Instance.OnPlayerInteraction?
+                            .Invoke(InteractionType.INTERACTING_WITH_NPC, interactionUID, otherID);
+
                         UnsetAction_Async(PlayerStatus.INTERACTING);                        //TEST
                     }
                     // else if (value <= 0.1
@@ -342,16 +349,6 @@ namespace CurseOfNaga.Gameplay.Player
 
                     goto case PlayerStatus.IDLE;
 
-                case PlayerStatus.INTERACTING:
-                    await Task.Delay(500);
-                    if (_cts.IsCancellationRequested) return;
-
-                    _playerStatus &= ~PlayerStatus.INTERACTING;
-                    _playerStatus &= ~PlayerStatus.PERFORMING_ACTION;
-                    _currentInteractionStatus = InteractionType.NONE;
-
-                    goto case PlayerStatus.IDLE;
-
                 case PlayerStatus.JUMPING:
                     await Task.Delay(500);
                     if (_cts.IsCancellationRequested) return;
@@ -369,6 +366,17 @@ namespace CurseOfNaga.Gameplay.Player
                     _playerStatus &= ~PlayerStatus.PERFORMING_ADDITIVE_ACTION;
 
                     goto case PlayerStatus.IDLE;
+
+                case PlayerStatus.INTERACTING:
+                    await Task.Delay(500);
+                    if (_cts.IsCancellationRequested) return;
+
+                    _playerStatus &= ~PlayerStatus.INTERACTING;
+                    _playerStatus &= ~PlayerStatus.PERFORMING_ACTION;
+                    _currInteractableType = InteractionType.NONE;
+
+                    goto case PlayerStatus.IDLE;
+
             }
         }
 

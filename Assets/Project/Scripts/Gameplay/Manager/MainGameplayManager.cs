@@ -75,8 +75,9 @@ namespace CurseOfNaga.Gameplay.Managers
         private CancellationTokenSource _cts;
         public Action<PlayerStatus> OnObjectiveVisible;
         // public Action<PlayerStatus, InteractionType, int> OnPlayerInteraction;
-        public Action<InteractionType, int> OnPlayerInteraction;
+        public Action<InteractionType, int, int> OnPlayerInteraction;
         public Action<EnemyStatus, int, float> OnEnemyStatusUpdate;
+        public Action<string> OnShowDialogue;
 
         private void OnDestroy()
         {

@@ -2,6 +2,8 @@ using UnityEngine;
 
 using CurseOfNaga.DialogueSystem.Runtime;
 using CurseOfNaga.Utils;
+using CurseOfNaga.Gameplay.Managers;
+using static CurseOfNaga.Global.UniversalConstant;
 
 namespace CurseOfNaga.DialogueSystem.Test
 {
@@ -24,7 +26,27 @@ namespace CurseOfNaga.DialogueSystem.Test
         private DialogueTemplate _dialogueTemplate;
         private int _currDialogueIndex = 0;
 
+        // IMP: Assumption made that the NPC will be in the same order as the Dialogue JSON or something defined
+        [SerializeField] private int[] _npcDialogueTracker;
+
         private const string _FILENAME = "Dialogues_SerializeTest.json";
+
+        private void OnDisable()
+        {
+            MainGameplayManager.Instance.OnPlayerInteraction -= EvaluateAndLoadDialogue;
+        }
+
+
+        private void OnEnable()
+        {
+            MainGameplayManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
+        }
+
+        public void Initialize(int totalNPCCount)
+        {
+            _npcDialogueTracker = new int[totalNPCCount];
+            MainGameplayManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
+        }
 
         public async void LoadDialoguesJson()
         {
@@ -45,6 +67,18 @@ namespace CurseOfNaga.DialogueSystem.Test
             // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}"); return;         //TEST
         }
 
-        //Track progress of ongoing conversation
+        // Track progress of ongoing conversation
+        public void EvaluateAndLoadDialogue(InteractionType type, int uid, int npcID)
+        {
+            if (type != InteractionType.INTERACTING_WITH_NPC) return;
+
+            //Evaluate the conditions to show correct dialogue
+            //Get the dialogue
+            string dialogue = _dialogueTemplate.characters[npcID].dialogues_list[_npcDialogueTracker[uid]].dialogue;
+            MainGameplayManager.Instance.OnShowDialogue?.Invoke(dialogue);
+
+            // Update tracker value
+            _npcDialogueTracker[npcID] = _currDialogueIndex;
+        }
     }
 }

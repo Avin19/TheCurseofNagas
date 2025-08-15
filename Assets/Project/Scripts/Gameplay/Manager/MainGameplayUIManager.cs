@@ -10,20 +10,25 @@ namespace CurseOfNaga.Gameplay.Managers
     {
         [SerializeField] private TMPro.TMP_Text _promptTxt;
 
+        [SerializeField] private GameObject _dialogueRect;
+        [SerializeField] private TMPro.TMP_Text _dialogueTxt;
+
         private const string _PRESS_PROMPT = "Press \'E\' to interact.";
 
 
         private void OnDestroy()
         {
             MainGameplayManager.Instance.OnPlayerInteraction -= UpdateUIForInteraction;
+            MainGameplayManager.Instance.OnShowDialogue -= UpdateDialogueText;
         }
 
         private void Start()
         {
             MainGameplayManager.Instance.OnPlayerInteraction += UpdateUIForInteraction;
+            MainGameplayManager.Instance.OnShowDialogue += UpdateDialogueText;
         }
 
-        private void UpdateUIForInteraction(InteractionType interactionType, int value = 1)
+        private void UpdateUIForInteraction(InteractionType interactionType, int value = 1, int dummyVal = -1)
         {
             switch (interactionType)
             {
@@ -31,7 +36,20 @@ namespace CurseOfNaga.Gameplay.Managers
                     ShowPrompt(value);
 
                     break;
+
+                case InteractionType.INTERACTING_WITH_NPC:
+                    if (value >= 1)
+                        _dialogueRect.SetActive(true);
+                    else
+                        _dialogueRect.SetActive(false);
+
+                    break;
             }
+        }
+
+        private void UpdateDialogueText(string dialogue)
+        {
+            _dialogueTxt.text = dialogue;
         }
 
         private void ShowPrompt(int promptStatus)

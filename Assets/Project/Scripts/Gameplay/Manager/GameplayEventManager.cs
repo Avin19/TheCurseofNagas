@@ -60,7 +60,7 @@ namespace CurseOfNaga.Gameplay.Managers
 
         //Maybe reduce to only InteractionType
         // public void RespondToPlayer(PlayerStatus status, InteractionType interactionType, int value)
-        public void RespondToPlayer(InteractionType interactionType, int value)
+        public void RespondToPlayer(InteractionType interactionType, int value, int otherVal = -1)
         {
             // switch (status)
             // {
