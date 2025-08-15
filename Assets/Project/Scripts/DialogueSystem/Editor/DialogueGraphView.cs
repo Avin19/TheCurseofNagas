@@ -93,16 +93,16 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
         public void ResetGraph()
         {
-            // _nodeCount = 0;
+            // _nodeCount = 0; 
             AddedDialogues.Clear();
             TotalReset = false;
         }
 
         private void RemoveNodeFromList(DetachFromPanelEvent detachEvent, int nodeIndex)
         {
-            if (!TotalReset)
+            if (!TotalReset)        // When individual nodes are removed
                 AddedDialogues.RemoveAt(nodeIndex);
-            else
+            else                    // When the whole graph is reset
                 AddedDialogues[nodeIndex] = null;
         }
 
@@ -115,7 +115,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             {
                 dialogueData = new DialogueData();
 
-                // dialogueNode.DialogueText = nodeName;
+                // dialogueNode.DialogueText = nodeName; 
                 // dialogueNode.GUID = Guid.NewGuid().ToString();
                 dialogueNode.title = $"000GN_{nodeCount:000}";
                 dialogueNode.viewDataKey = $"000GN_{nodeCount:000}";                   // 24x24 combinations possible
@@ -154,6 +154,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 label = "Flags",
                 value = dialogueData.flags
             };
+            // intField.RegisterCallback<KeyDownEvent>(evt => OnKeyPress(evt, intField.value, dialogueData));
             intField.RegisterValueChangedCallback(evt => { dialogueData.flags = evt.newValue; });
             dialogueNode.mainContainer.Add(intField);
 
@@ -201,6 +202,16 @@ namespace CurseOfNaga.DialogueSystem.Editor
             dialogueNode.SetPosition(new Rect(Vector2.zero, _defaultNodeSize));
             // _nodeCount++;
             return dialogueNode;
+        }
+
+        private void OnKeyPress(KeyDownEvent evt, int value, DialogueData data)
+        {
+            switch (evt.keyCode)
+            {
+                case KeyCode.Return:
+                    data.flags = value;
+                    break;
+            }
         }
 
         //TODO: Can offset the UID on the name to contain both the Base UID and the name in one place

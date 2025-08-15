@@ -22,14 +22,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
     public class GraphSaveUtility
     {
         private DialogueGraphView _targetGraphView;
-        private DialogueContainer _containerCache;
         private List<Edge> _edges => _targetGraphView.edges.ToList();
         private List<Node> _nodes => _targetGraphView.nodes.ToList();//.Cast<DialogueNode>().ToList();
-
-        private const string _PARENT_FOLDER_PATH = "Assets/Project";        // Assets/Project/Prefabs/Player/Player.prefab
-        private const string _RESOURCES_FOLDER_PATH = "Resources";
-        private const string _DIALOGUE_JSON = "Dialogues_SerializeTest.json";        //Dialogues_Test
-        private const string _LEAF_NODES = "LEAF_NODES";
 
         private CancellationTokenSource _cts;
 
@@ -45,59 +39,6 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 _cts = new CancellationTokenSource(),
                 _targetGraphView = targetGraphView
             };
-        }
-
-        public void SaveGraph(string fileName)
-        {
-            //TEST
-            /*{
-                for (int i = 0; i < _nodes.Count; i++)
-                    Debug.Log($"i: [{i}]| Node EntryPoint: {_nodes[i].EntryPoint}");
-                return;
-            }*/
-
-            if (!_edges.Any()) return;       //if there are no edges(no connections) then return
-            Debug.Log($"Saving Graph: {fileName}");
-
-            var dialogueContainer = ScriptableObject.CreateInstance<DialogueContainer>();
-            var connectedPorts = _edges.Where(e => e.input.node != null).ToArray();
-
-            int totalCount = connectedPorts.Length;
-            for (int i = 0; i < totalCount; i++)
-            {
-                var outputNode = connectedPorts[i].output.node;
-                var inputNode = connectedPorts[i].input.node;
-
-                dialogueContainer.NodePorts.Add(new DialogueNodePortData
-                {
-                    BaseNodeGUID = outputNode.viewDataKey,
-                    PortName = connectedPorts[i].output.name,
-                    TargetNodeGUID = inputNode.viewDataKey
-                });
-            }
-
-            totalCount = _nodes.Count;
-            for (int i = 1; i < totalCount; i++)
-            {
-                dialogueContainer.NodeDatas.Add(new DialogueNodeData
-                {
-                    GUID = _nodes[i].viewDataKey,
-                    // DialogueText = _nodes[i].DialogueText,
-                    Position = _nodes[i].GetPosition().position,
-                });
-            }
-
-            //Check if the Reources folder exists in the project or not
-            if (!AssetDatabase.IsValidFolder(_PARENT_FOLDER_PATH + "/" + _RESOURCES_FOLDER_PATH))
-            {
-                Debug.Log($"Resources Folder not found | Creating folder at: "
-                    + $"{_PARENT_FOLDER_PATH}/{_RESOURCES_FOLDER_PATH}");
-                AssetDatabase.CreateFolder(_PARENT_FOLDER_PATH, _RESOURCES_FOLDER_PATH);
-            }
-
-            //TODO: Change this, change the data in the existing asset instead of creating a new one
-            AssetDatabase.CreateAsset(dialogueContainer, $"{_PARENT_FOLDER_PATH}/{_RESOURCES_FOLDER_PATH}/{fileName}.asset");
-            AssetDatabase.SaveAssets();
         }
 
         public async void SaveDialogueJson(string fileName)
@@ -121,13 +62,6 @@ namespace CurseOfNaga.DialogueSystem.Editor
             List<CharacterData> charactersList = new List<CharacterData>();
             CharacterData charData;
 
-            // characters.Add(_LEAF_NODES, new CharacterData()
-            // {
-            //     parent_id = _LEAF_NODES,
-            //     character_name = _LEAF_NODES,
-            //     dialogues_list = new List<DialogueData>()
-            // });
-
             int totalCount = connectedPorts.Length;
             int dialogueCount = 0, portCount = 0;
             int dIndex = 0, pIndex = 0;
@@ -147,6 +81,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 // Extract parent_id of the character to which the DialogueNode belongs
                 if (!int.TryParse(parentIDStr, out parentID))
                 {
+                    EditorUtility.DisplayDialog("ABORTING!", "Failed to save. Check Error", "OK");
                     Debug.LogError($"Bad parentID: {parentIDStr} | viewDataKey: {outputNode.viewDataKey} "
                         + $"| Edge Index: {cpIndex} | Node Name: {outputNode.title}");
                     return;
@@ -235,21 +170,22 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
             #region SaveJSON
             // fileName += ".json";
-            const string JSON_EXTENSION = ".json", JSON_BACKUP_EXTENSION = "_bkp.json";
+            // const string JSON_EXTENSION = ".json", JSON_BACKUP_EXTENSION = "_bkp.json";
             string pathToJson = System.IO.Path.Join(Application.streamingAssetsPath, fileName);
-            Debug.Log($"Saving Json to: {pathToJson + JSON_EXTENSION}");
+            Debug.Log($"Saving Json to: {pathToJson + UniversalConstant.JSON_EXTENSION}");
 
             System.IO.FileStream saveStream;
-            if (!System.IO.File.Exists(pathToJson + JSON_EXTENSION))
-                saveStream = System.IO.File.Create(pathToJson + JSON_EXTENSION);
+            if (!System.IO.File.Exists(pathToJson + UniversalConstant.JSON_EXTENSION))
+                saveStream = System.IO.File.Create(pathToJson + UniversalConstant.JSON_EXTENSION);
             else
             {
-                // if (System.IO.File.Exists(pathToJson + JSON_EXTENSION))
-                //     System.IO.File.Delete(pathToJson + JSON_EXTENSION);
+                if (System.IO.File.Exists(pathToJson + UniversalConstant.JSON_BACKUP_EXTENSION))
+                    System.IO.File.Delete(pathToJson + UniversalConstant.JSON_BACKUP_EXTENSION);
 
-                System.IO.File.Move(pathToJson + JSON_EXTENSION, pathToJson + JSON_BACKUP_EXTENSION);
-                Debug.Log($"Moved to : {pathToJson + JSON_BACKUP_EXTENSION}");
-                saveStream = System.IO.File.Create(pathToJson + JSON_EXTENSION);
+                System.IO.File.Move(pathToJson + UniversalConstant.JSON_EXTENSION,
+                    pathToJson + UniversalConstant.JSON_BACKUP_EXTENSION);
+                saveStream = System.IO.File.Create(pathToJson + UniversalConstant.JSON_EXTENSION);
+                // Debug.Log($"Moved to : {pathToJson + UniversalConstant.JSON_BACKUP_EXTENSION}");
                 // saveStream = new System.IO.FileStream(pathToJson, System.IO.FileMode.Truncate, System.IO.FileAccess.Write);
             }
 
@@ -265,7 +201,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"Error ocurred! | Failed to Save Data to path : {pathToJson + JSON_EXTENSION} | Error : {ex.Message}");
+                Debug.LogError($"Error ocurred! | Failed to Save Data to path : "
+                        + $"{pathToJson + UniversalConstant.JSON_EXTENSION} | Error : {ex.Message}");
             }
             finally
             {
@@ -273,20 +210,6 @@ namespace CurseOfNaga.DialogueSystem.Editor
             }
 
             #endregion SaveJSON
-        }
-
-        public void LoadGraph(string fileName)
-        {
-            _containerCache = Resources.Load<DialogueContainer>(fileName);
-            if (_containerCache == null)
-            {
-                EditorUtility.DisplayDialog("File Not Found", "Target DialogueContainer file does not exist", "OK");
-                return;
-            }
-
-            ClearGraph();
-            GenerateNodes();
-            ConnectNodes();
         }
 
         public void ClearGraph()
@@ -313,44 +236,6 @@ namespace CurseOfNaga.DialogueSystem.Editor
             _targetGraphView.ResetGraph();
         }
 
-        private void GenerateNodes()
-        {
-            Node tempNode;
-            List<DialogueNodePortData> nodePorts;
-
-            for (int i = 0; i < _containerCache.NodeDatas.Count; i++)
-            {
-                tempNode = _targetGraphView.CreateDialogueNode(_containerCache.NodeDatas[i].GUID);
-                tempNode.viewDataKey = _containerCache.NodeDatas[i].GUID;
-                _targetGraphView.AddElement(tempNode);
-
-                nodePorts = _containerCache.NodePorts.Where(edge => edge.BaseNodeGUID.Equals(_containerCache.NodeDatas[i].GUID)).ToList();
-                nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(tempNode, i, edge.PortName));          //TODO: FIX THISD
-            }
-        }
-
-        private void ConnectNodes()
-        {
-            DialogueNodePortData[] connections;
-            Node targetNode;
-
-            for (int i = 0; i < _nodes.Count; i++)
-            {
-                connections = _containerCache.NodePorts.Where(nodeLink => nodeLink.BaseNodeGUID.Equals(_nodes[i].viewDataKey)).ToArray();
-                for (int j = 0; j < connections.Length; j++)
-                {
-                    var targetNodeGuid = connections[j].TargetNodeGUID;
-                    targetNode = _nodes.First(node => node.viewDataKey.Equals(targetNodeGuid));
-                    LinkNodesViaEdge(_nodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
-
-                    targetNode.SetPosition(new Rect(
-                        _containerCache.NodeDatas.First(nodeData => nodeData.GUID.Equals(targetNodeGuid)).Position,
-                        _targetGraphView._defaultNodeSize
-                    ));
-                }
-            }
-        }
-
         private void LinkNodesViaEdge(Port output, Port input)
         {
             var tempEdge = new Edge
@@ -363,16 +248,16 @@ namespace CurseOfNaga.DialogueSystem.Editor
             _targetGraphView.Add(tempEdge);
         }
 
-
-        public async void LoadDialogueJson()
+        public async void LoadDialogueJson(string fileName)
         {
             #region LoadJSON
-            string pathToJson = System.IO.Path.Join(Application.streamingAssetsPath, _DIALOGUE_JSON);
+            // fileName += UniversalConstant.JSON_EXTENSION;
+            string pathToJson = System.IO.Path.Join(Application.streamingAssetsPath, fileName + UniversalConstant.JSON_EXTENSION);
             Debug.Log($"Loadiing Json from: {pathToJson}");
 
             if (!System.IO.File.Exists(pathToJson))
             {
-                EditorUtility.DisplayDialog("Invalid file path", "Please enter a valid file path to Dialogues.json", "OK");
+                EditorUtility.DisplayDialog("Invalid file path", "Please enter a valid file path to Dialogues json file", "OK");
                 return;
             }
 
@@ -388,11 +273,16 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
             ClearGraph();
 
+            GenerateNodes(dialogueTemplate);
+            ConnectNodes(dialogueTemplate);
+        }
+
+        private void GenerateNodes(DialogueTemplate dialogueTemplate)
+        {
             Node targetNode;
             List<DialoguePort> nodePorts;
             int totalLoopCount;
 
-            #region CreateNode
             DialogueData dialogueData;
             totalLoopCount = dialogueTemplate.characters[0].dialogues_list.Count;
             // totalLoopCount = 3;
@@ -410,9 +300,14 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 // nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(targetNode, dialogueIndex, edge.name));
 
             }
-            #endregion CreateNode
+        }
 
-            #region ConnectNode
+        private void ConnectNodes(DialogueTemplate dialogueTemplate)
+        {
+            List<DialoguePort> nodePorts;
+            Node targetNode;
+
+            int totalLoopCount = dialogueTemplate.characters[0].dialogues_list.Count;
 
             //Connecting BASE NODE to 1st Node
             targetNode = _nodes[1];
@@ -439,8 +334,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
                     ));
                 }
             }
-            #endregion ConnectNode
         }
+
 
 #if TEST_TO_JSON
         private void TestToJson()

@@ -8,7 +8,7 @@
                     "flags": 0,
                     "type": 0,
                     "nodeIndex": 0,
-                    "base_uid": "000GN_000",
+                    "base_uid": "000SA_000",
                     "dialogue": "Enter Dialogue",
                     "ports": [
                         {
@@ -31,7 +31,7 @@
                     "flags": 0,
                     "type": 0,
                     "nodeIndex": 1,
-                    "base_uid": "000GN_001",
+                    "base_uid": "000SA_001",
                     "dialogue": "Enter Dialogue",
                     "ports": [],
                     "position": {
@@ -43,7 +43,7 @@
                     "flags": 0,
                     "type": 0,
                     "nodeIndex": 2,
-                    "base_uid": "000GN_002",
+                    "base_uid": "000SA_002",
                     "dialogue": "Enter Dialogue",
                     "ports": [],
                     "position": {

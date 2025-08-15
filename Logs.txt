@@ -931,6 +931,19 @@
         {+} Creating backup of previous Json
     [=] DialogueTemplate
         {+} Extension methods | Vector2Serialized -> Vector2
+
+--------------------------------------------------------------------------------------------------------
+                                                15 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] DialogueGraphEditor
+        {+} Fix for node removal error on domain reload
+        {+} Removing old Save/Load
+    [=] UniversalConstant
+        {+} Adding constants for JSON
+    [=] GraphSaveUtility
+        {+} Removing Old functions / Refactoring
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely
