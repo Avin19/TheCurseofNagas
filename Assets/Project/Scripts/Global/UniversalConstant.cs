@@ -110,7 +110,7 @@ namespace CurseOfNaga.Global
         {
             NONE = 0, PROMPT_TRIGGERED, INTERACTION_REQUEST,
             INTERACTING_WITH_NPC, FINISHING_INTERACTION, PICKING_UP_OBJECT, PUTTING_DOWN_OBJECT,
-            USE_ITEM,
+            USE_ITEM, MADE_CHOICE,
             INVOKE_TRIGGER, LEFT_TRIGGER,
         }
 
@@ -134,5 +134,7 @@ namespace CurseOfNaga.Global
         public enum TestConditionFlags { NOT_SET, COND_1, COND_2, COND_3, COND_4 }
 
         public enum ConversationStatus { INTERESTED, NOT_INTERESTED }
+
+        public const int PLAYER_ID = 0;
     }
 }

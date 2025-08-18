@@ -7,13 +7,16 @@ namespace CurseOfNaga.DialogueSystem.Test
 {
     public class TestDialogueSystemCanvas : MonoBehaviour
     {
+        internal enum ChoiceType { NO_CHOICE = 0, CHOICE_ACTIVATED = 1, SHOWING_CHOICES = 50, CHOICE_CLICKED = 100 }
+
         [SerializeField] private GameObject _dialogueRect;
         [SerializeField] private TMPro.TMP_Text _dialogueTxt;
         [SerializeField] private Button[] _dialogueChoiceBts;
         [SerializeField] private TMPro.TMP_Text[] _dialogueChoicesTxt;
 
-        private bool _showChoice;
+        private byte _showChoiceStatus;
         private int _currDialogueIndex;
+        private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
 
         private void OnDisable()
         {
@@ -23,7 +26,7 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         private void OnEnable()
         {
-            Invoke(nameof(Initialize), 1f);
+            Invoke(nameof(Initialize), 1.5f);
         }
 
         private void Initialize()
@@ -31,6 +34,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction += UpdateUIForInteraction;
             TestDialogueMainManager.Instance.OnShowDialogue += UpdateDialogueText;
 
+            _showChoiceStatus = 0;
             for (int i = 0; i < _dialogueChoiceBts.Length; i++)
             {
                 int tempIndex = i;
@@ -41,6 +45,8 @@ namespace CurseOfNaga.DialogueSystem.Test
         private void ChoseDialogue(int btIndex)
         {
             Debug.Log($"Player chose dialogue. Index: {btIndex}");
+            _showChoiceStatus = (byte)ChoiceType.CHOICE_CLICKED;
+            TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.MADE_CHOICE, btIndex, _INACTIVE);
         }
 
         private void UpdateUIForInteraction(InteractionType interactionType, int value = -1, int otherVal = -1)
@@ -48,26 +54,30 @@ namespace CurseOfNaga.DialogueSystem.Test
             Debug.Log($"UpdateUIForInteraction | interactionType: {interactionType} | value: {value} | otherVal: {otherVal}");
             switch (interactionType)
             {
-                case InteractionType.INTERACTING_WITH_NPC:
-
-                    if (otherVal == -(int)DialogueType.CHOICE)
-                    {
-                        _showChoice = true;
-                        // _dialogueTxt.gameObject.SetActive(false);
-
-                        for (int i = 0; i < _dialogueChoiceBts.Length; i++)
-                            _dialogueChoiceBts[i].gameObject.SetActive(true);
-
-                        break;
-                    }
-                    else if (_currDialogueIndex > 0)            //Choices have been shown
+                case InteractionType.MADE_CHOICE:
+                    // if (_showChoiceStatus == (byte)ChoiceType.CHOICE_CLICKED
+                    //     && _currDialogueIndex > 0)            //Choices have been shown
                     {
                         _currDialogueIndex = 0;
-                        _showChoice = false;
+                        _showChoiceStatus = 0;
                         // _dialogueTxt.gameObject.SetActive(true);
 
                         for (int i = 0; i < _dialogueChoiceBts.Length; i++)
                             _dialogueChoiceBts[i].gameObject.SetActive(false);
+                    }
+                    break;
+
+                case InteractionType.INTERACTING_WITH_NPC:
+                    //otherVal can be positive becasue of other NPC ids
+                    if (otherVal == -(int)DialogueType.CHOICE)
+                    {
+                        _showChoiceStatus = (byte)ChoiceType.CHOICE_ACTIVATED;
+                        // _dialogueTxt.gameObject.SetActive(false);
+
+                        // for (int i = 0; i < _dialogueChoiceBts.Length; i++)
+                        //     _dialogueChoiceBts[i].gameObject.SetActive(true);
+
+                        break;
                     }
 
                     if (value != -1)
@@ -79,10 +89,16 @@ namespace CurseOfNaga.DialogueSystem.Test
             }
         }
 
-        private void UpdateDialogueText(string dialogue)
+        private void UpdateDialogueText(string dialogue, bool showChoices)
         {
-            if (_showChoice)
+            if (_showChoiceStatus > (byte)ChoiceType.NO_CHOICE)
+            // if (showChoices)
+            {
+                _showChoiceStatus = (byte)ChoiceType.SHOWING_CHOICES;
+                _dialogueChoiceBts[_currDialogueIndex].gameObject.SetActive(true);
                 _dialogueChoicesTxt[_currDialogueIndex].text = dialogue;
+                _currDialogueIndex++;
+            }
             else
                 _dialogueTxt.text = dialogue;
         }

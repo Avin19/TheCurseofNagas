@@ -2942,7 +2942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 703d58aeefa80f84980b2da0b2b88cb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _UID: 0
+  _UID: 1
   _NpcID: 0
   _Name: Salem
 --- !u!1 &1853142392
@@ -3202,7 +3202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3042c4d96bfa5419b6578f1fccc69c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _npcDialogueTracker: 00000000
+  _dialogueTracker: 0000000000000000
 --- !u!4 &1881156781
 Transform:
   m_ObjectHideFlags: 0

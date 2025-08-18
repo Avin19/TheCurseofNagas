@@ -22,6 +22,6 @@ namespace CurseOfNaga.DialogueSystem.Test
         public TestConditionFlags flag1 = TestConditionFlags.NOT_SET;
 
         public Action<InteractionType, int, int> OnPlayerInteraction;
-        public Action<string> OnShowDialogue;
+        public Action<string, bool> OnShowDialogue;
     }
 }

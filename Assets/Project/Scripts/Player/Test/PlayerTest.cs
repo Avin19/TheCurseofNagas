@@ -23,7 +23,7 @@ namespace CurseOfNaga.Gameplay.Player.Test
         private IInteractable _currentInteractable;
         //UID is for the object ID in the pooled/initialized array| ObjID is for the specific type of Interacting Obj
         // private int _currInteractUID, _currInteractObjID;
-        private const int _ACTIVE = 1, _NOT_ACTIVE = 0, _DEFAULT_VALUE = -1;
+        private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
 #endif
 
         private void Start()
@@ -101,7 +101,7 @@ namespace CurseOfNaga.Gameplay.Player.Test
             {
                 case (int)Layer.INTERACTABLE:
                     TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(
-                            InteractionType.FINISHING_INTERACTION, _NOT_ACTIVE, _DEFAULT_VALUE);
+                            InteractionType.FINISHING_INTERACTION, _INACTIVE, _DEFAULT_VALUE);
                     int otherID;
                     _currInteractableType = _currentInteractable.Interact(
                             InteractionType.FINISHING_INTERACTION, out otherID);

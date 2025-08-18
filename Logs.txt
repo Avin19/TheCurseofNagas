@@ -1008,6 +1008,20 @@
     [=] PlayerTest
         {+} Removing fields to store IDs for dialogues
         {+} Invoking OnPlayerInteraction with respective ids for the first time only
+
+- Script
+    [=] TestDialogueManager
+        {+} Storing targetIds and loading node IDs when callback made
+        {+} Player dialogues will be at 0th in DialogueTracker
+        {+} Extracting Target Dialogue Node from Player Choice Node
+    [=] UniversalConstant
+        {+} Adding enum to InteractionType
+    [=] TestDialogueSystemCanvas
+        {+} Dialogue Choice buttons callback added
+    [=] TestDialogueManager
+        {+} Send bool parameter for choices with OnShowDialogue
+- Dialogues_SerializesTest.json
+    [=] Adding additional Dialogues Nodes
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

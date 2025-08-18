@@ -2,19 +2,79 @@
     "characters": [
         {
             "parent_id": "000",
+            "character_name": "Player",
+            "dialogues_list": [
+                {
+                    "flags": 0,
+                    "type": 1,
+                    "nodeIndex": 0,
+                    "base_uid": "000PL_000",
+                    "dialogue": "I am fine, thanks for asking. How about you?",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_000",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_002"
+                        }
+                    ],
+                    "position": {
+                        "x": 238.0,
+                        "y": 154.0
+                    }
+                },
+                {
+                    "flags": 4,
+                    "type": 1,
+                    "nodeIndex": 1,
+                    "base_uid": "000PL_001",
+                    "dialogue": "Doing well. How are you doing?",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_001",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_003"
+                        }
+                    ],
+                    "position": {
+                        "x": 809.0,
+                        "y": 63.0
+                    }
+                },
+                {
+                    "flags": 4,
+                    "type": 1,
+                    "nodeIndex": 2,
+                    "base_uid": "000PL_002",
+                    "dialogue": "Just walking around, enjoying the day! Have you seen the elder?",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_002",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_004"
+                        }
+                    ],
+                    "position": {
+                        "x": 809.0,
+                        "y": 63.0
+                    }
+                }
+            ]
+        },
+        {
+            "parent_id": "001",
             "character_name": "Salem",
             "dialogues_list": [
                 {
                     "flags": 0,
                     "type": 1,
                     "nodeIndex": 0,
-                    "base_uid": "000SA_000",
+                    "base_uid": "001SA_000",
                     "dialogue": "Hey There!",
                     "ports": [
                         {
-                            "base_uid": "000SA_000",
+                            "base_uid": "001SA_000",
                             "name": "Choice 1",
-                            "target_uid": "000SA_001"
+                            "target_uid": "001SA_001"
                         }
                     ],
                     "position": {
@@ -26,18 +86,18 @@
                     "flags": 0,
                     "type": 3,
                     "nodeIndex": 1,
-                    "base_uid": "000SA_001",
+                    "base_uid": "001SA_001",
                     "dialogue": "How are you Doing?",
                     "ports": [
                         {
-                            "base_uid": "000SA_001",
+                            "base_uid": "001SA_001",
                             "name": "Choice 1",
-                            "target_uid": "001PL_000"
+                            "target_uid": "000PL_000"
                         },
                         {
-                            "base_uid": "000SA_001",
+                            "base_uid": "001SA_001",
                             "name": "Choice 2",
-                            "target_uid": "001PL_001"
+                            "target_uid": "000PL_001"
                         }
                     ],
                     "position": {
@@ -49,9 +109,15 @@
                     "flags": 4,
                     "type": 1,
                     "nodeIndex": 2,
-                    "base_uid": "000SA_002",
-                    "dialogue": "I am fine",
-                    "ports": null,
+                    "base_uid": "001SA_002",
+                    "dialogue": "Doing great. What are you doing here?",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_002",
+                            "name": "Choice 1",
+                            "target_uid": "000PL_002"
+                        }
+                    ],
                     "position": {
                         "x": 809.0,
                         "y": 63.0
@@ -61,48 +127,24 @@
                     "flags": 8,
                     "type": 1,
                     "nodeIndex": 3,
-                    "base_uid": "000SA_003",
-                    "dialogue": "The road is over there",
+                    "base_uid": "001SA_003",
+                    "dialogue": "I am fine. Nice day for fishing, ain't it?",
                     "ports": null,
                     "position": {
                         "x": 818.0,
                         "y": 247.0
                     }
-                }
-            ]
-        },
-        {
-            "parent_id": "001",
-            "character_name": "Player",
-            "dialogues_list": [
+                },
                 {
                     "flags": 0,
                     "type": 1,
                     "nodeIndex": 0,
-                    "base_uid": "001PL_000",
-                    "dialogue": "I am fine, thanks for asking",
-                    "ports": [
-                        {
-                            "base_uid": "001PL_000",
-                            "name": "Choice 1",
-                            "target_uid": "001PL_000"
-                        }
-                    ],
+                    "base_uid": "001SA_004",
+                    "dialogue": "You can find him by the lake.",
+                    "ports": null,
                     "position": {
                         "x": 238.0,
                         "y": 154.0
-                    }
-                },
-                {
-                    "flags": 4,
-                    "type": 1,
-                    "nodeIndex": 1,
-                    "base_uid": "001PL_001",
-                    "dialogue": "How about you?",
-                    "ports": null,
-                    "position": {
-                        "x": 809.0,
-                        "y": 63.0
                     }
                 }
             ]
