@@ -7,14 +7,13 @@ namespace CurseOfNaga.DialogueSystem.Test
 {
     public class TestDialogueSystemCanvas : MonoBehaviour
     {
-        internal enum ChoiceType { NO_CHOICE = 0, CHOICE_ACTIVATED = 1, SHOWING_CHOICES = 50, CHOICE_CLICKED = 100 }
+        // internal enum ChoiceType { NO_CHOICE = 0, CHOICE_ACTIVATED = 1, SHOWING_CHOICES = 50, CHOICE_CLICKED = 100 }
 
         [SerializeField] private GameObject _dialogueRect;
         [SerializeField] private TMPro.TMP_Text _dialogueTxt;
         [SerializeField] private Button[] _dialogueChoiceBts;
         [SerializeField] private TMPro.TMP_Text[] _dialogueChoicesTxt;
 
-        // private byte _showChoiceStatus;
         private int _currDialogueIndex;
         private InteractionType _prevInteractionType;
         private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
@@ -35,7 +34,6 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction += UpdateUIForInteraction;
             TestDialogueMainManager.Instance.OnShowDialogue += UpdateDialogueText;
 
-            // _showChoiceStatus = 0;
             for (int i = 0; i < _dialogueChoiceBts.Length; i++)
             {
                 int tempIndex = i;
@@ -56,11 +54,8 @@ namespace CurseOfNaga.DialogueSystem.Test
             switch (interactionType)
             {
                 case InteractionType.MADE_CHOICE:
-                    // if (_showChoiceStatus == (byte)ChoiceType.CHOICE_CLICKED
-                    //     && _currDialogueIndex > 0)            //Choices have been shown
                     {
                         _currDialogueIndex = 0;
-                        // _showChoiceStatus = 0;
                         // _dialogueTxt.gameObject.SetActive(true);
 
                         for (int i = 0; i < _dialogueChoiceBts.Length; i++)
@@ -69,17 +64,6 @@ namespace CurseOfNaga.DialogueSystem.Test
                     break;
 
                 case InteractionType.INTERACTING_WITH_NPC:
-                    //otherVal can be positive becasue of other NPC ids
-                    // if (otherVal == -(int)DialogueType.CHOICE)
-                    // {
-                    //     _showChoiceStatus = (byte)ChoiceType.CHOICE_ACTIVATED;
-                    //     // _dialogueTxt.gameObject.SetActive(false);
-
-                    //     // for (int i = 0; i < _dialogueChoiceBts.Length; i++)
-                    //     //     _dialogueChoiceBts[i].gameObject.SetActive(true);
-
-                    //     break;
-                    // }
 
                     if (value != -1 && _prevInteractionType != InteractionType.FINISHING_INTERACTION)
                         _dialogueRect.SetActive(true);
@@ -97,10 +81,8 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         private void UpdateDialogueText(string dialogue, bool showChoices)
         {
-            // if (_showChoiceStatus > (byte)ChoiceType.NO_CHOICE)
             if (showChoices)
             {
-                // _showChoiceStatus = (byte)ChoiceType.SHOWING_CHOICES;
                 _dialogueChoiceBts[_currDialogueIndex].gameObject.SetActive(true);
                 _dialogueChoicesTxt[_currDialogueIndex].text = dialogue;
                 _currDialogueIndex++;

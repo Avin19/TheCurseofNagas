@@ -1030,11 +1030,24 @@
         {+} EOC logic
     [=] TestDialogueSystemCanvas
         {+} EOC logic
+
+- Scripts
+    [=] UniversalConstant
+        {+} Adding END to DialogueType enum
+    [=] TestDialogueManager
+        {+} Shifting EOC logic to switch block
+            <~> Setting DialogueTracker before ending conversation for the next Interaction
+    [=] TestDialogueSystemCanvas
+        {+} Removing commented code
+- Dialogues_SerializesTest.json
+    [=] Adding more Nodes and EOC Nodes
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogues JSON
     [=] Remove nodeIndex
 - [DO] Dialogue System
-    [=] Process all the information parallely
+    [=] [DO] Process all the information parallely
+    [=] [DO] Convert all the strings to some Number Equivalent or something fast
+        {+} Integer should be Enough
 - [DO] Enemis
     [=] [DO] Runtime patrol point selection
 - [NOW] Enemy Combat logic

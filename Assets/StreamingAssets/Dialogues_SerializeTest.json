@@ -57,6 +57,60 @@
                         "x": 809.0,
                         "y": 63.0
                     }
+                },
+                {
+                    "flags": 4,
+                    "type": 1,
+                    "nodeIndex": 3,
+                    "base_uid": "000PL_003",
+                    "dialogue": "Did you hear anything new about the town?",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_003",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_003"
+                        }
+                    ],
+                    "position": {
+                        "x": 809.0,
+                        "y": 63.0
+                    }
+                },
+                {
+                    "flags": 4,
+                    "type": 1,
+                    "nodeIndex": 4,
+                    "base_uid": "000PL_004",
+                    "dialogue": "I want to know the whereabouts of the castle treasure.",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_004",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_003"
+                        }
+                    ],
+                    "position": {
+                        "x": 809.0,
+                        "y": 63.0
+                    }
+                },
+                {
+                    "flags": 4,
+                    "type": 1,
+                    "nodeIndex": 5,
+                    "base_uid": "000PL_005",
+                    "dialogue": "Why is hte fort increasing more security?",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_005",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_003"
+                        }
+                    ],
+                    "position": {
+                        "x": 809.0,
+                        "y": 63.0
+                    }
                 }
             ]
         },
@@ -125,11 +179,17 @@
                 },
                 {
                     "flags": 8,
-                    "type": 1,
+                    "type": 4,
                     "nodeIndex": 3,
                     "base_uid": "001SA_003",
                     "dialogue": "I am fine. Nice day for fishing, ain't it?",
-                    "ports": null,
+                    "ports": [
+                        {
+                            "base_uid": "001SA_003",
+                            "name": "EOC",
+                            "target_uid": "001SA_005"
+                        }
+                    ],
                     "position": {
                         "x": 818.0,
                         "y": 247.0
@@ -137,11 +197,45 @@
                 },
                 {
                     "flags": 0,
-                    "type": 1,
+                    "type": 4,
                     "nodeIndex": 0,
                     "base_uid": "001SA_004",
                     "dialogue": "You can find him by the lake.",
-                    "ports": null,
+                    "ports": [
+                        {
+                            "base_uid": "001SA_004",
+                            "name": "EOC",
+                            "target_uid": "001SA_005"
+                        }
+                    ],
+                    "position": {
+                        "x": 238.0,
+                        "y": 154.0
+                    }
+                },
+                {
+                    "flags": 0,
+                    "type": 3,
+                    "nodeIndex": 0,
+                    "base_uid": "001SA_005",
+                    "dialogue": "What can I help you with?",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_005",
+                            "name": "Choice 1",
+                            "target_uid": "000PL_003"
+                        },
+                        {
+                            "base_uid": "001SA_005",
+                            "name": "Choice 2",
+                            "target_uid": "000PL_004"
+                        },
+                        {
+                            "base_uid": "001SA_005",
+                            "name": "Choice 3",
+                            "target_uid": "000PL_005"
+                        }
+                    ],
                     "position": {
                         "x": 238.0,
                         "y": 154.0
