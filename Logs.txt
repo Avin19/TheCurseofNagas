@@ -1022,7 +1022,17 @@
         {+} Send bool parameter for choices with OnShowDialogue
 - Dialogues_SerializesTest.json
     [=] Adding additional Dialogues Nodes
+
+- Scripts
+    [=] TestDialogueManager
+        {+} Separating dialogueData for Player Choice and normal Dialogues
+        {+} Updating _charUID at the end so as to point to correct Character Dialogues
+        {+} EOC logic
+    [=] TestDialogueSystemCanvas
+        {+} EOC logic
 --------------------------------------------------------------------------------------------------------
+- [DO] Dialogues JSON
+    [=] Remove nodeIndex
 - [DO] Dialogue System
     [=] Process all the information parallely
 - [DO] Enemis
