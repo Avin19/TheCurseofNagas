@@ -975,6 +975,18 @@
         {+} Adding Interactable test code
 - Dialogues_SerializesTest.json
     [=] Filling dummy values for testing
+
+--------------------------------------------------------------------------------------------------------
+                                                18 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Make Dialogue Selection buttons for selecting dialogues
+- TestDialogueManager
+    [=] Check for choices and invoke action to display them
+- TestDialogueSystemCanvas
+    [=] Show multiple choices logic
+- Dialogues_SerializesTest.json
+    [=] Adding Player test dialogues
+    [=] Adding dialogues to Choice Nodes also
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

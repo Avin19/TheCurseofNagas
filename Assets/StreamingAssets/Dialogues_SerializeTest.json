@@ -2,7 +2,7 @@
     "characters": [
         {
             "parent_id": "000",
-            "character_name": "000",
+            "character_name": "Salem",
             "dialogues_list": [
                 {
                     "flags": 0,
@@ -27,17 +27,17 @@
                     "type": 3,
                     "nodeIndex": 1,
                     "base_uid": "000SA_001",
-                    "dialogue": "",
+                    "dialogue": "How are you Doing?",
                     "ports": [
                         {
                             "base_uid": "000SA_001",
                             "name": "Choice 1",
-                            "target_uid": "000SA_002"
+                            "target_uid": "001PL_000"
                         },
                         {
                             "base_uid": "000SA_001",
                             "name": "Choice 2",
-                            "target_uid": "000SA_003"
+                            "target_uid": "001PL_001"
                         }
                     ],
                     "position": {
@@ -51,7 +51,7 @@
                     "nodeIndex": 2,
                     "base_uid": "000SA_002",
                     "dialogue": "I am fine",
-                    "ports": [],
+                    "ports": null,
                     "position": {
                         "x": 809.0,
                         "y": 63.0
@@ -63,10 +63,40 @@
                     "nodeIndex": 3,
                     "base_uid": "000SA_003",
                     "dialogue": "The road is over there",
-                    "ports": [],
+                    "ports": null,
                     "position": {
                         "x": 818.0,
                         "y": 247.0
+                    }
+                }
+            ]
+        },
+        {
+            "parent_id": "001",
+            "character_name": "Player",
+            "dialogues_list": [
+                {
+                    "flags": 0,
+                    "type": 1,
+                    "nodeIndex": 0,
+                    "base_uid": "001PL_000",
+                    "dialogue": "I am fine, thanks for asking",
+                    "ports": null,
+                    "position": {
+                        "x": 238.0,
+                        "y": 154.0
+                    }
+                },
+                {
+                    "flags": 4,
+                    "type": 1,
+                    "nodeIndex": 1,
+                    "base_uid": "001PL_001",
+                    "dialogue": "How about you?",
+                    "ports": null,
+                    "position": {
+                        "x": 809.0,
+                        "y": 63.0
                     }
                 }
             ]
