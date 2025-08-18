@@ -999,6 +999,15 @@
         {+} Adding FINISHING_INTERACTION to InteractionType
     [=] NPCBaseController
         {+} Checking for InteractionType accordingly
+
+- There will be duplicate Dialogue Nodes for now
+- Scripts
+    [=] TestDialogueManager
+        {+} Adding fields to track Dialogue Nodes
+        {+} Using charUID instead to access Dialogue List
+    [=] PlayerTest
+        {+} Removing fields to store IDs for dialogues
+        {+} Invoking OnPlayerInteraction with respective ids for the first time only
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely

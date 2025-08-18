@@ -281,9 +281,12 @@ namespace CurseOfNaga.Gameplay.Player
 
                         // _currentInteractionStatus = InteractionType.INTERACTION_REQUEST;
                         int interactionUID, otherID;
-                        _currentInteractable.Interact(out _currInteractableType, out interactionUID, out otherID);
-                        MainGameplayManager.Instance.OnPlayerInteraction?
-                            .Invoke(InteractionType.INTERACTING_WITH_NPC, interactionUID, otherID);
+                        //TODO: FIx Below
+                        {
+                            // _currentInteractable.Interact(out _currInteractableType, out interactionUID, out otherID);
+                            // MainGameplayManager.Instance.OnPlayerInteraction?
+                            //     .Invoke(InteractionType.INTERACTING_WITH_NPC, interactionUID, otherID);
+                        }
 
                         UnsetAction_Async(PlayerStatus.INTERACTING);                        //TEST
                     }
