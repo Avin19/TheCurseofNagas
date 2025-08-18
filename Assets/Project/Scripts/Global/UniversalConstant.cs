@@ -109,7 +109,7 @@ namespace CurseOfNaga.Global
         public enum InteractionType
         {
             NONE = 0, PROMPT_TRIGGERED, INTERACTION_REQUEST,
-            INTERACTING_WITH_NPC, PICKING_UP_OBJECT, PUTTING_DOWN_OBJECT,
+            INTERACTING_WITH_NPC, FINISHING_INTERACTION, PICKING_UP_OBJECT, PUTTING_DOWN_OBJECT,
             USE_ITEM,
             INVOKE_TRIGGER, LEFT_TRIGGER,
         }

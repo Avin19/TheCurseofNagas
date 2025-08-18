@@ -10,6 +10,8 @@ namespace CurseOfNaga.Gameplay.NPC
     {
         [SerializeField] protected int _UID, _NpcID;                //UID : id by array | npcID : id by character
         [SerializeField] protected string _Name;
+        public int UID { get => _UID; }
+
         private void Start()
         {
 
@@ -24,12 +26,27 @@ namespace CurseOfNaga.Gameplay.NPC
         }
 
         // Can have code to determine if the NPC wants to interact with the Player or not
-        public void Interact(out InteractionType interactionType, out int interactableUID, out int npcID)
+        public InteractionType Interact(InteractionType interactionType, out int npcID)
         {
-            interactableUID = _UID;
+            InteractionType type = InteractionType.INTERACTING_WITH_NPC;
+            switch (interactionType)
+            {
+                //Stop doing any activity and focus on the player
+                case InteractionType.INTERACTION_REQUEST:
+
+                    break;
+
+                //Player has left or finished the interaction
+                case InteractionType.FINISHING_INTERACTION:
+                    type = InteractionType.NONE;
+
+                    break;
+            }
+
             npcID = _NpcID;
-            interactionType = InteractionType.INTERACTING_WITH_NPC;
             Debug.Log($"Making Interaction | Id: {transform.GetInstanceID()}");
+
+            return type;
         }
     }
 }

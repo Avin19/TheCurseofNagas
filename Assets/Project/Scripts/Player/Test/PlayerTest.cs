@@ -21,6 +21,7 @@ namespace CurseOfNaga.Gameplay.Player.Test
 #if INTERACTABLE_NPC
         private InteractionType _currInteractableType;
         private IInteractable _currentInteractable;
+        private int _currInteractionUID;
         private const int _NOT_ACTIVE = 0, _DUMMY_VALUE = -1;
 #endif
 
@@ -62,10 +63,11 @@ namespace CurseOfNaga.Gameplay.Player.Test
             if (_currentInteractable == null)
                 return;
 
-            int interactionUID, otherID;
-            _currentInteractable.Interact(out _currInteractableType, out interactionUID, out otherID);
+            int otherID;
+            _currInteractableType = _currentInteractable.Interact(InteractionType.INTERACTION_REQUEST, out otherID);
+            _currInteractionUID = _currentInteractable.UID;
             TestDialogueMainManager.Instance.OnPlayerInteraction?
-                .Invoke(InteractionType.INTERACTING_WITH_NPC, interactionUID, otherID);
+                .Invoke(InteractionType.INTERACTING_WITH_NPC, _currInteractionUID, otherID);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -91,8 +93,11 @@ namespace CurseOfNaga.Gameplay.Player.Test
                 case (int)Layer.INTERACTABLE:
                     TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(
                             InteractionType.PROMPT_TRIGGERED, 0, _DUMMY_VALUE);
-                    _currInteractableType = InteractionType.NONE;
+                    int otherID;
+                    _currInteractableType = _currentInteractable.Interact(
+                            InteractionType.FINISHING_INTERACTION, out otherID);
                     _currentInteractable = null;
+                    _currInteractionUID = -1;
 
                     break;
             }

@@ -81,7 +81,13 @@
                     "nodeIndex": 0,
                     "base_uid": "001PL_000",
                     "dialogue": "I am fine, thanks for asking",
-                    "ports": null,
+                    "ports": [
+                        {
+                            "base_uid": "001PL_000",
+                            "name": "Choice 1",
+                            "target_uid": "001PL_000"
+                        }
+                    ],
                     "position": {
                         "x": 238.0,
                         "y": 154.0

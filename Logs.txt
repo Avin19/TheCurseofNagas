@@ -987,6 +987,18 @@
 - Dialogues_SerializesTest.json
     [=] Adding Player test dialogues
     [=] Adding dialogues to Choice Nodes also
+
+- Scripts
+    [=] PlayerTest
+        {+} Getting/Saving the interationUID from IInteractable
+        {+} Sending Interaction Start/Finish Request to IInteractable
+    [=] IInteractable
+        {+} Adding UID to field
+        {+} Returning InteractionType and removing UID from Interact()
+    [=] UniversalConstant
+        {+} Adding FINISHING_INTERACTION to InteractionType
+    [=] NPCBaseController
+        {+} Checking for InteractionType accordingly
 --------------------------------------------------------------------------------------------------------
 - [DO] Dialogue System
     [=] Process all the information parallely
