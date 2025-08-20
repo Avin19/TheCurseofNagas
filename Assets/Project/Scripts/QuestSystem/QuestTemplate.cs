@@ -22,10 +22,10 @@ namespace CurseOfNaga.QuestSystem
     {
         public ObjectiveType type;
         public string description;
-        public string targetID;
-        public int requiredCount;
-        public int currentCount;
-        public bool isOptional;
+        public string target_id;
+        public int required_count;
+        public int current_count;
+        public bool is_optional;
     }
 
     public enum ObjectiveType { KILL, COLLECT, TALK, EXPLORE, PUZZLE, FIND }

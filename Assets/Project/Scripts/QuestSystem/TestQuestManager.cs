@@ -88,22 +88,23 @@ namespace CurseOfNaga.QuestSystem
                     //Search through the active quests, which objective is being completed or has been completed
                     for (int i = 0; i < _activeQuestIndexes.Count && !foundObjective; i++)
                     {
-                        objCount = _questTemplate.quests_data[i].objectives.Count;
-                        questObjectives = _questTemplate.quests_data[i].objectives;
+                        questObjectives = _questTemplate.quests_data[_activeQuestIndexes[i]].objectives;
+                        objCount = questObjectives.Count;
 
                         for (int j = 0; j < objCount; j++)
                         {
-                            if (questObjectives[j].currentCount == questObjectives[j].requiredCount)
+                            if (questObjectives[j].current_count == questObjectives[j].required_count)
                                 objCompletedCount++;
                             else if (questObjectives[j].Equals(idVal))
                             {
                                 foundObjective = true;
 
-                                questObjectives[i].currentCount++;
+                                questObjectives[_activeQuestIndexes[i]].current_count++;
                                 //Update UI for objective
-                                TestDialogueMainManager.Instance.OnQuestUIUpdate?.Invoke(_questTemplate.quests_data[i], i);
+                                TestDialogueMainManager.Instance.OnQuestUIUpdate?
+                                    .Invoke(_questTemplate.quests_data[_activeQuestIndexes[i]], _DEFAULT_VALUE);
 
-                                if (questObjectives[j].currentCount == questObjectives[j].requiredCount)
+                                if (questObjectives[j].current_count == questObjectives[j].required_count)
                                     objCompletedCount++;
 
                                 break;
@@ -112,23 +113,23 @@ namespace CurseOfNaga.QuestSystem
 
                         if (objCompletedCount == objCount)
                         {
-                            _completedQuestIndexes.Add(i);      //Add to completed Quests
+                            _completedQuestIndexes.Add(_activeQuestIndexes[i]);      //Add to completed Quests
 
                             //If the quest is a main quest, then mark it complete and proceed to the next quest, add it to the active quest list
-                            if (_questTemplate.quests_data[i].type == QuestType.MAIN_QUEST)
+                            if (_questTemplate.quests_data[_activeQuestIndexes[i]].type == QuestType.MAIN_QUEST)
                             {
                                 _mainQuestIndex++;
                                 _activeQuestIndexes[0] = _mainQuestIndex;       //IMP | Keep the main Quest always in index 0
-                                _questTemplate.quests_data[i].status = QuestStatus.IN_PROGRESS;
+                                _questTemplate.quests_data[_activeQuestIndexes[0]].status = QuestStatus.IN_PROGRESS;
 
-                                TestDialogueMainManager.Instance.OnQuestUIUpdate?.Invoke(_questTemplate.quests_data[i], 0);
+                                TestDialogueMainManager.Instance.OnQuestUIUpdate?.Invoke(_questTemplate.quests_data[_activeQuestIndexes[0]], 0);
                             }
                             else
                             {
                                 _activeQuestIndexes.Remove(i);      //Remove from active Quests
-                                _questTemplate.quests_data[i].status = QuestStatus.COMPLETED;
+                                _questTemplate.quests_data[_activeQuestIndexes[i]].status = QuestStatus.COMPLETED;
                             }
-                            TestDialogueMainManager.Instance.OnQuestCompleted?.Invoke(_questTemplate.quests_data[i].reward);
+                            TestDialogueMainManager.Instance.OnQuestCompleted?.Invoke(_questTemplate.quests_data[_activeQuestIndexes[i]].reward, i);
                         }
                     }
 
@@ -142,8 +143,8 @@ namespace CurseOfNaga.QuestSystem
                     int.TryParse(idVal.Substring(0, 3), out _requestedQuestIndex);
 
                     //Send Quest Data to UI for showing the player on screen
-                    TestDialogueMainManager.Instance.OnQuestUIUpdate
-                        ?.Invoke(_questTemplate.quests_data[_requestedQuestIndex], _requestedQuestIndex);
+                    TestDialogueMainManager.Instance.OnQuestUIUpdate?
+                        .Invoke(_questTemplate.quests_data[_requestedQuestIndex], _requestedQuestIndex);
 
                     break;
 
@@ -154,8 +155,8 @@ namespace CurseOfNaga.QuestSystem
                     break;
 
                 case QuestStatus.REQUESTED_INFO:
-                    TestDialogueMainManager.Instance.OnQuestUIUpdate
-                        ?.Invoke(_questTemplate.quests_data[_activeQuestIndexes[questIndex]], _DEFAULT_VALUE);
+                    TestDialogueMainManager.Instance.OnQuestUIUpdate?
+                        .Invoke(_questTemplate.quests_data[_activeQuestIndexes[questIndex]], _DEFAULT_VALUE);
 
                     break;
             }

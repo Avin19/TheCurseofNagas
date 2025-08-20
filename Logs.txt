@@ -1118,7 +1118,20 @@
         {+} Adding REUQESTED_INFO to QuestStatus enum
 - TestDialogueSystem Scene
     [=] Making test UI for multiple objectives
+
+- Fixing logic
+- Scripts
+    [=] TestQuestSystemCanvas
+        {+} Quest Panel | Back button
+    [=] QuestTemplate
+        {+} Renaming variables
+    [=] TestQuestManager
+        {+} Fixing _activeQuestIndexes logic
+    [=] TestDialogueMainManager
+        {+} Adding int argument to OnQuestCompleted action
 --------------------------------------------------------------------------------------------------------
+- [DO] Might need to convert the array to List for btQuestIndex as Side-Quests can be completed non-linearly
+    [=] [DO] Can also re-arrange after completion of a quest
 - [DO] Convert story conditions from bool to flags
 - [DO] Dialogues JSON
     [=] Remove nodeIndex

@@ -34,9 +34,9 @@ namespace CurseOfNaga.DialogueSystem.Test
         // public Action<int> OnQuestInfoRequest;
 
         /// <summary>
-        /// Quest - Quest Data <br/> int - Button index if the quest is active else DefaultValue(-1)
+        /// Quest - Quest Data <br/> int - Button index if the quest is requested else DefaultValue(-1)
         /// </summary>
         public Action<Quest, int> OnQuestUIUpdate;
-        public Action<Reward> OnQuestCompleted;
+        public Action<Reward, int> OnQuestCompleted;
     }
 }

@@ -11,7 +11,7 @@ namespace CurseOfNaga.QuestSystem.Test
     public class TestQuestSystemCanvas : MonoBehaviour
     {
         [SerializeField] private GameObject _questRect, _rewardRect, _questChoicesRect, _questContentRect;
-        [SerializeField] private Button _acceptRewardBt, _acceptQuestBt;
+        [SerializeField] private Button _acceptRewardBt, _acceptQuestBt, _backBt;
         [SerializeField] private TMPro.TMP_Text[] _questRewardsTxt;
         [SerializeField] private TMPro.TMP_Text _questTitleTxt, _questDescTxt, _questObjectivesTxt, _questRewardDescTxt;
 
@@ -21,7 +21,6 @@ namespace CurseOfNaga.QuestSystem.Test
         private int _currentBtIndex;
         private const int _TOTAL_QUEST_BTS = 4;
 
-        private int _currDialogueIndex;
         private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
 
         private bool _paused;
@@ -46,6 +45,11 @@ namespace CurseOfNaga.QuestSystem.Test
 
             _acceptQuestBt.onClick.AddListener(() => UpdateQuestStatus(false));
             _acceptRewardBt.onClick.AddListener(() => UpdateQuestStatus(true));
+            _backBt.onClick.AddListener(() =>
+            {
+                _questChoicesRect.SetActive(true);
+                _questContentRect.SetActive(false);
+            });
 
             _btQuestIndex = new int[_TOTAL_QUEST_BTS];
             _checkQuestTxts = new TMPro.TMP_Text[_TOTAL_QUEST_BTS];
@@ -53,7 +57,9 @@ namespace CurseOfNaga.QuestSystem.Test
             {
                 int tempIndex = i;
                 _checkQuestBts[i].onClick.AddListener(() => CheckQuestCalled(tempIndex));
+                _checkQuestBts[i].gameObject.SetActive(false);
                 _checkQuestTxts[i] = _checkQuestBts[i].transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
+                _btQuestIndex[i] = -1;
             }
         }
 
@@ -84,6 +90,8 @@ namespace CurseOfNaga.QuestSystem.Test
 
         private void CheckQuestCalled(int checkIndex)
         {
+            if (_btQuestIndex[checkIndex] == -1) return;
+
             TestDialogueMainManager.Instance.OnQuestUpdate
                 ?.Invoke("", QuestStatus.REQUESTED_INFO, _btQuestIndex[checkIndex]);
             _questChoicesRect.SetActive(false);
@@ -96,7 +104,7 @@ namespace CurseOfNaga.QuestSystem.Test
             // _questRect.SetActive(false);
             _rewardRect.SetActive(false);
 
-            if (!rewarded)
+            if (rewarded)
             {
                 _questTitleTxt.text += " [COMPLETED]";
             }
@@ -105,11 +113,13 @@ namespace CurseOfNaga.QuestSystem.Test
             {
                 _checkQuestBts[_currentBtIndex].gameObject.SetActive(true);
                 _currentBtIndex++;          //Move to the next slot of button-indexes
-                _questTitleTxt.text += " [IN PROGRESS]";
+                // _questTitleTxt.text += " [IN PROGRESS]";
                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke("", QuestStatus.ACCEPTED, _DEFAULT_VALUE);
+                _acceptQuestBt.gameObject.SetActive(false);
             }
         }
 
+        //TODO: Check if anything has changed and then change if possible as only objectives shoudl change for active quests
         private void UpdateQuestUI(Quest questInfo, int btIndex)
         {
             Debug.Log($"UpdateQuestUI | questInfo: {questInfo}");
@@ -119,11 +129,13 @@ namespace CurseOfNaga.QuestSystem.Test
             _questContentRect.SetActive(true);
             _questRect.SetActive(true);
 
-            if (btIndex == _DEFAULT_VALUE)
+            if (btIndex != _DEFAULT_VALUE)
             {
                 _btQuestIndex[_currentBtIndex] = btIndex;
                 _checkQuestTxts[_currentBtIndex].text = questInfo.name;            //Update button name
             }
+            else
+                _acceptQuestBt.gameObject.SetActive(false);
 
             _questTitleTxt.text = questInfo.name;
             _questTitleTxt.text += " [IN PROGRESS]";
@@ -135,7 +147,7 @@ namespace CurseOfNaga.QuestSystem.Test
                 stringBuilder.Append("[-] ");
 
                 // Add a strikethrough if objective completed
-                if (questInfo.objectives[i].currentCount == questInfo.objectives[i].requiredCount)
+                if (questInfo.objectives[i].current_count == questInfo.objectives[i].required_count)
                     stringBuilder.Append("<s>" + questInfo.objectives[i].description + "</s>");
                 else
                     stringBuilder.Append(questInfo.objectives[i].description);
@@ -156,11 +168,12 @@ namespace CurseOfNaga.QuestSystem.Test
                 gold = 0
             };
 
-            UpdateRewardTexts(testReward);
+            UpdateRewardTexts(testReward, 0);
         }
 
-        private void UpdateRewardTexts(Reward questReward)
+        private void UpdateRewardTexts(Reward questReward, int btIndex)
         {
+            _checkQuestBts[btIndex].gameObject.SetActive(false);
             _questRect.SetActive(true);
             _rewardRect.SetActive(true);
 
