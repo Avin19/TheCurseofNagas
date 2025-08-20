@@ -130,11 +130,10 @@ namespace CurseOfNaga.Global
 
         public const string NOT_SET_STR = "NOT_SET", JSON_EXTENSION = ".json",
             JSON_BACKUP_EXTENSION = "_bkp.json";
+        public const int PLAYER_ID = 0;
 
         public enum TestConditionFlags { NOT_SET, COND_1, COND_2, COND_3, COND_4 }
 
         public enum ConversationStatus { INTERESTED, NOT_INTERESTED }
-
-        public const int PLAYER_ID = 0;
     }
 }

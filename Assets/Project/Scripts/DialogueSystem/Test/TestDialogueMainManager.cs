@@ -1,4 +1,5 @@
 using System;
+using CurseOfNaga.QuestSystem;
 using UnityEngine;
 using static CurseOfNaga.Global.UniversalConstant;
 
@@ -23,5 +24,10 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         public Action<InteractionType, int, int> OnPlayerInteraction;
         public Action<string, bool> OnShowDialogue;
+
+        //================================== QUEST =================================
+        public Action<string> OnQuestUpdate;
+        public Action<Quest> OnQuestUIUpdate;
+        public Action<Reward> OnQuestCompleted;
     }
 }

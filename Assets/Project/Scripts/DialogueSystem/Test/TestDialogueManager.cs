@@ -210,15 +210,21 @@ namespace CurseOfNaga.DialogueSystem.Test
                         *       {+} What if, the player is casually talking to an NPC? In this case:
                         *           <~> The NPC has only 1 choice available at this point of story
                         *               [;] The NPC should be able to repeat the same set of dialogue for its normal routine
-                        *           <~> The NPC has multiple choices to select from
+                        *           <~> The Player has multiple choices to select from to enquire from NPC
                         *               [;] Same as above, the player just selects a choice but the flow will be the same
-                        *           <~> The dialogueIndex should land at the position where it started from.
+                        *           <~> The dialogueIndex should land at the position where it started from at the point of muliple choices
                         *               [IMP] Need to update index once the player has made progress
                         */
 
                         _charUID = UNSET_VAL;
+
+                        // Normal COnversation and Casual Conversation should be equal
+                        // The target-id can be defined in the JSON only
                         tempString = dialogueData.ports[0].target_uid;
                         int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
+
+                        // Quest Conversation Logic
+
 
                         // Update tracker value
                         _dialogueTracker[_currNpcObjUID] = nextDgIndex;

@@ -1041,7 +1041,52 @@
         {+} Removing commented code
 - Dialogues_SerializesTest.json
     [=] Adding more Nodes and EOC Nodes
+
 --------------------------------------------------------------------------------------------------------
+                                                19 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Making logic for Quest Conversation
+- Scripts
+    [=] TestDialogueManager
+        {+} 
+    [=] TestDialogueMainManager
+        {+} Making a list to keep track of quests
+    [=] DialogueTemplate
+        {+} Adding QuestIndex to associate nodes with Quests
+    [=] UniversalConstant
+        {+} Adding QuestType enum
+    [=] TestQuestManager
+        {+} Tracking quests and quest progress here
+        {+} Loading Json logic
+    [=] QuestTemplate
+        {+} Template classes to load the QuestData json
+- Dialogues_SerializesTest.json 
+    [=] Adding quest_type to nodes
+- QuestData.json
+    [=] Json to contain quests
+
+--------------------------------------------------------------------------------------------------------
+                                                20 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts 
+    [=] TestQuestManager
+        {+} List to keep track of active quests
+    [=] TestDialogueMainManager
+        {+} Adding callback for QuestSystem / UI update calls
+        {+} Adding QuestSystem Functionality here
+    [=] QuestTemplate
+        {+} Moving QuestType here
+        {+} Adding Questtype to Quest
+    [=] TestQuestSystemCanvas
+        {+} Test Canvas for QuestSystem
+        {+} Updating quest rewards
+    [=] UniversalConstant
+        {+} Adding UpdateType enum
+- QuestData.json
+    [=] Adding more nodes with objectives
+
+--------------------------------------------------------------------------------------------------------
+- [DO] Convert story conditions from bool to flags
 - [DO] Dialogues JSON
     [=] Remove nodeIndex
 - [DO] Dialogue System
