@@ -12,7 +12,7 @@ namespace CurseOfNaga.QuestSystem
         private QuestTemplate _questTemplate;
 
         //======================= TODO: Need to be saved =============================
-        private List<int> _activeQuestIndexes;
+        private List<int> _activeQuestIndexes;          //Main Quest will always be at 0
         private List<int> _completedQuestIndexes;
         private int _mainQuestIndex;
         //======================= Need to be saved =============================
@@ -20,10 +20,12 @@ namespace CurseOfNaga.QuestSystem
 
         private const string _FILENAME = "QuestData.json";
         private const string _MAIN_QUEST_ID = "000_FI_VL";
+        private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
 
         private void OnDisable()
         {
             TestDialogueMainManager.Instance.OnQuestUpdate -= UpdateQuestData;
+            // TestDialogueMainManager.Instance.OnQuestInfoRequest -= SendQuestInfo;
         }
 
         private void OnEnable()
@@ -35,6 +37,7 @@ namespace CurseOfNaga.QuestSystem
         public void Initialize()
         {
             TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestData;
+            // TestDialogueMainManager.Instance.OnQuestInfoRequest += SendQuestInfo;
 
             //Load the Saved Data back to game
             LoadSave();
@@ -70,77 +73,91 @@ namespace CurseOfNaga.QuestSystem
             _questTemplate = JsonUtility.FromJson<QuestTemplate>(jsonData);
         }
 
+        // private void SendQuestInfo(int questIndex) { }
 
-        private void UpdateQuestData(string idVal, QuestStatus questStatus)
+        private void UpdateQuestData(string idVal, QuestStatus questStatus, int questIndex = 0)
         {
             switch (questStatus)
             {
                 case QuestStatus.IN_PROGRESS:
+                    int objCount = 0;
+                    int objCompletedCount = 0;
+                    bool foundObjective = false;
+                    List<QuestObjective> questObjectives;
+
+                    //Search through the active quests, which objective is being completed or has been completed
+                    for (int i = 0; i < _activeQuestIndexes.Count && !foundObjective; i++)
+                    {
+                        objCount = _questTemplate.quests_data[i].objectives.Count;
+                        questObjectives = _questTemplate.quests_data[i].objectives;
+
+                        for (int j = 0; j < objCount; j++)
+                        {
+                            if (questObjectives[j].currentCount == questObjectives[j].requiredCount)
+                                objCompletedCount++;
+                            else if (questObjectives[j].Equals(idVal))
+                            {
+                                foundObjective = true;
+
+                                questObjectives[i].currentCount++;
+                                //Update UI for objective
+                                TestDialogueMainManager.Instance.OnQuestUIUpdate?.Invoke(_questTemplate.quests_data[i], i);
+
+                                if (questObjectives[j].currentCount == questObjectives[j].requiredCount)
+                                    objCompletedCount++;
+
+                                break;
+                            }
+                        }
+
+                        if (objCompletedCount == objCount)
+                        {
+                            _completedQuestIndexes.Add(i);      //Add to completed Quests
+
+                            //If the quest is a main quest, then mark it complete and proceed to the next quest, add it to the active quest list
+                            if (_questTemplate.quests_data[i].type == QuestType.MAIN_QUEST)
+                            {
+                                _mainQuestIndex++;
+                                _activeQuestIndexes[0] = _mainQuestIndex;       //IMP | Keep the main Quest always in index 0
+                                _questTemplate.quests_data[i].status = QuestStatus.IN_PROGRESS;
+
+                                TestDialogueMainManager.Instance.OnQuestUIUpdate?.Invoke(_questTemplate.quests_data[i], 0);
+                            }
+                            else
+                            {
+                                _activeQuestIndexes.Remove(i);      //Remove from active Quests
+                                _questTemplate.quests_data[i].status = QuestStatus.COMPLETED;
+                            }
+                            TestDialogueMainManager.Instance.OnQuestCompleted?.Invoke(_questTemplate.quests_data[i].reward);
+                        }
+                    }
+
                     break;
 
+                //Reset progress
                 case QuestStatus.FAILED:
                     break;
 
                 case QuestStatus.REQUESTED:
-                    int _requestedQuestIndex;
                     int.TryParse(idVal.Substring(0, 3), out _requestedQuestIndex);
 
                     //Send Quest Data to UI for showing the player on screen
-                    TestDialogueMainManager.Instance.OnQuestUIUpdate?.Invoke(_questTemplate.quests_data[_requestedQuestIndex]);
+                    TestDialogueMainManager.Instance.OnQuestUIUpdate
+                        ?.Invoke(_questTemplate.quests_data[_requestedQuestIndex], _requestedQuestIndex);
+
                     break;
 
+                //Player accepts the Sub-Main Quest and Side-Quest | Main quests should be already added
                 case QuestStatus.ACCEPTED:
+                    _activeQuestIndexes.Add(_requestedQuestIndex);
+
                     break;
-            }
 
-            if (questStatus == QuestStatus.REQUESTED) return;
+                case QuestStatus.REQUESTED_INFO:
+                    TestDialogueMainManager.Instance.OnQuestUIUpdate
+                        ?.Invoke(_questTemplate.quests_data[_activeQuestIndexes[questIndex]], _DEFAULT_VALUE);
 
-            int objCount = 0;
-            int objCompletedCount = 0;
-            bool foundObjecttive = false;
-            List<QuestObjective> questObjectives;
-
-            //Search through the active quests, which objective is being completed or has been completed
-            for (int i = 0; i < _activeQuestIndexes.Count && !foundObjecttive; i++)
-            {
-                objCount = _questTemplate.quests_data[i].objectives.Count;
-                questObjectives = _questTemplate.quests_data[i].objectives;
-
-                for (int j = 0; j < objCount; j++)
-                {
-                    if (questObjectives[j].currentCount == questObjectives[j].requiredCount)
-                        objCompletedCount++;
-                    else if (questObjectives[j].Equals(idVal))
-                    {
-                        foundObjecttive = true;
-
-                        questObjectives[i].currentCount++;
-                        //Update UI for objective
-                        TestDialogueMainManager.Instance.OnQuestUIUpdate?.Invoke(_questTemplate.quests_data[i]);
-
-                        if (questObjectives[j].currentCount == questObjectives[j].requiredCount)
-                            objCompletedCount++;
-                    }
-                }
-
-                if (objCompletedCount == objCount)
-                {
-                    _activeQuestIndexes.Remove(i);      //Remove from active Quests
-
-                    //If the quest is a main quest, then mark it complete and proceed to the next quest, add it to the active quest list
-                    if (_questTemplate.quests_data[i].type == QuestType.MAIN_QUEST)
-                    {
-                        _mainQuestIndex++;
-                        _activeQuestIndexes.Add(_mainQuestIndex);
-                        _questTemplate.quests_data[i].status = QuestStatus.IN_PROGRESS;
-                    }
-                    else
-                        _questTemplate.quests_data[i].status = QuestStatus.COMPLETED;
-
-                    _completedQuestIndexes.Add(i);      //Add to completed Quests
-
-                    TestDialogueMainManager.Instance.OnQuestCompleted?.Invoke(_questTemplate.quests_data[i].reward);
-                }
+                    break;
             }
         }
 

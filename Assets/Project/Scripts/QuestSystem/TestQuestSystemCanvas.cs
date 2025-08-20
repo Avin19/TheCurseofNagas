@@ -1,3 +1,5 @@
+#define PAUSE_TEST
+
 using CurseOfNaga.DialogueSystem.Test;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,13 +10,22 @@ namespace CurseOfNaga.QuestSystem.Test
 {
     public class TestQuestSystemCanvas : MonoBehaviour
     {
-        [SerializeField] private GameObject _questRect, _rewardRect;
+        [SerializeField] private GameObject _questRect, _rewardRect, _questChoicesRect, _questContentRect;
         [SerializeField] private Button _acceptRewardBt, _acceptQuestBt;
         [SerializeField] private TMPro.TMP_Text[] _questRewardsTxt;
         [SerializeField] private TMPro.TMP_Text _questTitleTxt, _questDescTxt, _questObjectivesTxt, _questRewardDescTxt;
 
+        [SerializeField] private Button[] _checkQuestBts;           //Only upto 4 for now
+        private TMPro.TMP_Text[] _checkQuestTxts;           //Only upto 4 for now
+        private int[] _btQuestIndex;
+        private int _currentBtIndex;
+        private const int _TOTAL_QUEST_BTS = 4;
+
         private int _currDialogueIndex;
         private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
+
+        private bool _paused;
+        [SerializeField] private GameObject _pauseMenuRect;
 
         private void OnDisable()
         {
@@ -33,30 +44,102 @@ namespace CurseOfNaga.QuestSystem.Test
             TestDialogueMainManager.Instance.OnQuestCompleted += UpdateRewardTexts;
             TestDialogueMainManager.Instance.OnQuestUIUpdate += UpdateQuestUI;
 
-            _acceptRewardBt.onClick.AddListener(AcceptReward);
-            _acceptRewardBt.onClick.AddListener(AcceptReward);
+            _acceptQuestBt.onClick.AddListener(() => UpdateQuestStatus(false));
+            _acceptRewardBt.onClick.AddListener(() => UpdateQuestStatus(true));
+
+            _btQuestIndex = new int[_TOTAL_QUEST_BTS];
+            _checkQuestTxts = new TMPro.TMP_Text[_TOTAL_QUEST_BTS];
+            for (int i = 0; i < _TOTAL_QUEST_BTS; i++)
+            {
+                int tempIndex = i;
+                _checkQuestBts[i].onClick.AddListener(() => CheckQuestCalled(tempIndex));
+                _checkQuestTxts[i] = _checkQuestBts[i].transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
+            }
         }
 
-        private void AcceptReward()
+#if PAUSE_TEST
+        private void Update()
         {
-            Debug.Log($"Accepted Reward");
-            _questRect.SetActive(false);
-            _rewardRect.SetActive(false);
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (!_paused)
+                {
+                    _paused = true;
+
+                    _pauseMenuRect.SetActive(true);
+                    _questRect.SetActive(true);
+                    _questChoicesRect.SetActive(true);
+                    _questContentRect.SetActive(false);
+                }
+                else
+                {
+                    _paused = false;
+
+                    _questRect.SetActive(false);
+                    _pauseMenuRect.SetActive(false);
+                }
+            }
+        }
+#endif
+
+        private void CheckQuestCalled(int checkIndex)
+        {
+            TestDialogueMainManager.Instance.OnQuestUpdate
+                ?.Invoke("", QuestStatus.REQUESTED_INFO, _btQuestIndex[checkIndex]);
+            _questChoicesRect.SetActive(false);
+            _questContentRect.SetActive(true);
         }
 
-        private void UpdateQuestUI(Quest questInfo)
+        private void UpdateQuestStatus(bool rewarded = false)
+        {
+            Debug.Log($"Accepted Reward/Quest | rewarded: {rewarded}");
+            // _questRect.SetActive(false);
+            _rewardRect.SetActive(false);
+
+            if (!rewarded)
+            {
+                _questTitleTxt.text += " [COMPLETED]";
+            }
+            // Player accepted the Quest
+            else
+            {
+                _checkQuestBts[_currentBtIndex].gameObject.SetActive(true);
+                _currentBtIndex++;          //Move to the next slot of button-indexes
+                _questTitleTxt.text += " [IN PROGRESS]";
+                TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke("", QuestStatus.ACCEPTED, _DEFAULT_VALUE);
+            }
+        }
+
+        private void UpdateQuestUI(Quest questInfo, int btIndex)
         {
             Debug.Log($"UpdateQuestUI | questInfo: {questInfo}");
+            _paused = true;
+            _questChoicesRect.SetActive(false);
+            _pauseMenuRect.SetActive(true);
+            _questContentRect.SetActive(true);
             _questRect.SetActive(true);
 
+            if (btIndex == _DEFAULT_VALUE)
+            {
+                _btQuestIndex[_currentBtIndex] = btIndex;
+                _checkQuestTxts[_currentBtIndex].text = questInfo.name;            //Update button name
+            }
+
             _questTitleTxt.text = questInfo.name;
+            _questTitleTxt.text += " [IN PROGRESS]";
             _questDescTxt.text = questInfo.description;
 
             System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
             for (int i = 0; i < questInfo.objectives.Count; i++)
             {
-                stringBuilder.Append($"[-] ");
-                stringBuilder.Append(questInfo.objectives[i].description);
+                stringBuilder.Append("[-] ");
+
+                // Add a strikethrough if objective completed
+                if (questInfo.objectives[i].currentCount == questInfo.objectives[i].requiredCount)
+                    stringBuilder.Append("<s>" + questInfo.objectives[i].description + "</s>");
+                else
+                    stringBuilder.Append(questInfo.objectives[i].description);
+
                 stringBuilder.Append("\n");
             }
 

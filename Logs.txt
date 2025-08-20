@@ -1103,6 +1103,21 @@
     {+} Adding desciption
     {+} Adding index to uid, same as Dialogue
 
+- Scripts
+    [=] TestQuestManager
+        {+} Adding case for QuestStatus.ACCEPTED
+    [=] TestQuestSystemCanvas
+        {+} Adding strike through for completed objectives
+        {+} Updating Quest info according to the quest selected | UI
+        {+} Buttons for checking respective active quests
+            <~> Enable for Accepting quests
+    [=] TestDialogueMainManager
+        {+} Adding int paramter to OnQuestUpdate
+        {+} Adding bool, int param to OnQuestUIUpdate
+    [=] QuestTemplate
+        {+} Adding REUQESTED_INFO to QuestStatus enum
+- TestDialogueSystem Scene
+    [=] Making test UI for multiple objectives
 --------------------------------------------------------------------------------------------------------
 - [DO] Convert story conditions from bool to flags
 - [DO] Dialogues JSON

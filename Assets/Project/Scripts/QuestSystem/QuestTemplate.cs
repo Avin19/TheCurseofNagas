@@ -15,7 +15,7 @@ namespace CurseOfNaga.QuestSystem
 
     public enum QuestType { FREE_ROAM, MAIN_QUEST, SUB_MAIN_QUEST, SIDE_QUEST }
 
-    public enum QuestStatus { NOT_STARTED, IN_PROGRESS, COMPLETED, FAILED, REQUESTED, ACCEPTED }
+    public enum QuestStatus { NOT_STARTED, IN_PROGRESS, COMPLETED, FAILED, REQUESTED, ACCEPTED, REQUESTED_INFO }
 
     [System.Serializable]
     public class QuestObjective

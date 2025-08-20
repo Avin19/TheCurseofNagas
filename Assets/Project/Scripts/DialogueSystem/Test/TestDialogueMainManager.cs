@@ -26,8 +26,17 @@ namespace CurseOfNaga.DialogueSystem.Test
         public Action<string, bool> OnShowDialogue;
 
         //================================== QUEST =================================
-        public Action<string, QuestStatus> OnQuestUpdate;
-        public Action<Quest> OnQuestUIUpdate;
+        /// <summary>
+        /// string - Quest ID | Quest Active (null) <br/> QuestStatus - Status of the Quest <br/>
+        /// int - Quest Index if quest already active else DefaultValue(-1)
+        /// </summary>
+        public Action<string, QuestStatus, int> OnQuestUpdate;
+        // public Action<int> OnQuestInfoRequest;
+
+        /// <summary>
+        /// Quest - Quest Data <br/> int - Button index if the quest is active else DefaultValue(-1)
+        /// </summary>
+        public Action<Quest, int> OnQuestUIUpdate;
         public Action<Reward> OnQuestCompleted;
     }
 }
