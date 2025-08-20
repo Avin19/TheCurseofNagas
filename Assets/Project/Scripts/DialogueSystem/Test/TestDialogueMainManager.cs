@@ -26,7 +26,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         public Action<string, bool> OnShowDialogue;
 
         //================================== QUEST =================================
-        public Action<string> OnQuestUpdate;
+        public Action<string, QuestStatus> OnQuestUpdate;
         public Action<Quest> OnQuestUIUpdate;
         public Action<Reward> OnQuestCompleted;
     }

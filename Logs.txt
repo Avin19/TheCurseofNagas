@@ -1085,6 +1085,24 @@
 - QuestData.json
     [=] Adding more nodes with objectives
 
+- Scripts
+    [=] TestDialogueSystem Scene
+        {+} Creating Quest UI for testing
+    [=] QuestTemplate
+        {+} Adding description to Reward/Objective
+    [=] TestQuestSystemCanvas
+        {+} Update Rewards info logic
+        {+} Update Quest info logic
+            <~> Title | Description | Objectives
+    [=] TestQuestManager
+        {+} Field to track main quest / updating it accordingly
+    [=] UniversalConstant
+        {+} Adding REQUESTED/ACCEPTED to QuestStatus enum
+- QuestData.json
+    {+} Adding item count also in the item string
+    {+} Adding desciption
+    {+} Adding index to uid, same as Dialogue
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Convert story conditions from bool to flags
 - [DO] Dialogues JSON

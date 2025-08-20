@@ -1,7 +1,7 @@
 {
     "quests_data": [
         {
-            "uid": "FI_VL_00",
+            "uid": "000_FI_VL",
             "name": "Find the village",
             "description": "You discovered that you have the curse, but there lies a secret in a village far away. You have supposedly reached the outskirts of a forest which leads to the village. Find a way to the Village",
             "status": 0,
@@ -9,6 +9,7 @@
             "objectives": [
                 {
                     "type": 5,
+                    "description": "Find a way to the Village",
                     "target_id": "VL_00",
                     "required_count": 1,
                     "current_count": 0,
@@ -17,13 +18,14 @@
             ],
             "prerequisites": null,
             "reward": {
-                "xp": 0,
-                "item_id": "",
+                "description": "You have found the Village!",
+                "xp": 10,
+                "item": null,
                 "gold": 0
             }
         },
         {
-            "uid": "CO_IN_00",
+            "uid": "001_CO_IN",
             "name": "Gather info about the village",
             "description": "You have reached the village, you don't know anyone here. It would be best to collect some info about the village and continue further. Try gathering some info from the locals.",
             "status": 0,
@@ -31,6 +33,7 @@
             "objectives": [
                 {
                     "type": 2,
+                    "description": "Talk to Salem",
                     "target_id": "SA_00",
                     "required_count": 1,
                     "current_count": 0,
@@ -38,6 +41,7 @@
                 },
                 {
                     "type": 2,
+                    "description": "Talk to Medeh",
                     "target_id": "ME_00",
                     "required_count": 1,
                     "current_count": 0,
@@ -45,6 +49,7 @@
                 },
                 {
                     "type": 2,
+                    "description": "(Optional) Talk to Jaffar",
                     "target_id": "JA_00",
                     "required_count": 1,
                     "current_count": 0,
@@ -52,16 +57,17 @@
                 }
             ],
             "prerequisites": [
-                "FI_VL_00"
+                "000_FI_VL"
             ],
             "reward": {
-                "xp": 0,
-                "item_id": "",
+                "description": "You have collected info about the village.",
+                "xp": 10,
+                "item": null,
                 "gold": 0
             }
         },
         {
-            "uid": "TA_EL_00",
+            "uid": "002_TA_EL",
             "name": "Meet up with the Elder",
             "description": "You have reached the village, you don't know anyone here and you have to find the secret to lift the curse. The Elder of the village should have some knowledge about it. Find the Elder to get started",
             "status": 0,
@@ -69,6 +75,7 @@
             "objectives": [
                 {
                     "type": 2,
+                    "description": "You have found the Village!",
                     "target_id": "EL_00",
                     "required_count": 1,
                     "current_count": 0,
@@ -76,11 +83,12 @@
                 }
             ],
             "prerequisites": [
-                "CO_IN_00"
+                "001_CO_IN"
             ],
             "reward": {
+                "description": "You found the Elder. He has provided you with the village map.",
                 "xp": 0,
-                "item_id": "",
+                "item": "VillageMap 00001",
                 "gold": 0
             }
         }

@@ -15,12 +15,13 @@ namespace CurseOfNaga.QuestSystem
 
     public enum QuestType { FREE_ROAM, MAIN_QUEST, SUB_MAIN_QUEST, SIDE_QUEST }
 
-    public enum QuestStatus { NOT_STARTED, IN_PROGRESS, COMPLETED, FAILED }
+    public enum QuestStatus { NOT_STARTED, IN_PROGRESS, COMPLETED, FAILED, REQUESTED, ACCEPTED }
 
     [System.Serializable]
     public class QuestObjective
     {
         public ObjectiveType type;
+        public string description;
         public string targetID;
         public int requiredCount;
         public int currentCount;
@@ -33,7 +34,8 @@ namespace CurseOfNaga.QuestSystem
     public class Reward
     {
         public int xp;
-        public string itemID;
+        public string description;
+        public string item;
         public int gold;
     }
 
