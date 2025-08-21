@@ -1154,6 +1154,12 @@
         {+} Fixing Save Logic
 - Dialogues_SerializesTest.json
     [=] Making quest_tag changes
+
+- Scripts
+    [=] GraphSaveUtility
+        {+} Sorting while adding element as well as when adding leaf
+    
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Might need to convert the array to List for btQuestIndex as Side-Quests can be completed non-linearly
     [=] [DO] Can also re-arrange after completion of a quest
