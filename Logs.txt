@@ -1158,7 +1158,10 @@
 - Scripts
     [=] GraphSaveUtility
         {+} Sorting while adding element as well as when adding leaf
-    
+
+- Scripts
+    [=] DialogueGraphView
+        {+} Fixing delete port | port data now gets removed properly
 
 --------------------------------------------------------------------------------------------------------
 - [DO] Might need to convert the array to List for btQuestIndex as Side-Quests can be completed non-linearly

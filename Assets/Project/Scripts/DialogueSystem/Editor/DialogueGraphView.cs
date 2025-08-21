@@ -260,7 +260,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             generatedPort.contentContainer.Add(new Label("  "));
             // generatedPort.contentContainer.Add(choiceTextField);
 
-            var deleteBt = new Button(() => RemovePort(dialogueNode, generatedPort)) { text = "X" };
+            var deleteBt = new Button(() => RemovePort(dialogueNode, generatedPort, nodeIndex, outputPortCount + 1)) { text = "X" };
             generatedPort.contentContainer.Add(deleteBt);
 
             generatedPort.portName = choicePortName;
@@ -270,10 +270,19 @@ namespace CurseOfNaga.DialogueSystem.Editor
             dialogueNode.RefreshPorts();
         }
 
-        private void RemovePort(Node dialogueNode, Port generatedPort)
+        private void RemovePort(Node dialogueNode, Port generatedPort, int nodeIndex, int portIndex)
         {
             var targetEdge = edges.ToList().Where(edge => edge.output.portName == generatedPort.portName
                     && edge.output.node == generatedPort.node);
+
+            for (int i = 0; i < AddedDialogues[nodeIndex].ports.Count; i++)
+            {
+                if (AddedDialogues[nodeIndex].ports[i].name.Equals(generatedPort.portName))
+                {
+                    AddedDialogues[nodeIndex].ports.RemoveAt(i);
+                    break;
+                }
+            }
 
             // Debug.Log($"targetEdge | input: {targetEdge.First().input.node.viewDataKey} "
             //     + $"| output: {targetEdge.First().output.node.viewDataKey}");
