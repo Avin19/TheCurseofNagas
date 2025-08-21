@@ -1145,6 +1145,15 @@
     [=] DialogueTemplate
         {+} Changing flags to string
 
+- Dialogue Conditions configure
+- Scripts
+    [=] DialogueTemplate
+        {+} Changing quest_index(int) to quest_tag(string)
+    [=] GraphSaveUtility
+        {+} Updating logic for multiple charcters
+        {+} Fixing Save Logic
+- Dialogues_SerializesTest.json
+    [=] Making quest_tag changes
 --------------------------------------------------------------------------------------------------------
 - [DO] Might need to convert the array to List for btQuestIndex as Side-Quests can be completed non-linearly
     [=] [DO] Can also re-arrange after completion of a quest

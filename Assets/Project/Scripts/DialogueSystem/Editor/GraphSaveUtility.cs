@@ -2,6 +2,7 @@
 // #define TEST_TO_JSON
 // #define TEST_SAVE_JSON_1
 // #define DEBUG_SAVE_JSON_FOUND_NODE
+#define DISABLE_BACKUP
 
 #if UNITY_EDITOR
 using System.Collections.Generic;
@@ -57,22 +58,31 @@ namespace CurseOfNaga.DialogueSystem.Editor
             return;             //TEST
 #endif
 
+
+            int totalCount = connectedPorts.Length;
+            int dialogueCount = 0, portCount = 0, leafAddedCount = 0;
+            int dIndex = 0, pIndex = 0;
+            bool portFound = false;
+            int parentID, nodeIdToCheck;
+            string parentIDStr;
+            // int nodeID;
+            // bool nodeExists;
+
             // Dictionary<string, CharacterData> characters = new Dictionary<string, CharacterData>();
             DialogueTemplate dialogueTemplateToSave = new DialogueTemplate();
             List<CharacterData> charactersList = new List<CharacterData>();
             CharacterData charData;
 
-            int totalCount = connectedPorts.Length;
-            int dialogueCount = 0, portCount = 0;
-            int dIndex = 0, pIndex = 0;
-            bool portFound = false;
-            int parentID, nodeID;
-            string parentIDStr;
+            Node outputNode, inputNode;
+
+            //Sorting
+            int sortCount;
+            DialogueData tempDData;
             for (int cpIndex = 0; cpIndex < totalCount; cpIndex++)
             {
                 portFound = false;
-                var outputNode = connectedPorts[cpIndex].output.node;
-                var inputNode = connectedPorts[cpIndex].input.node;
+                outputNode = connectedPorts[cpIndex].output.node;
+                inputNode = connectedPorts[cpIndex].input.node;
 
                 if (outputNode.viewDataKey.Equals(DialogueGraphView.BASE_NODE))
                     continue;
@@ -117,15 +127,67 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 {
                     if (_targetGraphView.AddedDialogues[dIndex].base_uid.Equals(outputNode.viewDataKey))
                     {
-                        int.TryParse(_targetGraphView.AddedDialogues[dIndex].base_uid.Substring(6, 3), out nodeID);
+                        // int.TryParse(_targetGraphView.AddedDialogues[dIndex].base_uid.Substring(6, 3), out nodeID);
+                        // int.TryParse(charData.dialogues_list[nodeID].base_uid.Substring(6, 3), out nodeIdToCheck);
 
                         // Check if the DialogueNode exists in the list as multiple edges can have same Node
                         // List Size Offset
-                        if ((nodeID + 1) > charData.dialogues_list.Count)
+                        // if ((nodeID + 1 + leafAddedCount) > charData.dialogues_list.Count)
+                        // if (charData.dialogues_list.Exists((node) => { return node.nodeIndex == nodeID; }))      //Will not work | nodeID is total amount
+
+                        // /*
+
+                        // if (
+                        //     && charData.dialogues_list[0].nodeIndex != _targetGraphView.AddedDialogues[dIndex].nodeIndex)
+                        // {
+                        //     //FIrst element smaller than 
+                        //     charData.dialogues_list.Add(_targetGraphView.AddedDialogues[dIndex]);
+                        //     _targetGraphView.AddedDialogues[dIndex].position = outputNode.GetPosition().position.ToVec2Srlz();
+
+                        //     if (charData.dialogues_list[0].nodeIndex > _targetGraphView.AddedDialogues[dIndex].nodeIndex)
+                        //     {
+                        //         tempDData = charData.dialogues_list[0];
+                        //         charData.dialogues_list[0] = charData.dialogues_list[1];
+                        //         charData.dialogues_list[1] = tempDData;
+                        //     }
+                        // }
+
+
+                        // Keep sorting while adding new
+                        nodeIdToCheck = _targetGraphView.AddedDialogues[dIndex].nodeIndex;
+                        tempDData = _targetGraphView.AddedDialogues[dIndex];
+
+                        if (charData.dialogues_list.Count == 1
+                            && charData.dialogues_list[0].nodeIndex != _targetGraphView.AddedDialogues[dIndex].nodeIndex)
                         {
                             charData.dialogues_list.Add(_targetGraphView.AddedDialogues[dIndex]);
                             _targetGraphView.AddedDialogues[dIndex].position = outputNode.GetPosition().position.ToVec2Srlz();
                         }
+
+                        sortCount = charData.dialogues_list.Count - 2;              //2nd last element
+                        while (sortCount >= 0 && charData.dialogues_list[sortCount].nodeIndex > nodeIdToCheck)
+                        {
+                            charData.dialogues_list[sortCount + 1] = charData.dialogues_list[sortCount];
+                            sortCount--;
+                        }
+
+                        if (sortCount >= 0)
+                            charData.dialogues_list[sortCount + 1] = tempDData;
+
+
+
+                        // */
+
+                        /*nodeExists = charData.dialogues_list.Exists((node) =>
+                        {
+                            int.TryParse(node.base_uid.Substring(6, 3), out nodeIdToCheck);
+                            return nodeIdToCheck == nodeID;
+                        });
+                        if (!nodeExists)
+                        {
+                            charData.dialogues_list.Add(_targetGraphView.AddedDialogues[dIndex]);
+                            _targetGraphView.AddedDialogues[dIndex].position = outputNode.GetPosition().position.ToVec2Srlz();
+                        }*/
 
                         //Fill all the ports of the Node
                         portCount = _targetGraphView.AddedDialogues[dIndex].ports.Count;
@@ -159,6 +221,26 @@ namespace CurseOfNaga.DialogueSystem.Editor
                         //Since these nodes dont have a port, no need to look for it as there will be no edge for these
                         if (_targetGraphView.AddedDialogues[dIndex].base_uid.Equals(inputNode.viewDataKey))
                         {
+                            // Keep sorting while adding new
+                            nodeIdToCheck = _targetGraphView.AddedDialogues[dIndex].nodeIndex;
+                            tempDData = _targetGraphView.AddedDialogues[dIndex];
+
+                            if (charData.dialogues_list[0].nodeIndex != _targetGraphView.AddedDialogues[dIndex].nodeIndex)
+                            {
+                                charData.dialogues_list.Add(_targetGraphView.AddedDialogues[dIndex]);
+                                _targetGraphView.AddedDialogues[dIndex].position = outputNode.GetPosition().position.ToVec2Srlz();
+
+                                sortCount = charData.dialogues_list.Count - 2;              //2nd last element
+                                while (sortCount >= 0 && charData.dialogues_list[sortCount].nodeIndex > nodeIdToCheck)
+                                {
+                                    charData.dialogues_list[sortCount + 1] = charData.dialogues_list[sortCount];
+                                    sortCount--;
+                                }
+
+                                charData.dialogues_list[sortCount + 1] = tempDData;
+                            }
+
+                            leafAddedCount++;
                             charData.dialogues_list.Add(_targetGraphView.AddedDialogues[dIndex]);
                             _targetGraphView.AddedDialogues[dIndex].position = inputNode.GetPosition().position.ToVec2Srlz();
                             break;
@@ -174,7 +256,10 @@ namespace CurseOfNaga.DialogueSystem.Editor
             string pathToJson = System.IO.Path.Join(Application.streamingAssetsPath, fileName);
             Debug.Log($"Saving Json to: {pathToJson + UniversalConstant.JSON_EXTENSION}");
 
-            System.IO.FileStream saveStream;
+            System.IO.FileStream saveStream = null;
+#if DISABLE_BACKUP
+            saveStream = System.IO.File.Create(pathToJson + UniversalConstant.JSON_EXTENSION);
+#else
             if (!System.IO.File.Exists(pathToJson + UniversalConstant.JSON_EXTENSION))
                 saveStream = System.IO.File.Create(pathToJson + UniversalConstant.JSON_EXTENSION);
             else
@@ -188,6 +273,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 // Debug.Log($"Moved to : {pathToJson + UniversalConstant.JSON_BACKUP_EXTENSION}");
                 // saveStream = new System.IO.FileStream(pathToJson, System.IO.FileMode.Truncate, System.IO.FileAccess.Write);
             }
+#endif
 
             string dialogueData = JsonUtility.ToJson(dialogueTemplateToSave);
             // Debug.Log($"dialogueData: {dialogueData}"); return;     //TEST
@@ -210,6 +296,11 @@ namespace CurseOfNaga.DialogueSystem.Editor
             }
 
             #endregion SaveJSON
+        }
+
+        private void CheckIfNodeExists()
+        {
+
         }
 
         public void ClearGraph()
@@ -281,24 +372,31 @@ namespace CurseOfNaga.DialogueSystem.Editor
         {
             Node targetNode;
             List<DialoguePort> nodePorts;
-            int totalLoopCount;
+            int totalLoopCount, charCount;
 
             DialogueData dialogueData;
-            totalLoopCount = dialogueTemplate.characters[0].dialogues_list.Count;
-            // totalLoopCount = 3;
-            for (int dialogueIndex = 0; dialogueIndex < totalLoopCount; dialogueIndex++)
+
+            charCount = dialogueTemplate.characters.Count;
+            int charIndex = 1, totalNodeCount = 0;
+            for (charIndex = 0; charIndex < charCount; charIndex++)
             {
-                dialogueData = dialogueTemplate.characters[0].dialogues_list[dialogueIndex];
+                totalLoopCount = dialogueTemplate.characters[charIndex].dialogues_list.Count;
+                // totalLoopCount = 3;
 
-                targetNode = _targetGraphView.CreateDialogueNode(dialogueData.base_uid, dialogueData);
-                targetNode.viewDataKey = dialogueData.base_uid;
-                _targetGraphView.AddElement(targetNode);
+                for (int dialogueIndex = 0; dialogueIndex < totalLoopCount; dialogueIndex++, totalNodeCount++)
+                {
+                    dialogueData = dialogueTemplate.characters[charIndex].dialogues_list[dialogueIndex];
 
-                nodePorts = dialogueTemplate.characters[0].dialogues_list[dialogueIndex].ports;
-                for (int portIndex = 0; portIndex < nodePorts.Count; portIndex++)
-                    _targetGraphView.AddChoicePort(targetNode, dialogueIndex, nodePorts[portIndex].name, portIndex);
-                // nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(targetNode, dialogueIndex, edge.name));
+                    targetNode = _targetGraphView.CreateDialogueNode(dialogueData.base_uid, dialogueData);
+                    targetNode.viewDataKey = dialogueData.base_uid;
+                    _targetGraphView.AddElement(targetNode);
 
+                    nodePorts = dialogueTemplate.characters[charIndex].dialogues_list[dialogueIndex].ports;
+                    for (int portIndex = 0; portIndex < nodePorts.Count; portIndex++)
+                        _targetGraphView.AddChoicePort(targetNode, totalNodeCount, nodePorts[portIndex].name, portIndex);
+                    // nodePorts.ForEach(edge => _targetGraphView.AddChoicePort(targetNode, dialogueIndex, edge.name));
+
+                }
             }
         }
 
@@ -307,7 +405,6 @@ namespace CurseOfNaga.DialogueSystem.Editor
             List<DialoguePort> nodePorts;
             Node targetNode;
 
-            int totalLoopCount = dialogueTemplate.characters[0].dialogues_list.Count;
 
             //Connecting BASE NODE to 1st Node
             targetNode = _nodes[1];
@@ -315,23 +412,37 @@ namespace CurseOfNaga.DialogueSystem.Editor
             targetNode.SetPosition(new Rect(dialogueTemplate.characters[0].dialogues_list[0].position.ToVec2(),
                     _targetGraphView._defaultNodeSize));
 
-            // totalLoopCount--;
-            for (int dialogueIndex = 0; dialogueIndex < totalLoopCount; dialogueIndex++)
+            int charCount = dialogueTemplate.characters.Count;
+            int totalLoopCount;
+            int targetCharIndex, targetDialogueIndex;
+            for (int charIndex = 0; charIndex < charCount; charIndex++)
             {
-                nodePorts = dialogueTemplate.characters[0].dialogues_list[dialogueIndex].ports;
+                totalLoopCount = dialogueTemplate.characters[charIndex].dialogues_list.Count;
+                // totalLoopCount--;
 
-                for (int j = 0; j < nodePorts.Count; j++)
+                for (int dialogueIndex = 0; dialogueIndex < totalLoopCount; dialogueIndex++)
                 {
-                    var targetNodeGuid = nodePorts[j].target_uid;
-                    targetNode = _nodes.First(node => node.viewDataKey.Equals(targetNodeGuid));
-                    LinkNodesViaEdge(_nodes[dialogueIndex + 1].outputContainer[j].Q<Port>(),
-                        (Port)targetNode.inputContainer[0]);
+                    nodePorts = dialogueTemplate.characters[charIndex].dialogues_list[dialogueIndex].ports;
 
-                    targetNode.SetPosition(new Rect(
-                        dialogueTemplate.characters[0].dialogues_list.First(nodeData =>
-                             nodeData.base_uid.Equals(targetNodeGuid)).position.ToVec2(),
-                        _targetGraphView._defaultNodeSize
-                    ));
+                    for (int j = 0; j < nodePorts.Count; j++)
+                    {
+                        var targetNodeGuid = nodePorts[j].target_uid;
+
+                        //Link Node
+                        targetNode = _nodes.First(node => node.viewDataKey.Equals(targetNodeGuid));
+                        LinkNodesViaEdge(_nodes[dialogueIndex + 1].outputContainer[j].Q<Port>(),
+                            (Port)targetNode.inputContainer[0]);
+
+                        //Set Postion of Node
+                        int.TryParse(targetNodeGuid.Substring(0, 3), out targetCharIndex);
+                        int.TryParse(targetNodeGuid.Substring(6, 3), out targetDialogueIndex);
+                        targetNode.SetPosition(new Rect(
+                            dialogueTemplate.characters[targetCharIndex].dialogues_list[targetDialogueIndex].position.ToVec2(),
+                            // dialogueTemplate.characters[charIndex].dialogues_list.First(nodeData =>
+                            //      nodeData.base_uid.Equals(targetNodeGuid)).position.ToVec2(),
+                            _targetGraphView._defaultNodeSize
+                        ));
+                    }
                 }
             }
         }

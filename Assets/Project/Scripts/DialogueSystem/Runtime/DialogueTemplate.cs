@@ -44,7 +44,7 @@ namespace CurseOfNaga.DialogueSystem.Runtime
         public string flags;
         public int type;
         public int nodeIndex;                   // Store the index of the node in the GraphView | Not needed in JSON
-        public int quest_index;
+        public string quest_uid;
         // public DialoguePort port;
         public string base_uid;                 //Transform each character to int spaced at 5 bits?
         public string dialogue;
@@ -55,6 +55,7 @@ namespace CurseOfNaga.DialogueSystem.Runtime
         {
             flags = "";
             type = 0;
+            quest_uid = "";
             // port = new DialoguePort();
             base_uid = "NOT_SET";
             ports = new List<DialoguePort>();
