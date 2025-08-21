@@ -41,7 +41,7 @@ namespace CurseOfNaga.DialogueSystem.Runtime
     [System.Serializable]
     public class DialogueData
     {
-        public int flags;
+        public string flags;
         public int type;
         public int nodeIndex;                   // Store the index of the node in the GraphView | Not needed in JSON
         public int quest_index;
@@ -53,7 +53,7 @@ namespace CurseOfNaga.DialogueSystem.Runtime
 
         public DialogueData()
         {
-            flags = 0;
+            flags = "";
             type = 0;
             // port = new DialoguePort();
             base_uid = "NOT_SET";

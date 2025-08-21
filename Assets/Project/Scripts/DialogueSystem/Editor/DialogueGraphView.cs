@@ -149,16 +149,16 @@ namespace CurseOfNaga.DialogueSystem.Editor
             newChoiceBt.text = "New Choice";
             dialogueNode.titleContainer.Add(newChoiceBt);
 
-            var intField = new IntegerField
+            var dialogueField = new TextField
             {
                 label = "Flags",
                 value = dialogueData.flags
             };
             // intField.RegisterCallback<KeyDownEvent>(evt => OnKeyPress(evt, intField.value, dialogueData));
-            intField.RegisterValueChangedCallback(evt => { dialogueData.flags = evt.newValue; });
-            dialogueNode.mainContainer.Add(intField);
+            dialogueField.RegisterValueChangedCallback(evt => { dialogueData.flags = evt.newValue; });
+            dialogueNode.mainContainer.Add(dialogueField);
 
-            intField = new IntegerField
+            var intField = new IntegerField
             {
                 label = "Type",
                 value = dialogueData.type
@@ -166,7 +166,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             intField.RegisterValueChangedCallback(evt => { dialogueData.type = evt.newValue; });
             dialogueNode.mainContainer.Add(intField);
 
-            var dialogueField = new TextField
+            dialogueField = new TextField
             {
                 label = "Dialogue",
                 value = dialogueData.dialogue
@@ -204,7 +204,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
             return dialogueNode;
         }
 
-        private void OnKeyPress(KeyDownEvent evt, int value, DialogueData data)
+        /*private void OnKeyPress(KeyDownEvent evt, string value, DialogueData data)
         {
             switch (evt.keyCode)
             {
@@ -212,7 +212,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                     data.flags = value;
                     break;
             }
-        }
+        }*/
 
         //TODO: Can offset the UID on the name to contain both the Base UID and the name in one place
         public void AddChoicePort(Node dialogueNode, int nodeIndex, string overridenPortName = "", int portIndex = 0)

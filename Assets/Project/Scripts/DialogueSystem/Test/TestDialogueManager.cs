@@ -233,15 +233,15 @@ namespace CurseOfNaga.DialogueSystem.Test
                     }
 
                 case 420:
-                    //Evaluate the conditions to show correct dialogue
-                    int flagToCheck = dialogueData.flags;
+                    // Evaluate the conditions to show correct dialogue
+                    // int flagToCheck = dialogueData.flags;
 
-                    //Check if the flag is set for the current dialogue
-                    if (((int)TestDialogueMainManager.Instance.flag1 & flagToCheck) == 0)
-                    {
-                        //Check if there are any alternatives to the current dialogue
-                        return;
-                    }
+                    // //Check if the flag is set for the current dialogue
+                    // if (((int)TestDialogueMainManager.Instance.flag1 & flagToCheck) == 0)
+                    // {
+                    //     //Check if there are any alternatives to the current dialogue
+                    //     return;
+                    // }
                     break;
             }
 

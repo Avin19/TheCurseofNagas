@@ -1138,6 +1138,13 @@
         {+} Re-arranging btQuestIndex when a quest is completed
         {+} Testing
 
+- Dialogue Conditions
+- Scripts
+    [=] QuestTemplate
+        {+} Adding LOCKED, UNLOCKED to QuestStatus
+    [=] DialogueTemplate
+        {+} Changing flags to string
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Might need to convert the array to List for btQuestIndex as Side-Quests can be completed non-linearly
     [=] [DO] Can also re-arrange after completion of a quest

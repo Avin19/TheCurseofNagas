@@ -4,7 +4,7 @@
             "uid": "000_FI_VL",
             "name": "Find the village",
             "description": "You discovered that you have the curse, but there lies a secret in a village far away. You have supposedly reached the outskirts of a forest which leads to the village. Find a way to the Village",
-            "status": 0,
+            "status": 1,
             "type": 1,
             "objectives": [
                 {

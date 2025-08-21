@@ -5,7 +5,7 @@
             "character_name": "Player",
             "dialogues_list": [
                 {
-                    "flags": 0,
+                    "flags": "",
                     "type": 1,
                     "nodeIndex": 0,
                     "quest_index": 0,
@@ -24,7 +24,7 @@
                     }
                 },
                 {
-                    "flags": 4,
+                    "flags": "",
                     "type": 1,
                     "nodeIndex": 1,
                     "quest_index": 0,
@@ -43,7 +43,7 @@
                     }
                 },
                 {
-                    "flags": 4,
+                    "flags": "",
                     "type": 1,
                     "nodeIndex": 2,
                     "quest_index": 0,
@@ -62,7 +62,7 @@
                     }
                 },
                 {
-                    "flags": 4,
+                    "flags": "",
                     "type": 1,
                     "nodeIndex": 3,
                     "quest_index": 0,
@@ -81,7 +81,7 @@
                     }
                 },
                 {
-                    "flags": 4,
+                    "flags": "",
                     "type": 1,
                     "nodeIndex": 4,
                     "quest_index": 0,
@@ -100,7 +100,7 @@
                     }
                 },
                 {
-                    "flags": 4,
+                    "flags": "",
                     "type": 1,
                     "nodeIndex": 5,
                     "quest_index": 0,
@@ -125,7 +125,7 @@
             "character_name": "Salem",
             "dialogues_list": [
                 {
-                    "flags": 0,
+                    "flags": "",
                     "type": 1,
                     "nodeIndex": 0,
                     "quest_index": 0,
@@ -144,7 +144,7 @@
                     }
                 },
                 {
-                    "flags": 0,
+                    "flags": "",
                     "type": 3,
                     "nodeIndex": 1,
                     "quest_index": 0,
@@ -168,7 +168,7 @@
                     }
                 },
                 {
-                    "flags": 4,
+                    "flags": "",
                     "type": 1,
                     "nodeIndex": 2,
                     "quest_index": 0,
@@ -187,7 +187,7 @@
                     }
                 },
                 {
-                    "flags": 8,
+                    "flags": "",
                     "type": 4,
                     "nodeIndex": 3,
                     "quest_index": 0,
@@ -206,7 +206,7 @@
                     }
                 },
                 {
-                    "flags": 0,
+                    "flags": "",
                     "type": 4,
                     "nodeIndex": 0,
                     "quest_index": 0,
@@ -225,7 +225,7 @@
                     }
                 },
                 {
-                    "flags": 0,
+                    "flags": "",
                     "type": 3,
                     "nodeIndex": 0,
                     "quest_index": 0,
