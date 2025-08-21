@@ -127,7 +127,7 @@
                 {
                     "flags": "",
                     "type": 1,
-                    "nodeIndex": 0,
+                    "nodeIndex": 6,
                     "quest_uid": "",
                     "base_uid": "001SA_000",
                     "dialogue": "Hey There!",
@@ -146,7 +146,7 @@
                 {
                     "flags": "",
                     "type": 3,
-                    "nodeIndex": 1,
+                    "nodeIndex": 7,
                     "quest_uid": "",
                     "base_uid": "001SA_001",
                     "dialogue": "How are you Doing?",
@@ -170,7 +170,7 @@
                 {
                     "flags": "",
                     "type": 1,
-                    "nodeIndex": 2,
+                    "nodeIndex": 8,
                     "quest_uid": "",
                     "base_uid": "001SA_002",
                     "dialogue": "Doing great. What are you doing here?",
@@ -189,7 +189,7 @@
                 {
                     "flags": "",
                     "type": 4,
-                    "nodeIndex": 3,
+                    "nodeIndex": 9,
                     "quest_uid": "",
                     "base_uid": "001SA_003",
                     "dialogue": "I am fine. Nice day for fishing, ain't it?",
@@ -208,7 +208,7 @@
                 {
                     "flags": "",
                     "type": 4,
-                    "nodeIndex": 0,
+                    "nodeIndex": 10,
                     "quest_uid": "",
                     "base_uid": "001SA_004",
                     "dialogue": "You can find him by the lake.",
@@ -227,7 +227,7 @@
                 {
                     "flags": "",
                     "type": 3,
-                    "nodeIndex": 0,
+                    "nodeIndex": 11,
                     "quest_uid": "",
                     "base_uid": "001SA_005",
                     "dialogue": "What can I help you with?",

@@ -27,6 +27,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
         private List<Node> _nodes => _targetGraphView.nodes.ToList();//.Cast<DialogueNode>().ToList();
 
         private CancellationTokenSource _cts;
+        private const int _NODE_BASE_OFFSET = 1;
 
         ~GraphSaveUtility()
         {
@@ -378,7 +379,6 @@ namespace CurseOfNaga.DialogueSystem.Editor
             List<DialoguePort> nodePorts;
             Node targetNode;
 
-
             //Connecting BASE NODE to 1st Node
             targetNode = _nodes[1];
             LinkNodesViaEdge(_nodes[0].outputContainer.Q<Port>(), (Port)_nodes[1].inputContainer[0]);
@@ -386,7 +386,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                     _targetGraphView._defaultNodeSize));
 
             int charCount = dialogueTemplate.characters.Count;
-            int totalLoopCount;
+            int totalLoopCount, nodeCount = 0;
             int targetCharIndex, targetDialogueIndex;
             for (int charIndex = 0; charIndex < charCount; charIndex++)
             {
@@ -403,7 +403,11 @@ namespace CurseOfNaga.DialogueSystem.Editor
 
                         //Link Node
                         targetNode = _nodes.First(node => node.viewDataKey.Equals(targetNodeGuid));
-                        LinkNodesViaEdge(_nodes[dialogueIndex + 1].outputContainer[j].Q<Port>(),
+                        // int tempInt1 = 0;
+
+                        // As we load node from the JSON file, they will be in the order of the loop one after the other
+                        //
+                        LinkNodesViaEdge(_nodes[nodeCount + _NODE_BASE_OFFSET].outputContainer[j].Q<Port>(),
                             (Port)targetNode.inputContainer[0]);
 
                         //Set Postion of Node
@@ -416,6 +420,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                             _targetGraphView._defaultNodeSize
                         ));
                     }
+                    nodeCount++;
                 }
             }
         }
