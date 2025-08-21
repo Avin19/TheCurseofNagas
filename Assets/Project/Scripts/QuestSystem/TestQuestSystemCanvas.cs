@@ -1,9 +1,11 @@
 #define PAUSE_TEST
 
-using CurseOfNaga.DialogueSystem.Test;
+using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
+using CurseOfNaga.DialogueSystem.Test;
 using static CurseOfNaga.Global.UniversalConstant;
 
 namespace CurseOfNaga.QuestSystem.Test
@@ -17,7 +19,7 @@ namespace CurseOfNaga.QuestSystem.Test
 
         [SerializeField] private Button[] _checkQuestBts;           //Only upto 4 for now
         private TMPro.TMP_Text[] _checkQuestTxts;           //Only upto 4 for now
-        private int[] _btQuestIndex;
+        private int[] _btQuestIndex;                        // 0 will always be Main Quest
         private int _currentBtIndex;
         private const int _TOTAL_QUEST_BTS = 4;
 
@@ -112,7 +114,9 @@ namespace CurseOfNaga.QuestSystem.Test
             else
             {
                 _checkQuestBts[_currentBtIndex].gameObject.SetActive(true);
-                _currentBtIndex++;          //Move to the next slot of button-indexes
+                //Move to the next slot of button-indexes
+                _currentBtIndex = (_currentBtIndex + 1) >= _TOTAL_QUEST_BTS ? 1 : _currentBtIndex++;
+                // _currentBtIndex++;
                 // _questTitleTxt.text += " [IN PROGRESS]";
                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke("", QuestStatus.ACCEPTED, _DEFAULT_VALUE);
                 _acceptQuestBt.gameObject.SetActive(false);
@@ -160,6 +164,9 @@ namespace CurseOfNaga.QuestSystem.Test
 
         private void TestUpdateRewardTexts()
         {
+            for (int i = 1; i < _TOTAL_QUEST_BTS; i++)
+                _btQuestIndex[i] = i;
+
             Reward testReward = new Reward()
             {
                 xp = 10,
@@ -168,12 +175,32 @@ namespace CurseOfNaga.QuestSystem.Test
                 gold = 0
             };
 
-            UpdateRewardTexts(testReward, 0);
+            UpdateRewardTexts(testReward, 1);
         }
 
         private void UpdateRewardTexts(Reward questReward, int btIndex)
         {
-            _checkQuestBts[btIndex].gameObject.SetActive(false);
+            // Avoid if main quest 
+            if (btIndex != 0)
+            {
+                //Disable the respective CheckQuest button
+                _checkQuestBts[btIndex].gameObject.SetActive(false);
+
+                //Re-arrange the list to correct the index
+                for (int i = btIndex; (i + 1) < _TOTAL_QUEST_BTS; i++)
+                {
+                    _btQuestIndex[i] = _btQuestIndex[i + 1];
+                }
+
+                //Reset last index 
+                if (btIndex != _TOTAL_QUEST_BTS - 1)
+                    _btQuestIndex[_TOTAL_QUEST_BTS - 1] = -1;
+                else
+                    _btQuestIndex[btIndex] = -1;
+                //Reduce current index
+                _currentBtIndex = (_currentBtIndex - 1) == 0 ? _TOTAL_QUEST_BTS - 1 : _currentBtIndex--;
+            }
+
             _questRect.SetActive(true);
             _rewardRect.SetActive(true);
 

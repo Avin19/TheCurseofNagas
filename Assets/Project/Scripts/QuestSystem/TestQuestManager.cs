@@ -1,3 +1,5 @@
+#define TEST_QUESTS_1
+
 using System.Collections.Generic;
 using CurseOfNaga.DialogueSystem.Test;
 using CurseOfNaga.Utils;
@@ -75,6 +77,28 @@ namespace CurseOfNaga.QuestSystem
 
         // private void SendQuestInfo(int questIndex) { }
 
+#if TEST_QUESTS_1
+
+        [SerializeField] private string _testQuestVal;
+        [SerializeField] private QuestStatus _testQuestStatus;
+        [SerializeField] private int _testQuestIndex;
+        [SerializeField] private bool _executeTestUpdateQuest;
+
+        private void Update()
+        {
+            if (_executeTestUpdateQuest)
+            {
+                _executeTestUpdateQuest = false;
+                TestUpdateQuestData();
+            }
+        }
+
+        private void TestUpdateQuestData()
+        {
+            UpdateQuestData(_testQuestVal, _testQuestStatus, _testQuestIndex);
+        }
+#endif
+
         private void UpdateQuestData(string idVal, QuestStatus questStatus, int questIndex = 0)
         {
             switch (questStatus)
@@ -95,7 +119,7 @@ namespace CurseOfNaga.QuestSystem
                         {
                             if (questObjectives[j].current_count == questObjectives[j].required_count)
                                 objCompletedCount++;
-                            else if (questObjectives[j].Equals(idVal))
+                            else if (questObjectives[j].target_id.Equals(idVal))
                             {
                                 foundObjective = true;
 
@@ -148,7 +172,7 @@ namespace CurseOfNaga.QuestSystem
 
                     break;
 
-                //Player accepts the Sub-Main Quest and Side-Quest | Main quests should be already added
+                //Player accepts the Sub-Main Quest, Side-Quest and Main Quest
                 case QuestStatus.ACCEPTED:
                     _activeQuestIndexes.Add(_requestedQuestIndex);
 

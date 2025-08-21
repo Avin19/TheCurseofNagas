@@ -1129,6 +1129,15 @@
         {+} Fixing _activeQuestIndexes logic
     [=] TestDialogueMainManager
         {+} Adding int argument to OnQuestCompleted action
+
+--------------------------------------------------------------------------------------------------------
+                                                21 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] TestQuestSystemCanvas
+        {+} Re-arranging btQuestIndex when a quest is completed
+        {+} Testing
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Might need to convert the array to List for btQuestIndex as Side-Quests can be completed non-linearly
     [=] [DO] Can also re-arrange after completion of a quest
