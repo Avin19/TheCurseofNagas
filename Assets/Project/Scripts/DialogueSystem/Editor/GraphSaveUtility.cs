@@ -2,7 +2,7 @@
 // #define TEST_TO_JSON
 // #define TEST_SAVE_JSON_1
 // #define DEBUG_SAVE_JSON_FOUND_NODE
-#define DISABLE_BACKUP
+// #define DISABLE_BACKUP
 
 #if UNITY_EDITOR
 using System.Collections.Generic;
@@ -77,8 +77,8 @@ namespace CurseOfNaga.DialogueSystem.Editor
             Node outputNode, inputNode;
 
             //Sorting
-            int sortCount;
-            DialogueData sortKeyDData;
+            // int sortCount;
+            // DialogueData sortKeyDData;
             for (int cpIndex = 0; cpIndex < totalCount; cpIndex++)
             {
                 portFound = false;
@@ -128,14 +128,7 @@ namespace CurseOfNaga.DialogueSystem.Editor
                 {
                     if (_targetGraphView.AddedDialogues[dIndex].base_uid.Equals(outputNode.viewDataKey))
                     {
-                        // int.TryParse(_targetGraphView.AddedDialogues[dIndex].base_uid.Substring(6, 3), out nodeID);
-                        // int.TryParse(charData.dialogues_list[nodeID].base_uid.Substring(6, 3), out nodeIdToCheck);
-
                         // Check if the DialogueNode exists in the list as multiple edges can have same Node
-                        // List Size Offset
-                        // if ((nodeID + 1 + leafAddedCount) > charData.dialogues_list.Count)
-                        // if (charData.dialogues_list.Exists((node) => { return node.nodeIndex == nodeID; }))      //Will not work | nodeID is total amount
-
                         //Find if node is already added
                         int i = 0;
                         for (; i < charData.dialogues_list.Count; i++)
@@ -149,19 +142,6 @@ namespace CurseOfNaga.DialogueSystem.Editor
                             charData.dialogues_list.Add(_targetGraphView.AddedDialogues[dIndex]);
                             _targetGraphView.AddedDialogues[dIndex].position = outputNode.GetPosition().position.ToVec2Srlz();
                         }
-
-                        /*
-                        nodeExists = charData.dialogues_list.Exists((node) =>
-                        {
-                            int.TryParse(node.base_uid.Substring(6, 3), out nodeIdToCheck);
-                            return nodeIdToCheck == nodeID;
-                        });
-                        if (!nodeExists)
-                        {
-                            charData.dialogues_list.Add(_targetGraphView.AddedDialogues[dIndex]);
-                            _targetGraphView.AddedDialogues[dIndex].position = outputNode.GetPosition().position.ToVec2Srlz();
-                        }
-                        // */
 
                         //Fill all the ports of the Node
                         portCount = _targetGraphView.AddedDialogues[dIndex].ports.Count;

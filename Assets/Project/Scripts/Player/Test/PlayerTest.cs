@@ -1,4 +1,6 @@
 // #define TESTING
+// #define DEBUG_1
+
 #define INTERACTABLE_NPC
 
 using UnityEngine;
@@ -60,7 +62,9 @@ namespace CurseOfNaga.Gameplay.Player.Test
 #if INTERACTABLE_NPC
         private void Interact()
         {
+#if DEBUG_1
             Debug.Log($"Player Interact Requested");
+#endif
             if (_currentInteractable == null)
                 return;
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CurseOfNaga.QuestSystem;
 using UnityEngine;
 using static CurseOfNaga.Global.UniversalConstant;
@@ -17,10 +18,13 @@ namespace CurseOfNaga.DialogueSystem.Test
                 _instance = this;
             else
                 Destroy(gameObject);
+
+            flagsHolder = new HashSet<string>();
         }
         #endregion Singleton
 
         public TestConditionFlags flag1 = TestConditionFlags.NOT_SET;
+        public HashSet<string> flagsHolder;
 
         public Action<InteractionType, int, int> OnPlayerInteraction;
         public Action<string, bool> OnShowDialogue;

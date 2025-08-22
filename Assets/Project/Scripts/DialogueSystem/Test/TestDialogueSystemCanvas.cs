@@ -43,14 +43,18 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         private void ChoseDialogue(int btIndex)
         {
+#if DEBUG_1
             Debug.Log($"Player chose dialogue. Index: {btIndex}");
+#endif
             // _showChoiceStatus = (byte)ChoiceType.CHOICE_CLICKED;
             TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.MADE_CHOICE, btIndex, _INACTIVE);
         }
 
         private void UpdateUIForInteraction(InteractionType interactionType, int value = -1, int otherVal = -1)
         {
+#if DEBUG_1
             Debug.Log($"UpdateUIForInteraction | interactionType: {interactionType} | value: {value} | otherVal: {otherVal}");
+#endif
             switch (interactionType)
             {
                 case InteractionType.MADE_CHOICE:

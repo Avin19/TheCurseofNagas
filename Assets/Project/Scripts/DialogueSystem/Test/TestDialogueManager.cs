@@ -1,3 +1,6 @@
+// #define DEBUG_1
+// #define DEBUG_2
+
 using UnityEngine;
 
 using CurseOfNaga.DialogueSystem.Runtime;
@@ -6,6 +9,7 @@ using CurseOfNaga.Utils;
 using CurseOfNaga.Gameplay.Managers;
 using static CurseOfNaga.Global.UniversalConstant;
 using System.Collections.Generic;
+using System;
 
 namespace CurseOfNaga.DialogueSystem.Test
 {
@@ -34,6 +38,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         private List<string> _targetNodeIds;
 
         private const string _FILENAME = "Dialogues_SerializeTest.json";
+        private const string _EMPTY_STR = "";
         private const int SET_VAL = 1, DEFAULT_VAL = 1, UNSET_VAL = -1, _PLAYER_OFFSET = 1;
 
         private void OnDisable()
@@ -82,6 +87,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}"); return;         //TEST
         }
 
+        // private string[] choiceFlags; // DEBUG
         // Track progress of ongoing conversation
         public void EvaluateAndLoadDialogue(InteractionType interactionType, int uid, int npcID)
         {
@@ -124,7 +130,9 @@ namespace CurseOfNaga.DialogueSystem.Test
                 int.TryParse(tempString.Substring(0, 3), out _charUID);
                 int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
                 _dialogueTracker[PLAYER_ID] = nextDgIndex;
+#if DEBUG_1
                 Debug.Log($"_targetNodeIds: {_targetNodeIds[uid]} | _charUID: {_charUID} | _npcObjUID: {PLAYER_ID}");
+#endif
 
                 //Clear everything as strings will be replaced
                 _targetNodeIds.Clear();
@@ -157,7 +165,9 @@ namespace CurseOfNaga.DialogueSystem.Test
             //Get the dialogue
             tempString = dialogueData.dialogue;
             TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
+#if DEBUG_1
             Debug.Log($"Shwoing Dialogue | tempString: {tempString} | Ports: {dialogueData.ports.Count}");
+#endif
 
             //Check dialogue type
             int dialogueType = dialogueData.type;
@@ -180,13 +190,38 @@ namespace CurseOfNaga.DialogueSystem.Test
                     int choicesCount = dialogueData.ports.Count;
                     showChoices = true;
 
+                    string[] choiceFlags;
+                    int choiceIndex = 0, chFlagsIndex;
                     //Iterate over each choice and display buttons
-                    for (int i = 0; i < choicesCount; i++)
+                    for (; choiceIndex < choicesCount; choiceIndex++)
                     {
-                        tempString = dialogueData.ports[i].target_uid;
-                        _targetNodeIds.Add(tempString);
+                        // choiceFlags = null;         //TEST
+                        tempString = dialogueData.ports[choiceIndex].target_uid;
                         int.TryParse(tempString.Substring(0, 3), out nextChIndex);
                         int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
+
+                        // Check if the flags are empty or not
+                        if (!_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex]
+                                .flags.Equals(_EMPTY_STR))
+                        {
+                            //Get all the flags for the choice
+                            choiceFlags = _dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex]
+                                .flags.Split('|');
+
+                            //Check for the condition here
+                            for (chFlagsIndex = 0; chFlagsIndex < choiceFlags.Length; chFlagsIndex++)
+                            {
+                                if (!TestDialogueMainManager.Instance.flagsHolder.Contains(choiceFlags[chFlagsIndex]))
+                                    break;
+                            }
+#if DEBUG_2
+                            Debug.Log($"choiceIndex: {choiceIndex} | chFlagsIndex: {chFlagsIndex}");
+#endif
+                            //If all flags are not present then (1) Skip the dialogue? or (2) Grey out dialogue
+                            if (chFlagsIndex != choiceFlags.Length) continue;
+                        }
+
+                        _targetNodeIds.Add(tempString);
                         TestDialogueMainManager.Instance.OnShowDialogue
                             ?.Invoke(_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex].dialogue, showChoices);
                     }

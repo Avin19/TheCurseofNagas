@@ -1163,9 +1163,19 @@
     [=] DialogueGraphView
         {+} Fixing delete port | port data now gets removed properly
 
-- Save still does not functions properly
-- Load is also breaking
 --------------------------------------------------------------------------------------------------------
+                                                22 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] TestDialogueMainManager
+        {+} Adding a hashset for holding flags
+    [=] TestDialogueManager
+        {+} Checking flags for choices
+--------------------------------------------------------------------------------------------------------
+- [DO] For same character, do not evaluate choices if already evaluated
+- [FIXED] Dialogue Garph
+    [=] [FIXED] Save still does not functions properly
+    [=] [FIXED] Load is also breaking
 - [DO] Might need to convert the array to List for btQuestIndex as Side-Quests can be completed non-linearly
     [=] [DO] Can also re-arrange after completion of a quest
 - [DO] Convert story conditions from bool to flags

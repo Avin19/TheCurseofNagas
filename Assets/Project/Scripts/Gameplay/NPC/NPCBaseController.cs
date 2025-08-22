@@ -1,3 +1,4 @@
+#define DEBUG_1
 using UnityEngine;
 
 using CurseOfNaga.Global;
@@ -44,7 +45,9 @@ namespace CurseOfNaga.Gameplay.NPC
             }
 
             npcID = _NpcID;
+#if DEBUG_1
             Debug.Log($"Making Interaction | Id: {transform.GetInstanceID()}");
+#endif
 
             return type;
         }
