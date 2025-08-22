@@ -101,6 +101,7 @@ namespace CurseOfNaga.QuestSystem
 
         private void UpdateQuestData(string idVal, QuestStatus questStatus, int questIndex = 0)
         {
+            Debug.Log($"idVal: {idVal} | questStatus: {questStatus} | questIndex: {questIndex}");
             switch (questStatus)
             {
                 case QuestStatus.IN_PROGRESS:
@@ -123,7 +124,8 @@ namespace CurseOfNaga.QuestSystem
                             {
                                 foundObjective = true;
 
-                                questObjectives[_activeQuestIndexes[i]].current_count++;
+                                // questObjectives[_activeQuestIndexes[i]].current_count++;
+                                questObjectives[j].current_count++;
                                 //Update UI for objective
                                 TestDialogueMainManager.Instance.OnQuestUIUpdate?
                                     .Invoke(_questTemplate.quests_data[_activeQuestIndexes[i]], _DEFAULT_VALUE);
@@ -150,8 +152,8 @@ namespace CurseOfNaga.QuestSystem
                             }
                             else
                             {
-                                _activeQuestIndexes.Remove(i);      //Remove from active Quests
                                 _questTemplate.quests_data[_activeQuestIndexes[i]].status = QuestStatus.COMPLETED;
+                                _activeQuestIndexes.RemoveAt(i);      //Remove from active Quests
                             }
                             TestDialogueMainManager.Instance.OnQuestCompleted?.Invoke(_questTemplate.quests_data[_activeQuestIndexes[i]].reward, i);
                         }
@@ -180,7 +182,7 @@ namespace CurseOfNaga.QuestSystem
 
                 case QuestStatus.REQUESTED_INFO:
                     TestDialogueMainManager.Instance.OnQuestUIUpdate?
-                        .Invoke(_questTemplate.quests_data[_activeQuestIndexes[questIndex]], _DEFAULT_VALUE);
+                        .Invoke(_questTemplate.quests_data[questIndex], _DEFAULT_VALUE);
 
                     break;
             }

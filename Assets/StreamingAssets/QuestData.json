@@ -35,7 +35,7 @@
                     "type": 2,
                     "description": "Talk to Salem",
                     "target_id": "SA_00",
-                    "required_count": 1,
+                    "required_count": 2,
                     "current_count": 0,
                     "is_optional": false
                 },
@@ -43,7 +43,7 @@
                     "type": 2,
                     "description": "Talk to Medeh",
                     "target_id": "ME_00",
-                    "required_count": 1,
+                    "required_count": 2,
                     "current_count": 0,
                     "is_optional": false
                 },
@@ -51,13 +51,14 @@
                     "type": 2,
                     "description": "(Optional) Talk to Jaffar",
                     "target_id": "JA_00",
-                    "required_count": 1,
+                    "required_count": 2,
                     "current_count": 0,
                     "is_optional": true
                 }
             ],
             "prerequisites": [
-                "000_FI_VL"
+                "000_FI_VL",
+                "002_CO_OB1"
             ],
             "reward": {
                 "description": "You have collected info about the village.",
@@ -67,7 +68,55 @@
             }
         },
         {
-            "uid": "002_TA_EL",
+            "uid": "002_CO_OB1",
+            "name": "Gather resources",
+            "description": "I want you to collect 3 objects for me",
+            "status": 1,
+            "type": 2,
+            "objectives": [
+                {
+                    "type": 1,
+                    "description": "Collect 3 Objects",
+                    "target_id": "OB_00",
+                    "required_count": 3,
+                    "current_count": 0,
+                    "is_optional": false
+                }
+            ],
+            "prerequisites": null,
+            "reward": {
+                "description": "You have succefully collected the 3 objects",
+                "xp": 10,
+                "item": null,
+                "gold": 0
+            }
+        },
+        {
+            "uid": "003_CO_OB2",
+            "name": "Gather resources",
+            "description": "I want you to collect 2 objects for me",
+            "status": 1,
+            "type": 2,
+            "objectives": [
+                {
+                    "type": 1,
+                    "description": "Collect 2 Objects",
+                    "target_id": "OB_00",
+                    "required_count": 2,
+                    "current_count": 0,
+                    "is_optional": false
+                }
+            ],
+            "prerequisites": null,
+            "reward": {
+                "description": "You have succefully collected the 2 objects",
+                "xp": 10,
+                "item": null,
+                "gold": 0
+            }
+        },
+        {
+            "uid": "003_TA_EL",
             "name": "Meet up with the Elder",
             "description": "You have reached the village, you don't know anyone here and you have to find the secret to lift the curse. The Elder of the village should have some knowledge about it. Find the Elder to get started",
             "status": 0,

@@ -1185,7 +1185,16 @@
         {+} Clearing targetNode list if FINISHING_INTERACTION
 - Dialogues_SerializesTest.json
     [=] Adding quest-related nodes
+
+- Scripts
+    [=] TestQuestSystemCanvas
+        {+} Fixing logic
+        {+} Disabling back button for main quest
+- QuestData.json
+    [=] Adding SubMainQuests
 --------------------------------------------------------------------------------------------------------
+- [DO] Dont 
+- [DO] Stop 'E' when choices are presented to player
 - [DO] For Dialogue invoke quest
     [=] NPC says new quest available -> Briefly explains new quest
     [=] Player accepts quest -> Control goes to NPC Node? -> Quest shown

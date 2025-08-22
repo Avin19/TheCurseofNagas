@@ -17,13 +17,14 @@ namespace CurseOfNaga.QuestSystem.Test
         [SerializeField] private TMPro.TMP_Text[] _questRewardsTxt;
         [SerializeField] private TMPro.TMP_Text _questTitleTxt, _questDescTxt, _questObjectivesTxt, _questRewardDescTxt;
 
-        [SerializeField] private Button[] _checkQuestBts;           //Only upto 4 for now
+        [SerializeField] private Button[] _checkQuestBts;           //Only upto 4 for now | 0 will always be Main Quest
         private TMPro.TMP_Text[] _checkQuestTxts;           //Only upto 4 for now
         private int[] _btQuestIndex;                        // 0 will always be Main Quest
         private int _currentBtIndex;
         private const int _TOTAL_QUEST_BTS = 4;
 
         private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
+        private const string _IN_PROGRESS = " [IN PROGRESS]", _COMPLETED = " [COMPLETED]";
 
         private bool _paused;
         [SerializeField] private GameObject _pauseMenuRect;
@@ -108,18 +109,19 @@ namespace CurseOfNaga.QuestSystem.Test
 
             if (rewarded)
             {
-                _questTitleTxt.text += " [COMPLETED]";
+                _questTitleTxt.text += _COMPLETED;
             }
             // Player accepted the Quest
             else
             {
                 _checkQuestBts[_currentBtIndex].gameObject.SetActive(true);
                 //Move to the next slot of button-indexes
-                _currentBtIndex = (_currentBtIndex + 1) >= _TOTAL_QUEST_BTS ? 1 : _currentBtIndex++;
+                _currentBtIndex = ((_currentBtIndex + 1) >= _TOTAL_QUEST_BTS) ? 1 : ++_currentBtIndex;
                 // _currentBtIndex++;
-                // _questTitleTxt.text += " [IN PROGRESS]";
+                _questTitleTxt.text += _IN_PROGRESS;
                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke("", QuestStatus.ACCEPTED, _DEFAULT_VALUE);
                 _acceptQuestBt.gameObject.SetActive(false);
+                _backBt.gameObject.SetActive(true);             // For main quest
             }
         }
 
@@ -133,17 +135,25 @@ namespace CurseOfNaga.QuestSystem.Test
             _questContentRect.SetActive(true);
             _questRect.SetActive(true);
 
+            _questTitleTxt.text = questInfo.name;
+            // _questTitleTxt.text += _IN_PROGRESS;
+            _questDescTxt.text = questInfo.description;
+
             if (btIndex != _DEFAULT_VALUE)
             {
                 _btQuestIndex[_currentBtIndex] = btIndex;
                 _checkQuestTxts[_currentBtIndex].text = questInfo.name;            //Update button name
-            }
-            else
-                _acceptQuestBt.gameObject.SetActive(false);
+                _acceptQuestBt.gameObject.SetActive(true);
 
-            _questTitleTxt.text = questInfo.name;
-            _questTitleTxt.text += " [IN PROGRESS]";
-            _questDescTxt.text = questInfo.description;
+                if (questInfo.type == QuestType.MAIN_QUEST)
+                    _backBt.gameObject.SetActive(false);
+            }
+            //For quests already existing
+            else
+            {
+                _questTitleTxt.text += _IN_PROGRESS;
+                _acceptQuestBt.gameObject.SetActive(false);
+            }
 
             System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
             for (int i = 0; i < questInfo.objectives.Count; i++)

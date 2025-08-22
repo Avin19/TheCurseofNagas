@@ -13,6 +13,10 @@ namespace CurseOfNaga.QuestSystem
         public Reward reward;
     }
 
+    /*
+    *   - SUB_MAIN_QUEST : In order to unlock the Main Quest, mini main quests need to be done first. These are mandoatory
+    *   - SIDE_QUEST : Some collectibles/xp/bonuses as rewards. These are optional
+    */
     public enum QuestType { FREE_ROAM, MAIN_QUEST, SUB_MAIN_QUEST, SIDE_QUEST }
 
     public enum QuestStatus
