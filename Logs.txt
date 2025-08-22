@@ -1171,7 +1171,26 @@
         {+} Adding a hashset for holding flags
     [=] TestDialogueManager
         {+} Checking flags for choices
+        
+- Activate quest through dialogue/talking to NPC
+- Scripts
+    [=] TestDialogueMainManager
+        {+} Adding another hashset for active flags for quests
+    [=] UniversalConstant
+        {+} Adding QUEST to DialogueType
+    [=] TestDialogueManager
+        {+} Quest acceptance logic
+            <~> Set flag when new quest available and check back
+        {+} Changing const field values
+        {+} Clearing targetNode list if FINISHING_INTERACTION
+- Dialogues_SerializesTest.json
+    [=] Adding quest-related nodes
 --------------------------------------------------------------------------------------------------------
+- [DO] For Dialogue invoke quest
+    [=] NPC says new quest available -> Briefly explains new quest
+    [=] Player accepts quest -> Control goes to NPC Node? -> Quest shown
+    [=] Player declines quest -> NPC says to come back later -> NPC goes back to casual node
+- [DO] Decline button with accept button for declining quest
 - [DO] For same character, do not evaluate choices if already evaluated
 - [FIXED] Dialogue Garph
     [=] [FIXED] Save still does not functions properly

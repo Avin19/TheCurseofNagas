@@ -19,12 +19,13 @@ namespace CurseOfNaga.DialogueSystem.Test
             else
                 Destroy(gameObject);
 
-            flagsHolder = new HashSet<string>();
+            CompletedFlags = new HashSet<string>();
+            ActiveQuestFlags = new HashSet<string>();
         }
         #endregion Singleton
 
         public TestConditionFlags flag1 = TestConditionFlags.NOT_SET;
-        public HashSet<string> flagsHolder;
+        public HashSet<string> CompletedFlags, ActiveQuestFlags;
 
         public Action<InteractionType, int, int> OnPlayerInteraction;
         public Action<string, bool> OnShowDialogue;

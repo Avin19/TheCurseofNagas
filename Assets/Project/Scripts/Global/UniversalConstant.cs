@@ -126,7 +126,7 @@ namespace CurseOfNaga.Global
             PLAYING, FINISHED, REACHED_HIT_POINT
         }
 
-        public enum DialogueType { SPEECH, QUESTION, ANSWER, CHOICE, END }
+        public enum DialogueType { SPEECH, QUESTION, ANSWER, CHOICE, QUEST, END }
 
         public const string NOT_SET_STR = "NOT_SET", JSON_EXTENSION = ".json",
             JSON_BACKUP_EXTENSION = "_bkp.json";

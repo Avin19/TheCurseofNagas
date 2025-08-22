@@ -5,10 +5,10 @@
             "character_name": "000",
             "dialogues_list": [
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
                     "nodeIndex": 0,
-                    "quest_uid": "",
+                    "quest_uid": null,
                     "base_uid": "000PL_000",
                     "dialogue": "I am fine, thanks for asking. How about you?",
                     "ports": [
@@ -20,14 +20,14 @@
                     ],
                     "position": {
                         "x": 265.0,
-                        "y": 154.0
+                        "y": 112.0
                     }
                 },
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
                     "nodeIndex": 1,
-                    "quest_uid": "",
+                    "quest_uid": null,
                     "base_uid": "000PL_001",
                     "dialogue": "Doing well. How are you doing?",
                     "ports": [
@@ -43,10 +43,10 @@
                     }
                 },
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
                     "nodeIndex": 2,
-                    "quest_uid": "",
+                    "quest_uid": null,
                     "base_uid": "000PL_002",
                     "dialogue": "Just walking around, enjoying the day! Have you seen the elder?",
                     "ports": [
@@ -62,10 +62,10 @@
                     }
                 },
                 {
-                    "flags": "",
+                    "flags": "000_FI_VL|001_FI_OB1",
                     "type": 0,
                     "nodeIndex": 3,
-                    "quest_uid": "",
+                    "quest_uid": null,
                     "base_uid": "000PL_003",
                     "dialogue": "Did you hear anything new about the town?",
                     "ports": [
@@ -76,15 +76,15 @@
                         }
                     ],
                     "position": {
-                        "x": 2252.0,
-                        "y": -211.0
+                        "x": 2230.0,
+                        "y": -237.0
                     }
                 },
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
                     "nodeIndex": 4,
-                    "quest_uid": "",
+                    "quest_uid": null,
                     "base_uid": "000PL_004",
                     "dialogue": "I want to know the whereabouts of the castle treasure.",
                     "ports": [
@@ -100,10 +100,10 @@
                     }
                 },
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
                     "nodeIndex": 5,
-                    "quest_uid": "",
+                    "quest_uid": null,
                     "base_uid": "000PL_005",
                     "dialogue": "Why is hte fort increasing more security?",
                     "ports": [
@@ -111,6 +111,44 @@
                             "base_uid": "000PL_005",
                             "name": "Choice 1",
                             "target_uid": "001SA_003"
+                        }
+                    ],
+                    "position": {
+                        "x": 2266.0,
+                        "y": 112.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 2,
+                    "nodeIndex": 6,
+                    "quest_uid": null,
+                    "base_uid": "000PL_006",
+                    "dialogue": "I accept",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_006",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_008"
+                        }
+                    ],
+                    "position": {
+                        "x": 2266.0,
+                        "y": 112.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 2,
+                    "nodeIndex": 7,
+                    "quest_uid": null,
+                    "base_uid": "000PL_007",
+                    "dialogue": "Sorry not right now",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_007",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_009"
                         }
                     ],
                     "position": {
@@ -125,10 +163,10 @@
             "character_name": "001",
             "dialogues_list": [
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
-                    "nodeIndex": 6,
-                    "quest_uid": "",
+                    "nodeIndex": 8,
+                    "quest_uid": null,
                     "base_uid": "001SA_000",
                     "dialogue": "Hey There!",
                     "ports": [
@@ -139,15 +177,15 @@
                         }
                     ],
                     "position": {
-                        "x": -384.0,
-                        "y": -24.0
+                        "x": -298.0,
+                        "y": -99.0
                     }
                 },
                 {
-                    "flags": "",
-                    "type": 0,
-                    "nodeIndex": 7,
-                    "quest_uid": "",
+                    "flags": null,
+                    "type": 3,
+                    "nodeIndex": 9,
+                    "quest_uid": null,
                     "base_uid": "001SA_001",
                     "dialogue": "How are you Doing?",
                     "ports": [
@@ -163,15 +201,15 @@
                         }
                     ],
                     "position": {
-                        "x": -87.0,
-                        "y": -24.0
+                        "x": -56.0,
+                        "y": -34.0
                     }
                 },
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
-                    "nodeIndex": 8,
-                    "quest_uid": "",
+                    "nodeIndex": 10,
+                    "quest_uid": null,
                     "base_uid": "001SA_002",
                     "dialogue": "Doing great. What are you doing here?",
                     "ports": [
@@ -187,10 +225,10 @@
                     }
                 },
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
-                    "nodeIndex": 9,
-                    "quest_uid": "",
+                    "nodeIndex": 11,
+                    "quest_uid": null,
                     "base_uid": "001SA_003",
                     "dialogue": "I am fine. Nice day for fishing, ain't it?",
                     "ports": [
@@ -206,10 +244,10 @@
                     }
                 },
                 {
-                    "flags": "",
+                    "flags": null,
                     "type": 0,
-                    "nodeIndex": 10,
-                    "quest_uid": "",
+                    "nodeIndex": 12,
+                    "quest_uid": null,
                     "base_uid": "001SA_004",
                     "dialogue": "You can find him by the lake.",
                     "ports": [
@@ -225,10 +263,10 @@
                     }
                 },
                 {
-                    "flags": "",
-                    "type": 0,
-                    "nodeIndex": 11,
-                    "quest_uid": "",
+                    "flags": null,
+                    "type": 3,
+                    "nodeIndex": 13,
+                    "quest_uid": null,
                     "base_uid": "001SA_005",
                     "dialogue": "What can I help you with?",
                     "ports": [
@@ -251,6 +289,87 @@
                     "position": {
                         "x": 1863.0,
                         "y": 155.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 0,
+                    "nodeIndex": 14,
+                    "quest_uid": null,
+                    "base_uid": "001SA_006",
+                    "dialogue": "I have a new quest for you!",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_006",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_007"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 185.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 3,
+                    "nodeIndex": 15,
+                    "quest_uid": null,
+                    "base_uid": "001SA_007",
+                    "dialogue": "Briefly explain quest",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_007",
+                            "name": "Choice 1",
+                            "target_uid": "000PL_006"
+                        },
+                        {
+                            "base_uid": "001SA_007",
+                            "name": "Choice 1",
+                            "target_uid": "000PL_007"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 185.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": "4",
+                    "nodeIndex": 16,
+                    "quest_uid": "002_CO_OB1",
+                    "base_uid": "001SA_008",
+                    "dialogue": "Thanks for the help",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_008",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_005"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 205.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 0,
+                    "nodeIndex": 17,
+                    "quest_uid": null,
+                    "base_uid": "001SA_009",
+                    "dialogue": "Come back when you are free!",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_009",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_005"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 225.0
                     }
                 }
             ]
