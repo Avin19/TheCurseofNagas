@@ -8,6 +8,7 @@ using CurseOfNaga.Utils;
 
 using static CurseOfNaga.Global.UniversalConstant;
 using System.Collections.Generic;
+using CurseOfNaga.QuestSystem;
 
 namespace CurseOfNaga.DialogueSystem.Test
 {
@@ -34,16 +35,19 @@ namespace CurseOfNaga.DialogueSystem.Test
         // IMP: Assumption made that the NPC will be in the same order as the Dialogue JSON or something defined
         [SerializeField] private int[] _dialogueTracker;
         // ==========================================> NEED TO BE SAVED <===================================
-        private int _charUID, _invokedNpcObjUID, _currNpcObjUID;      //For tracking the dialogueNodes
+        private int _currCharUID, _invokedNpcObjUID, _currNpcObjUID;      //For tracking the dialogueNodes
         private List<string> _targetNodeIds;
 
         private const string _FILENAME = "Dialogues_SerializeTest.json";
         private const string _EMPTY_STR = "";
-        private const int _SET_VAL = 1, _DEFAULT_VAL = -1, _UNSET_VAL = 0, _PLAYER_OFFSET = 1;
+        private const int _PLAYER_OFFSET = 1;
+        private const int _SHOW_MAIN_DIALOGUE = 1000;
+        private const int _QUEST_QCCEPTED = 0, _QUEST_DECLINED = 1;
 
         private void OnDisable()
         {
             TestDialogueMainManager.Instance.OnPlayerInteraction -= EvaluateAndLoadDialogue;
+            TestDialogueMainManager.Instance.OnQuestUpdate -= UpdateQuestDialogue;
         }
 
         private void OnEnable()
@@ -51,7 +55,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             Invoke(nameof(Initialize), 1f);
             LoadDialoguesJson();
 
-            _charUID = _DEFAULT_VAL;
+            _currCharUID = _DEFAULT_VAL;
             _currNpcObjUID = _DEFAULT_VAL;
         }
 
@@ -59,6 +63,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         {
             _targetNodeIds = new List<string>();
             TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
+            TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestDialogue;
         }
 
         public void Initialize(int totalNPCCount)
@@ -66,6 +71,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             _dialogueTracker = new int[totalNPCCount + _PLAYER_OFFSET];
             _targetNodeIds = new List<string>();
             TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
+            TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestDialogue;
         }
 
         public async void LoadDialoguesJson()
@@ -85,6 +91,35 @@ namespace CurseOfNaga.DialogueSystem.Test
 
             _dialogueTemplate = JsonUtility.FromJson<DialogueTemplate>(jsonData);
             // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}"); return;         //TEST
+        }
+
+        private void UpdateQuestDialogue(string idVal, QuestStatus status, int questIndex)
+        {
+            if (_targetNodeIds.Count == 0 || status <= QuestStatus.REQUESTED_INFO) return;
+
+            int nextDgIndex = 0;
+            string tempString;
+            if (status == QuestStatus.ACCEPTED)
+            {
+                // Extract the Target Dialogue Node to display
+                int.TryParse(_targetNodeIds[_QUEST_QCCEPTED].Substring(0, 3), out _currCharUID);
+                int.TryParse(_targetNodeIds[_QUEST_QCCEPTED].Substring(6, 3), out nextDgIndex);
+            }
+            else if (status == QuestStatus.DECLINED)
+            {
+                // Extract the Target Dialogue Node to display
+                int.TryParse(_targetNodeIds[_QUEST_DECLINED].Substring(0, 3), out _currCharUID);
+                int.TryParse(_targetNodeIds[_QUEST_DECLINED].Substring(6, 3), out nextDgIndex);
+            }
+
+            tempString = _dialogueTemplate.characters[_currCharUID].dialogues_list[nextDgIndex].ports[0].target_uid;
+            int.TryParse(tempString.Substring(0, 3), out _currCharUID);
+            int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
+
+            _dialogueTracker[_currNpcObjUID] = nextDgIndex;
+
+            EvaluateAndLoadDialogue(InteractionType.INTERACTING_WITH_NPC, _SET_VAL, _DEFAULT_VAL);
+            _targetNodeIds.Clear();
         }
 
         // private string[] choiceFlags; // DEBUG
@@ -124,39 +159,49 @@ namespace CurseOfNaga.DialogueSystem.Test
             {
                 //Get the current Player Dialogue Node
                 // _npcObjUID = PLAYER_ID;         //Player ID
-                int.TryParse(_targetNodeIds[uid].Substring(0, 3), out _charUID);
+                int.TryParse(_targetNodeIds[uid].Substring(0, 3), out _currCharUID);
                 int.TryParse(_targetNodeIds[uid].Substring(6, 3), out nextDgIndex);
 
                 // As the player has answered, there will be only 1 dialogue from the NPC side everytime, as they 
                 // do not have choices to make. 
                 // TODO: Maybe NPC can choose what to say based on some conditions
-                tempString = _dialogueTemplate.characters[_charUID].dialogues_list[nextDgIndex].ports[0].target_uid;
-                // Debug.Log($"_targetNodeIds: {_targetNodeIds[uid]} | _charUID: {_charUID} | _npcObjUID: {_npcObjUID}");
 
-                // Extract the Target Dialogue Node to display
-                int.TryParse(tempString.Substring(0, 3), out _charUID);
-                int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
-                _dialogueTracker[PLAYER_ID] = nextDgIndex;
+                //For quest just store the current ID until the player has chosen whether to accept or not
+                if (_dialogueTemplate.characters[_currCharUID].dialogues_list[nextDgIndex].type
+                    == (int)DialogueType.QUEST)
+                {
+                    _dialogueTracker[PLAYER_ID] = nextDgIndex;
+                }
+                else
+                {
+                    tempString = _dialogueTemplate.characters[_currCharUID].dialogues_list[nextDgIndex].ports[0].target_uid;
+                    // Debug.Log($"_targetNodeIds: {_targetNodeIds[uid]} | _charUID: {_charUID} | _npcObjUID: {_npcObjUID}");
+
+                    // Extract the Target Dialogue Node to display
+                    int.TryParse(tempString.Substring(0, 3), out _currCharUID);
+                    int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
+                    _dialogueTracker[PLAYER_ID] = nextDgIndex;
 #if DEBUG_1
                 Debug.Log($"_targetNodeIds: {_targetNodeIds[uid]} | _charUID: {_charUID} | _npcObjUID: {PLAYER_ID}");
 #endif
 
-                //Clear everything as strings will be replaced
-                _targetNodeIds.Clear();
-                dialogueData = _dialogueTemplate.characters[_charUID].dialogues_list[_dialogueTracker[PLAYER_ID]];
+                    //Clear everything as strings will be replaced
+                    _targetNodeIds.Clear();
+                }
+                dialogueData = _dialogueTemplate.characters[_currCharUID].dialogues_list[_dialogueTracker[PLAYER_ID]];
             }
             else
             {
                 if (interactionType != InteractionType.INTERACTING_WITH_NPC || uid == _DEFAULT_VAL) return;
-                //Set the Character ID tracker
+                //Set the Character ID tracker for the first time
                 else if (_currNpcObjUID == _DEFAULT_VAL)
                 {
-                    _charUID = uid;
+                    _currCharUID = uid;
                     _invokedNpcObjUID = npcID + _PLAYER_OFFSET;
                     _currNpcObjUID = _invokedNpcObjUID;
                 }
                 //Turn off Dialogue once finished
-                else if (_charUID == _DEFAULT_VAL)
+                else if (_currCharUID == _DEFAULT_VAL)
                 {
                     _currNpcObjUID = _DEFAULT_VAL;
 
@@ -164,14 +209,17 @@ namespace CurseOfNaga.DialogueSystem.Test
                         .Invoke(InteractionType.FINISHING_INTERACTION, _SET_VAL, _DEFAULT_VAL);
                     return;
                 }
-                dialogueData = _dialogueTemplate.characters[_charUID].dialogues_list[_dialogueTracker[_currNpcObjUID]];
+
+                //FIXME: _currNpcObjUID is to track multiple instances of the same character
+                // When using goons to attack player | They will have same set of dialogues
+                dialogueData = _dialogueTemplate.characters[_currCharUID].dialogues_list[_dialogueTracker[_currNpcObjUID]];
             }
 
             //TODO: Configure this in the future if needed
 
             //Get the dialogue
             tempString = dialogueData.dialogue;
-            TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
+            // TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
 #if DEBUG_1
             Debug.Log($"Shwoing Dialogue | tempString: {tempString} | Ports: {dialogueData.ports.Count}");
 #endif
@@ -181,31 +229,29 @@ namespace CurseOfNaga.DialogueSystem.Test
             switch (dialogueType)
             {
                 case (int)DialogueType.SPEECH:
-                    break;
-
                 case (int)DialogueType.QUESTION:
-                    break;
-
                 case (int)DialogueType.ANSWER:
+                    TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
                     break;
 
                 //We would have to iterate over every choice and check if the requirements are met or not
                 case (int)DialogueType.CHOICE:
                     // TestDialogueMainManager.Instance.OnPlayerInteraction?
                     //     .Invoke(InteractionType.INTERACTING_WITH_NPC, UNSET_VAL, -(int)DialogueType.CHOICE);
+                    // TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
 
                     int choicesCount = dialogueData.ports.Count;
-                    showChoices = true;
 
                     string[] choiceFlags;
+                    string choiceString;
                     int choiceIndex = 0, chFlagsIndex;
                     //Iterate over each choice and display buttons
                     for (; choiceIndex < choicesCount; choiceIndex++)
                     {
                         choiceFlags = null;
-                        tempString = dialogueData.ports[choiceIndex].target_uid;
-                        int.TryParse(tempString.Substring(0, 3), out nextChIndex);
-                        int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
+                        choiceString = dialogueData.ports[choiceIndex].target_uid;
+                        int.TryParse(choiceString.Substring(0, 3), out nextChIndex);
+                        int.TryParse(choiceString.Substring(6, 3), out nextDgIndex);
 
                         // Check if the flags are empty or not
                         if (!_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex]
@@ -228,19 +274,21 @@ namespace CurseOfNaga.DialogueSystem.Test
                             if (chFlagsIndex != choiceFlags.Length) continue;
                         }
 
-                        _targetNodeIds.Add(tempString);
+                        _targetNodeIds.Add(choiceString);
                         TestDialogueMainManager.Instance.OnShowDialogue
-                            ?.Invoke(_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex].dialogue, showChoices);
-                    }
+                            ?.Invoke(_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex].dialogue, true);
 
+                    }
+                    //showChoices should not matter as the main dialogue should be shown no matter what along with the choices so something can be done here
+                    TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, false);
                     return;
 
                 // Accepting quest from NPC
                 case (int)DialogueType.QUEST:
                     //get quest id and send it back as it is
                     TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(dialogueData.quest_uid,
-                        QuestSystem.QuestStatus.REQUESTED, _DEFAULT_VAL);
-                    break;
+                        QuestStatus.REQUESTED, _DEFAULT_VAL);
+                    return;
 
                 //Shifting End logic here
                 case (int)DialogueType.END:
@@ -265,7 +313,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                         *               [IMP] Need to update index once the player has made progress
                         */
 
-                        _charUID = _DEFAULT_VAL;
+                        _currCharUID = _DEFAULT_VAL;
 
                         // Normal COnversation and Casual Conversation should be equal
                         // The target-id can be defined in the JSON only
@@ -280,6 +328,11 @@ namespace CurseOfNaga.DialogueSystem.Test
 
                         return;
                     }
+
+                case _SHOW_MAIN_DIALOGUE:
+                    TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
+
+                    break;
 
                 case 420:
                     // Evaluate the conditions to show correct dialogue
@@ -307,7 +360,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             // }
 
             tempString = dialogueData.ports[0].target_uid;
-            int.TryParse(tempString.Substring(0, 3), out _charUID);
+            int.TryParse(tempString.Substring(0, 3), out _currCharUID);
             int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
 
             // Update tracker value

@@ -120,9 +120,9 @@
                 },
                 {
                     "flags": null,
-                    "type": 2,
+                    "type": 4,
                     "nodeIndex": 6,
-                    "quest_uid": null,
+                    "quest_uid": "002_CO_OB1",
                     "base_uid": "000PL_006",
                     "dialogue": "I accept",
                     "ports": [
@@ -336,9 +336,9 @@
                 },
                 {
                     "flags": null,
-                    "type": "4",
+                    "type": 0,
                     "nodeIndex": 16,
-                    "quest_uid": "002_CO_OB1",
+                    "quest_uid": null,
                     "base_uid": "001SA_008",
                     "dialogue": "Thanks for the help",
                     "ports": [

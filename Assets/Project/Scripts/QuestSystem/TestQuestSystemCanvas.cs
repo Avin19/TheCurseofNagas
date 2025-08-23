@@ -22,8 +22,8 @@ namespace CurseOfNaga.QuestSystem.Test
         private int[] _btQuestIndex;                        // 0 will always be Main Quest
         private int _currentBtIndex;
         private const int _TOTAL_QUEST_BTS = 4;
+        private QuestType _currentQuestType;
 
-        private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
         private const string _IN_PROGRESS = " [IN PROGRESS]", _COMPLETED = " [COMPLETED]";
 
         private bool _paused;
@@ -48,11 +48,7 @@ namespace CurseOfNaga.QuestSystem.Test
 
             _acceptQuestBt.onClick.AddListener(() => UpdateQuestStatus(false));
             _acceptRewardBt.onClick.AddListener(() => UpdateQuestStatus(true));
-            _backBt.onClick.AddListener(() =>
-            {
-                _questChoicesRect.SetActive(true);
-                _questContentRect.SetActive(false);
-            });
+            _backBt.onClick.AddListener(QuestRectClosed);
 
             _btQuestIndex = new int[_TOTAL_QUEST_BTS];
             _checkQuestTxts = new TMPro.TMP_Text[_TOTAL_QUEST_BTS];
@@ -101,6 +97,16 @@ namespace CurseOfNaga.QuestSystem.Test
             _questContentRect.SetActive(true);
         }
 
+        private void QuestRectClosed()
+        {
+            //Player has not accpeted the quest presented
+            if (_currentQuestType >= QuestType.MAIN_QUEST)
+                TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(null, QuestStatus.DECLINED, _DEFAULT_VAL);
+
+            _questChoicesRect.SetActive(true);
+            _questContentRect.SetActive(false);
+        }
+
         private void UpdateQuestStatus(bool rewarded = false)
         {
             Debug.Log($"Accepted Reward/Quest | rewarded: {rewarded}");
@@ -119,7 +125,7 @@ namespace CurseOfNaga.QuestSystem.Test
                 _currentBtIndex = ((_currentBtIndex + 1) >= _TOTAL_QUEST_BTS) ? 1 : ++_currentBtIndex;
                 // _currentBtIndex++;
                 _questTitleTxt.text += _IN_PROGRESS;
-                TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke("", QuestStatus.ACCEPTED, _DEFAULT_VALUE);
+                TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(null, QuestStatus.ACCEPTED, _DEFAULT_VAL);
                 _acceptQuestBt.gameObject.SetActive(false);
                 _backBt.gameObject.SetActive(true);             // For main quest
             }
@@ -139,7 +145,7 @@ namespace CurseOfNaga.QuestSystem.Test
             // _questTitleTxt.text += _IN_PROGRESS;
             _questDescTxt.text = questInfo.description;
 
-            if (btIndex != _DEFAULT_VALUE)
+            if (btIndex != _DEFAULT_VAL)
             {
                 _btQuestIndex[_currentBtIndex] = btIndex;
                 _checkQuestTxts[_currentBtIndex].text = questInfo.name;            //Update button name
@@ -147,10 +153,13 @@ namespace CurseOfNaga.QuestSystem.Test
 
                 if (questInfo.type == QuestType.MAIN_QUEST)
                     _backBt.gameObject.SetActive(false);
+
+                _currentQuestType = questInfo.type;
             }
             //For quests already existing
             else
             {
+                _currentQuestType = QuestType.FREE_ROAM;
                 _questTitleTxt.text += _IN_PROGRESS;
                 _acceptQuestBt.gameObject.SetActive(false);
             }

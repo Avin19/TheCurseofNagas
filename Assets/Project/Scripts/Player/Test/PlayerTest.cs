@@ -25,7 +25,6 @@ namespace CurseOfNaga.Gameplay.Player.Test
         private IInteractable _currentInteractable;
         //UID is for the object ID in the pooled/initialized array| ObjID is for the specific type of Interacting Obj
         // private int _currInteractUID, _currInteractObjID;
-        private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
 #endif
 
         private void Start()
@@ -74,12 +73,13 @@ namespace CurseOfNaga.Gameplay.Player.Test
                 int objID;
                 _currInteractableType = _currentInteractable.Interact(InteractionType.INTERACTION_REQUEST, out objID);
                 // _currInteractUID = _currentInteractable.UID;
-                TestDialogueMainManager.Instance.OnPlayerInteraction
-                    ?.Invoke(_currInteractableType, _currentInteractable.UID, objID);
+                TestDialogueMainManager.Instance.OnPlayerInteraction?
+                    .Invoke(_currInteractableType, _currentInteractable.UID, objID);
             }
             else
             {
-                TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(_currInteractableType, _ACTIVE, _DEFAULT_VALUE);
+                TestDialogueMainManager.Instance.OnPlayerInteraction?
+                    .Invoke(_currInteractableType, _SET_VAL, _DEFAULT_VAL);
             }
         }
 
@@ -90,7 +90,7 @@ namespace CurseOfNaga.Gameplay.Player.Test
             {
                 case (int)Layer.INTERACTABLE:
                     TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(
-                            InteractionType.PROMPT_TRIGGERED, _ACTIVE, _DEFAULT_VALUE);
+                            InteractionType.PROMPT_TRIGGERED, _SET_VAL, _DEFAULT_VAL);
                     _currInteractableType = InteractionType.PROMPT_TRIGGERED;
                     _currentInteractable = other.transform.parent.GetComponent<IInteractable>();
 
@@ -105,7 +105,7 @@ namespace CurseOfNaga.Gameplay.Player.Test
             {
                 case (int)Layer.INTERACTABLE:
                     TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(
-                            InteractionType.FINISHING_INTERACTION, _INACTIVE, _DEFAULT_VALUE);
+                            InteractionType.FINISHING_INTERACTION, _UNSET_VAL, _DEFAULT_VAL);
                     int otherID;
                     _currInteractableType = _currentInteractable.Interact(
                             InteractionType.FINISHING_INTERACTION, out otherID);

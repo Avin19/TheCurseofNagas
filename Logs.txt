@@ -1192,6 +1192,22 @@
         {+} Disabling back button for main quest
 - QuestData.json
     [=] Adding SubMainQuests
+
+--------------------------------------------------------------------------------------------------------
+                                                23 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] UniversalConstant
+        {+} Adding VAL constants here
+    [=] QuestTemplate
+        {+} Adding DECLINED to QuestStatus
+    [=] TestDialogueManager
+        {+} Accept/Decline quest logic | attaching callback
+        {+} Refactor DialogueType logic
+        {+} FIX _currCharUID, _currNpcObjUID | These logic dont make sense with current context
+    [=] TestQuestSystemCanvas
+        {+} Back bt logic | Invoking OnQuestUpdate on the basis of QuestType
+
 --------------------------------------------------------------------------------------------------------
 - [DO] Dont 
 - [DO] Stop 'E' when choices are presented to player

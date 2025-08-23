@@ -1,8 +1,10 @@
 #define TEST_QUESTS_1
 
 using System.Collections.Generic;
+
 using CurseOfNaga.DialogueSystem.Test;
 using CurseOfNaga.Utils;
+using static CurseOfNaga.Global.UniversalConstant;
 
 using UnityEngine;
 
@@ -22,7 +24,6 @@ namespace CurseOfNaga.QuestSystem
 
         private const string _FILENAME = "QuestData.json";
         private const string _MAIN_QUEST_ID = "000_FI_VL";
-        private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
 
         private void OnDisable()
         {
@@ -32,7 +33,7 @@ namespace CurseOfNaga.QuestSystem
 
         private void OnEnable()
         {
-            Invoke(nameof(Initialize), 4f);
+            Invoke(nameof(Initialize), 2f);
             LoadQuestJson();
         }
 
@@ -128,7 +129,7 @@ namespace CurseOfNaga.QuestSystem
                                 questObjectives[j].current_count++;
                                 //Update UI for objective
                                 TestDialogueMainManager.Instance.OnQuestUIUpdate?
-                                    .Invoke(_questTemplate.quests_data[_activeQuestIndexes[i]], _DEFAULT_VALUE);
+                                    .Invoke(_questTemplate.quests_data[_activeQuestIndexes[i]], _DEFAULT_VAL);
 
                                 if (questObjectives[j].current_count == questObjectives[j].required_count)
                                     objCompletedCount++;
@@ -182,7 +183,7 @@ namespace CurseOfNaga.QuestSystem
 
                 case QuestStatus.REQUESTED_INFO:
                     TestDialogueMainManager.Instance.OnQuestUIUpdate?
-                        .Invoke(_questTemplate.quests_data[questIndex], _DEFAULT_VALUE);
+                        .Invoke(_questTemplate.quests_data[questIndex], _DEFAULT_VAL);
 
                     break;
             }

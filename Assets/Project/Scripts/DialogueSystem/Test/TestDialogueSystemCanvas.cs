@@ -16,7 +16,8 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         private int _currDialogueIndex;
         private InteractionType _prevInteractionType;
-        private const int _ACTIVE = 1, _INACTIVE = 0, _DEFAULT_VALUE = -1;
+        private const int _SET_VAL = 1, _UNSET_VAL = 0, _DEFAULT_VALUE = -1;
+        private const string _EMPTY_STR = "";
 
         private void OnDisable()
         {
@@ -47,7 +48,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             Debug.Log($"Player chose dialogue. Index: {btIndex}");
 #endif
             // _showChoiceStatus = (byte)ChoiceType.CHOICE_CLICKED;
-            TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.MADE_CHOICE, btIndex, _INACTIVE);
+            TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(InteractionType.MADE_CHOICE, btIndex, _UNSET_VAL);
         }
 
         private void UpdateUIForInteraction(InteractionType interactionType, int value = -1, int otherVal = -1)
@@ -69,10 +70,10 @@ namespace CurseOfNaga.DialogueSystem.Test
 
                 case InteractionType.INTERACTING_WITH_NPC:
 
-                    if (value != -1 && _prevInteractionType != InteractionType.FINISHING_INTERACTION)
-                        _dialogueRect.SetActive(true);
-                    else
-                        _dialogueRect.SetActive(false);
+                    // if (value != -1 && _prevInteractionType != InteractionType.FINISHING_INTERACTION)
+                    _dialogueRect.SetActive(true);
+                    // else
+                    // _dialogueRect.SetActive(false);
 
                     break;
 
@@ -85,6 +86,9 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         private void UpdateDialogueText(string dialogue, bool showChoices)
         {
+            // if (dialogue.Equals(_EMPTY_STR))            
+            //     _dialogueRect.SetActive(false);            
+
             if (showChoices)
             {
                 _dialogueChoiceBts[_currDialogueIndex].gameObject.SetActive(true);

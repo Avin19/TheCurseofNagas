@@ -132,6 +132,8 @@ namespace CurseOfNaga.Global
             JSON_BACKUP_EXTENSION = "_bkp.json";
         public const int PLAYER_ID = 0;
 
+        public const int _SET_VAL = 1, _UNSET_VAL = 0, _DEFAULT_VAL = -1;
+
         public enum TestConditionFlags { NOT_SET, COND_1, COND_2, COND_3, COND_4 }
 
         public enum ConversationStatus { INTERESTED, NOT_INTERESTED }
