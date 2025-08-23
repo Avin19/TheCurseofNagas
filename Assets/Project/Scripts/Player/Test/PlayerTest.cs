@@ -1,5 +1,6 @@
 // #define TESTING
 // #define DEBUG_1
+#define DIALOGUE_TEST
 
 #define INTERACTABLE_NPC
 
@@ -73,14 +74,18 @@ namespace CurseOfNaga.Gameplay.Player.Test
                 int objID;
                 _currInteractableType = _currentInteractable.Interact(InteractionType.INTERACTION_REQUEST, out objID);
                 // _currInteractUID = _currentInteractable.UID;
+#if DIALOGUE_TEST
                 TestDialogueMainManager.Instance.OnPlayerInteraction?
                     .Invoke(_currInteractableType, _currentInteractable.UID, objID);
+#endif
             }
-            else
+#if DIALOGUE_TEST
+            else if ((TestDialogueMainManager.Instance.CurrPlayerStatus & PlayerStatus.MAKING_CHOICE) == 0)
             {
                 TestDialogueMainManager.Instance.OnPlayerInteraction?
                     .Invoke(_currInteractableType, _SET_VAL, _DEFAULT_VAL);
             }
+#endif
         }
 
         private void OnTriggerEnter(Collider other)
@@ -89,8 +94,10 @@ namespace CurseOfNaga.Gameplay.Player.Test
             switch (other.gameObject.layer)
             {
                 case (int)Layer.INTERACTABLE:
+#if DIALOGUE_TEST
                     TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(
                             InteractionType.PROMPT_TRIGGERED, _SET_VAL, _DEFAULT_VAL);
+#endif
                     _currInteractableType = InteractionType.PROMPT_TRIGGERED;
                     _currentInteractable = other.transform.parent.GetComponent<IInteractable>();
 
@@ -104,8 +111,10 @@ namespace CurseOfNaga.Gameplay.Player.Test
             switch (other.gameObject.layer)                   //other.gameobject can be a bit consuming
             {
                 case (int)Layer.INTERACTABLE:
+#if DIALOGUE_TEST
                     TestDialogueMainManager.Instance.OnPlayerInteraction?.Invoke(
                             InteractionType.FINISHING_INTERACTION, _UNSET_VAL, _DEFAULT_VAL);
+#endif
                     int otherID;
                     _currInteractableType = _currentInteractable.Interact(
                             InteractionType.FINISHING_INTERACTION, out otherID);

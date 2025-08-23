@@ -24,6 +24,8 @@ namespace CurseOfNaga.DialogueSystem.Test
         }
         #endregion Singleton
 
+        public PlayerStatus CurrPlayerStatus;
+
         public TestConditionFlags flag1 = TestConditionFlags.NOT_SET;
         public HashSet<string> CompletedFlags, ActiveQuestFlags;
 

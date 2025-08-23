@@ -1208,6 +1208,13 @@
     [=] TestQuestSystemCanvas
         {+} Back bt logic | Invoking OnQuestUpdate on the basis of QuestType
 
+- Scripts
+    [=] UniversalConstant
+        {+} Adding MAKING_CHOICE to PlayerStatus
+    [=] TestDialogueMainManager
+        {+} Adding PlayerStatus field
+    [=] TestDialogueManager
+        {+} Setting/Unsettinf CurrPlayerStatus to MAKING_CHOICE for choices
 --------------------------------------------------------------------------------------------------------
 - [DO] Dont 
 - [DO] Stop 'E' when choices are presented to player

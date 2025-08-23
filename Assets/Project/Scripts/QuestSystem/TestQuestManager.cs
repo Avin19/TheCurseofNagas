@@ -48,7 +48,7 @@ namespace CurseOfNaga.QuestSystem
 
         public void LoadSave()
         {
-
+            //TODO: Load Save Data
 
             // Initialize main quest if the game is new
             _mainQuestIndex = 0;

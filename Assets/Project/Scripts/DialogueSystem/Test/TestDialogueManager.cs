@@ -118,6 +118,8 @@ namespace CurseOfNaga.DialogueSystem.Test
 
             _dialogueTracker[_currNpcObjUID] = nextDgIndex;
 
+            TestDialogueMainManager.Instance.CurrPlayerStatus &= ~PlayerStatus.MAKING_CHOICE;
+
             EvaluateAndLoadDialogue(InteractionType.INTERACTING_WITH_NPC, _SET_VAL, _DEFAULT_VAL);
             _targetNodeIds.Clear();
         }
@@ -174,6 +176,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                 }
                 else
                 {
+                    TestDialogueMainManager.Instance.CurrPlayerStatus &= ~PlayerStatus.MAKING_CHOICE;
                     tempString = _dialogueTemplate.characters[_currCharUID].dialogues_list[nextDgIndex].ports[0].target_uid;
                     // Debug.Log($"_targetNodeIds: {_targetNodeIds[uid]} | _charUID: {_charUID} | _npcObjUID: {_npcObjUID}");
 
@@ -241,6 +244,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                     // TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
 
                     int choicesCount = dialogueData.ports.Count;
+                    TestDialogueMainManager.Instance.CurrPlayerStatus |= PlayerStatus.MAKING_CHOICE;
 
                     string[] choiceFlags;
                     string choiceString;
