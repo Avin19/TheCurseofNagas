@@ -219,12 +219,13 @@ namespace CurseOfNaga.QuestSystem
                             //If the quest is a main quest, then mark it complete and proceed to the next quest, add it to the active quest list
                             if (_questTemplate.quest_groups[gpIndex].content[qtIndex].type == QuestType.MAIN_QUEST)
                             {
+                                //Not being update properly
                                 _mainQuestIndex++;
                                 _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX] = _mainQuestIndex * tempPowerRaised;       //IMP | Keep the main Quest always in index 0
                                 _questTemplate.quest_groups[_mainQuestIndex].content[_MAIN_QUEST_COMMON_INDEX].status = QuestStatus.IN_PROGRESS;
 
                                 TestDialogueMainManager.Instance.OnQuestUIUpdate?
-                                    .Invoke(_questTemplate.quest_groups[_mainQuestIndex].content[_MAIN_QUEST_COMMON_INDEX], 0);
+                                    .Invoke(_questTemplate.quest_groups[_mainQuestIndex].content[_MAIN_QUEST_COMMON_INDEX], _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX]);
                             }
                             else
                             {

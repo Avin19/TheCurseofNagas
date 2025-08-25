@@ -60,6 +60,7 @@ namespace CurseOfNaga.QuestSystem.Test
                 _checkQuestTxts[i] = _checkQuestBts[i].transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
                 _btQuestIndex[i] = -1;
             }
+            _checkQuestBts[0].gameObject.SetActive(true);
         }
 
 #if PAUSE_TEST
@@ -114,21 +115,24 @@ namespace CurseOfNaga.QuestSystem.Test
             // _questRect.SetActive(false);
             _rewardRect.SetActive(false);
 
-            if (rewarded)
-            {
-                _questTitleTxt.text += _COMPLETED;
-            }
             // Player accepted the Quest
-            else
+            if (!rewarded)
             {
-                _checkQuestBts[_currentBtIndex].gameObject.SetActive(true);
-                //Move to the next slot of button-indexes
-                _currentBtIndex = ((_currentBtIndex + 1) >= _TOTAL_QUEST_BTS) ? 1 : ++_currentBtIndex;
+                if (_currentQuestType != QuestType.MAIN_QUEST)
+                {
+                    _checkQuestBts[_currentBtIndex].gameObject.SetActive(true);
+                    //Move to the next slot of button-indexes
+                    _currentBtIndex = ((_currentBtIndex + 1) >= _TOTAL_QUEST_BTS) ? 1 : ++_currentBtIndex;
+                }
                 // _currentBtIndex++;
                 _questTitleTxt.text += _IN_PROGRESS;
                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(null, QuestStatus.ACCEPTED, _DEFAULT_VAL);
                 _acceptQuestBt.gameObject.SetActive(false);
                 _backBt.gameObject.SetActive(true);             // For main quest
+            }
+            else if (_currentQuestType >= QuestType.SUB_MAIN_QUEST)
+            {
+                _questTitleTxt.text += _COMPLETED;
             }
         }
 
@@ -148,12 +152,18 @@ namespace CurseOfNaga.QuestSystem.Test
 
             if (btIndex != _DEFAULT_VAL)
             {
-                _btQuestIndex[_currentBtIndex] = btIndex;
-                _checkQuestTxts[_currentBtIndex].text = questInfo.name;            //Update button name
-                _acceptQuestBt.gameObject.SetActive(true);
+                int tempBtIndex = _currentBtIndex;
 
+                // A Main Quest has been completed
                 if (questInfo.type == QuestType.MAIN_QUEST)
+                {
                     _backBt.gameObject.SetActive(false);
+                    tempBtIndex = 0;
+                }
+
+                _btQuestIndex[tempBtIndex] = btIndex;
+                _checkQuestTxts[tempBtIndex].text = questInfo.name;            //Update button name
+                _acceptQuestBt.gameObject.SetActive(true);
 
                 _currentQuestType = questInfo.type;
             }

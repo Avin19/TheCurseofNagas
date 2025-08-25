@@ -1230,6 +1230,10 @@
 - QuestData.json
     [=] Changing layout to Groups of Quest
 
+- Scripts
+    [=] TestQuestManager/TestQuestSystemCanvas
+        {+} Fixing MainQuest calls
+
 --------------------------------------------------------------------------------------------------------
 - [Do] Store Quest Data once the NPC has told player about the new quest
     [=] Use the stored data then afterwards
