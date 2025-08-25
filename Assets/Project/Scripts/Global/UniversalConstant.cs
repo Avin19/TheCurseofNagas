@@ -135,6 +135,9 @@ namespace CurseOfNaga.Global
 
         public const int _SET_VAL = 1, _UNSET_VAL = 0, _DEFAULT_VAL = -1;
 
+        public const int GROUP_INDEX_START = 0, GROUP_INDEX_LENGTH = 2, QUEST_INDEX_START = 2,
+            QUEST_INDEX_LENGTH = 3;
+
         public enum TestConditionFlags { NOT_SET, COND_1, COND_2, COND_3, COND_4 }
 
         public enum ConversationStatus { INTERESTED, NOT_INTERESTED }

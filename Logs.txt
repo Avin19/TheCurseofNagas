@@ -1215,21 +1215,50 @@
         {+} Adding PlayerStatus field
     [=] TestDialogueManager
         {+} Setting/Unsettinf CurrPlayerStatus to MAKING_CHOICE for choices
+
 --------------------------------------------------------------------------------------------------------
+                                                25 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] TestQuestManager
+        {+} Quest groups refactor logic
+    [=] QuestTemplate
+        {+} Refactor according to Quest groups
+        {+} Adding next_quest_uid to Quest Nodes
+    [=] PlayerTest
+        {+} Fixing Bug | Dialogue not moving forward next time when choice selection has been previously active
+- QuestData.json
+    [=] Changing layout to Groups of Quest
+
+--------------------------------------------------------------------------------------------------------
+- [Do] Store Quest Data once the NPC has told player about the new quest
+    [=] Use the stored data then afterwards
+- [DO] Divide quests into main/sub-quests in json
+    [=] or divide it to have main quests and character quests
+        {+} Can maybe then use an array and track the sub-quests index for each character
+        {+} When an event is invoked, can then increase the index for the individual quests
+        {+} As we are keeping track of the dialogue indexes, the dialogue nod will be in the casual choice node for FREE-ROAM
+        {+} It would not be good to include all the quest data in that specific node and check for conditions
+        {+} Would be better to track it through other means
+        {+} The Quest Manager can track the progress and check for conditions when something is finished or called for and invoke 
+            some logic or action appropriately 
 - [DO] Dont 
-- [DO] Stop 'E' when choices are presented to player
-- [DO] For Dialogue invoke quest
+- [DONE FOR NOW] Stop 'E' when choices are presented to player
+- [DONE FOR NOW] For Dialogue invoke quest
     [=] NPC says new quest available -> Briefly explains new quest
-    [=] Player accepts quest -> Control goes to NPC Node? -> Quest shown
-    [=] Player declines quest -> NPC says to come back later -> NPC goes back to casual node
-- [DO] Decline button with accept button for declining quest
+    [=] Player accepts quest request -> Quest shown
+        {+} Player accepts quest by clicking accept -> Quest Added -> Escape out Dialogue UI -> Control goes to NPC Node
+        {+} Player cancels quest by clicking back -> Escape out Dialogue UI -> Control goes to NPC Node
+    [=] Player declines quest request -> NPC says to come back later -> NPC goes back to casual node
+- [DONE FOR NOW] Decline button with accept button for declining quest
+    [=] [FOR NOW] It is the back button
 - [DO] For same character, do not evaluate choices if already evaluated
 - [FIXED] Dialogue Garph
     [=] [FIXED] Save still does not functions properly
     [=] [FIXED] Load is also breaking
 - [DO] Might need to convert the array to List for btQuestIndex as Side-Quests can be completed non-linearly
     [=] [DO] Can also re-arrange after completion of a quest
-- [DO] Convert story conditions from bool to flags
+- [DONE FOR NOW] Convert story conditions from bool to flags
 - [DO] Dialogues JSON
     [=] Remove nodeIndex
 - [DO] Dialogue System

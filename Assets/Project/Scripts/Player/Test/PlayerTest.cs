@@ -119,6 +119,7 @@ namespace CurseOfNaga.Gameplay.Player.Test
                     _currInteractableType = _currentInteractable.Interact(
                             InteractionType.FINISHING_INTERACTION, out otherID);
                     _currentInteractable = null;
+                    TestDialogueMainManager.Instance.CurrPlayerStatus &= ~PlayerStatus.MAKING_CHOICE;
 
                     break;
             }

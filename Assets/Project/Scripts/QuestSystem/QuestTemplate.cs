@@ -5,7 +5,7 @@ namespace CurseOfNaga.QuestSystem
     [System.Serializable]
     public class Quest
     {
-        public string uid, name, description;
+        public string uid, name, description, next_quest_uid;
         public QuestStatus status;
         public QuestType type;
         public List<QuestObjective> objectives;
@@ -48,8 +48,14 @@ namespace CurseOfNaga.QuestSystem
     }
 
     [System.Serializable]
+    public class QuestGroupContent
+    {
+        public List<Quest> content;
+    }
+
+    [System.Serializable]
     public class QuestTemplate
     {
-        public List<Quest> quests_data;
+        public List<QuestGroupContent> quest_groups;
     }
 }

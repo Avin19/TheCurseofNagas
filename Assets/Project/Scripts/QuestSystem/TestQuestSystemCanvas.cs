@@ -82,6 +82,7 @@ namespace CurseOfNaga.QuestSystem.Test
 
                     _questRect.SetActive(false);
                     _pauseMenuRect.SetActive(false);
+                    QuestRectClosed();
                 }
             }
         }

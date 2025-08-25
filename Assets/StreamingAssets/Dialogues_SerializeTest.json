@@ -122,7 +122,7 @@
                     "flags": null,
                     "type": 4,
                     "nodeIndex": 6,
-                    "quest_uid": "002_CO_OB1",
+                    "quest_uid": "01001_CO_OB1",
                     "base_uid": "000PL_006",
                     "dialogue": "I accept",
                     "ports": [

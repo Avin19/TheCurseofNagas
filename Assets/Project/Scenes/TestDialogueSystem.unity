@@ -650,6 +650,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eec55bc0dbf9534691ef5b70a9cb59d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrPlayerStatus: 0
   flag1: 0
 --- !u!4 &209795055
 Transform:
@@ -2119,7 +2120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c089dfeda4a0d4e429682f435929bb39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _testQuestVal: OB_00
+  _testQuestVal: 
   _testQuestStatus: 3
   _testQuestIndex: 0
   _executeTestUpdateQuest: 0
