@@ -35,6 +35,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         // IMP: Assumption made that the NPC will be in the same order as the Dialogue JSON or something defined
         [SerializeField] private int[] _dialogueTracker;
         // ==========================================> NEED TO BE SAVED <===================================
+        [SerializeField] private int[] _dialogueTrackerPrev;
         private int _currCharUID, _invokedNpcObjUID, _currNpcObjUID;      //For tracking the dialogueNodes
         private List<string> _targetNodeIds;
 
@@ -48,6 +49,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         {
             TestDialogueMainManager.Instance.OnPlayerInteraction -= EvaluateAndLoadDialogue;
             TestDialogueMainManager.Instance.OnQuestUpdate -= UpdateQuestDialogue;
+            TestDialogueMainManager.Instance.OnDialogueUpdateRequested -= CheckForAvailableQuests;
         }
 
         private void OnEnable()
@@ -64,14 +66,17 @@ namespace CurseOfNaga.DialogueSystem.Test
             _targetNodeIds = new List<string>();
             TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
             TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestDialogue;
+            TestDialogueMainManager.Instance.OnDialogueUpdateRequested += CheckForAvailableQuests;
         }
 
         public void Initialize(int totalNPCCount)
         {
             _dialogueTracker = new int[totalNPCCount + _PLAYER_OFFSET];
+            _dialogueTrackerPrev = new int[totalNPCCount + _PLAYER_OFFSET];
             _targetNodeIds = new List<string>();
             TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
             TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestDialogue;
+            TestDialogueMainManager.Instance.OnDialogueUpdateRequested += CheckForAvailableQuests;
         }
 
         public async void LoadDialoguesJson()
@@ -93,6 +98,30 @@ namespace CurseOfNaga.DialogueSystem.Test
             // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}"); return;         //TEST
         }
 
+        private void CheckForAvailableQuests(string completedQuestID)
+        {
+            // Some Main Quest complete | Update the _dialogueTracker for all characters that unlocked new nodes
+            // This will be to provide unlocked quest choices
+            for (int i = 1; i < _dialogueTemplate.characters.Count; i++)
+            {
+                // Search for dialogueNodes which can be unlocked by the character
+            }
+
+            // Some SubQuest/SideQuest got accepted | Update _dialogueTracker
+            // This will be to say dialogue relevant to ongoing quest
+
+
+
+            // int gpIndex, qtIndex;
+
+            // int.TryParse(idVal.Substring(GROUP_INDEX_START, GROUP_INDEX_LENGTH), out gpIndex);
+            // int.TryParse(idVal.Substring(QUEST_INDEX_START, QUEST_INDEX_LENGTH), out qtIndex);
+
+            // _requestedQuestIndex = gpIndex * (int)Mathf.Pow(10, QUEST_INDEX_LENGTH);
+            // _requestedQuestIndex += qtIndex;
+        }
+
+        //Player has accepted the quest | Quest other than MAIN_QUEST
         private void UpdateQuestDialogue(string idVal, QuestStatus status, int questIndex)
         {
             if (_targetNodeIds.Count == 0 || status <= QuestStatus.REQUESTED_INFO) return;
@@ -172,7 +201,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                 if (_dialogueTemplate.characters[_currCharUID].dialogues_list[nextDgIndex].type
                     == (int)DialogueType.QUEST)
                 {
-                    _dialogueTracker[PLAYER_ID] = nextDgIndex;
+                    _dialogueTracker[PLAYER_ID] = nextDgIndex;              //FIXME: Is this really needed?
                 }
                 else
                 {
@@ -183,7 +212,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                     // Extract the Target Dialogue Node to display
                     int.TryParse(tempString.Substring(0, 3), out _currCharUID);
                     int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
-                    _dialogueTracker[PLAYER_ID] = nextDgIndex;
+                    _dialogueTracker[PLAYER_ID] = nextDgIndex;              //FIXME: Is this really needed?
 #if DEBUG_1
                 Debug.Log($"_targetNodeIds: {_targetNodeIds[uid]} | _charUID: {_charUID} | _npcObjUID: {PLAYER_ID}");
 #endif
@@ -257,8 +286,14 @@ namespace CurseOfNaga.DialogueSystem.Test
                         int.TryParse(choiceString.Substring(0, 3), out nextChIndex);
                         int.TryParse(choiceString.Substring(6, 3), out nextDgIndex);
 
+                        if (_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex]
+                                .type == (int)DialogueType.QUEST_INFO)
+                        {
+                            //Check if the NPC has any quest available to give to Player
+
+                        }
                         // Check if the flags are empty or not
-                        if (!_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex]
+                        else if (!_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex]
                                 .flags.Equals(_EMPTY_STR))
                         {
                             //Get all the flags for the choice

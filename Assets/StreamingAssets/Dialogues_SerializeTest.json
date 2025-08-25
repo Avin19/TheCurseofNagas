@@ -155,6 +155,19 @@
                         "x": 2266.0,
                         "y": 112.0
                     }
+                },
+                {
+                    "flags": null,
+                    "type": 5,
+                    "nodeIndex": 7,
+                    "quest_uid": null,
+                    "base_uid": "000PL_008",
+                    "dialogue": "Quest Choices",
+                    "ports": null,
+                    "position": {
+                        "x": 2266.0,
+                        "y": 112.0
+                    }
                 }
             ]
         },
@@ -284,6 +297,11 @@
                             "base_uid": "001SA_005",
                             "name": "Choice 3",
                             "target_uid": "000PL_005"
+                        },
+                        {
+                            "base_uid": "001SA_005",
+                            "name": "Choice 4",
+                            "target_uid": "000PL_008"
                         }
                     ],
                     "position": {

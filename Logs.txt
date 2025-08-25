@@ -1234,7 +1234,38 @@
     [=] TestQuestManager/TestQuestSystemCanvas
         {+} Fixing MainQuest calls
 
+- Flags to _dialogueTracker
+- Scripts
+    [=] TestQuestManager
+        {+} Removing _mainQuestIndex | Adding _questTracker
+    [=] TestDialogueMainManager
+        {+} Adding action OnDialogueUpdateRequested
+- Dialogues_SerializesTest.json
+    [=] Adding Quest Selection Choice Node
 --------------------------------------------------------------------------------------------------------
+- [FIX] Quest System
+    [=] Dont trigger Main Quest as soon as preivous quest is complete
+        {+} GTA-style missions | Would have to approach someone to trigger the mission
+        {+} Between this, it would be FREE_ROAM for the player
+- [MAKE] [FIX] NPC Dialogue | Test Case
+    [=] The Sub-Quest for a particular NPCs are not done, so the _dialogueTracker for that particular NPC is still at the base
+        {+} [FIX] Case 1
+            <~> What happens when the mission wants the player to interact with the said NPC?
+            <~> How to udpate the _dialogueTracker according to the Quest and then revert back to its old place?
+            <~> The DialogueManager would need to update the _dialogueTracker according to the ongoing quest
+            <~> the _dialogueTracker would need to be updated according to the specific ongoing quest
+
+- [DO] NPC Dialogue | Quest Selection
+    [=] Separate Choice at the end to select from a list of choices for quests
+    [=] Clicking on choices to open the available quests?
+        {+} Might/Would require ScrollView
+- [DO] Tracking Quests
+    [=] Can track only the main quest
+        {+} At startup compare all the quests on the quest list if they are available and not started
+        {+} Invoke action for all the available quests by updating dialogue choice of NPC
+    [=] Track every available quests
+        {+} At startup, load all available quest and invoke action for the available quests
+    [=] For NPC Dialogue, set a flag to check if any new dialogue option is available using the dialogueTracker
 - [Do] Store Quest Data once the NPC has told player about the new quest
     [=] Use the stored data then afterwards
 - [DO] Divide quests into main/sub-quests in json

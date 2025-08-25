@@ -39,12 +39,15 @@ namespace CurseOfNaga.QuestSystem
         private List<int> _activeQuestIndexes;          //Main Quest will always be at 0
         private List<int> _completedQuestIndexes;
         private int _mainQuestIndex;
+        // Only need to keep the base/starting level of the SubQuests/SideQuests
+        [SerializeField] private int[] _questTracker;                    //For important characters
         //======================= Need to be saved =============================
         private int _requestedQuestIndex;
 
         private const string _FILENAME = "QuestData.json";
         private const string _MAIN_QUEST_ID = "000_FI_VL";
         private const int _MAIN_QUEST_COMMON_INDEX = 0;
+        private const int _PLAYER_OFFSET = 1;
 
         private void OnDisable()
         {
@@ -74,12 +77,17 @@ namespace CurseOfNaga.QuestSystem
             LoadSave();
         }
 
+        public void Initialize(int questGiverNPCCount)
+        {
+            _questTracker = new int[questGiverNPCCount + _PLAYER_OFFSET];
+        }
+
         public void LoadSave()
         {
             //TODO: Load Save Data
 
             // Initialize main quest if the game is new
-            _mainQuestIndex = 0;
+            _questTracker[_MAIN_QUEST_COMMON_INDEX] = 0;
             _activeQuestIndexes = new List<int>();
             _completedQuestIndexes = new List<int>();
             // UpdateQuestData(_questTemplate.quests_data[0].uid, QuestStatus.REQUESTED);
@@ -220,12 +228,16 @@ namespace CurseOfNaga.QuestSystem
                             if (_questTemplate.quest_groups[gpIndex].content[qtIndex].type == QuestType.MAIN_QUEST)
                             {
                                 //Not being update properly
-                                _mainQuestIndex++;
-                                _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX] = _mainQuestIndex * tempPowerRaised;       //IMP | Keep the main Quest always in index 0
-                                _questTemplate.quest_groups[_mainQuestIndex].content[_MAIN_QUEST_COMMON_INDEX].status = QuestStatus.IN_PROGRESS;
+                                _questTracker[_MAIN_QUEST_COMMON_INDEX]++;
+                                //IMP | Keep the main Quest always in index 0
+                                _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX] = _questTracker[_MAIN_QUEST_COMMON_INDEX] * tempPowerRaised;
+                                _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
+                                    .content[_MAIN_QUEST_COMMON_INDEX].status = QuestStatus.IN_PROGRESS;
 
-                                TestDialogueMainManager.Instance.OnQuestUIUpdate?
-                                    .Invoke(_questTemplate.quest_groups[_mainQuestIndex].content[_MAIN_QUEST_COMMON_INDEX], _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX]);
+                                //FIXME: Dont initiate next main_quest | wait for the NPC to be interacted with
+                                // TestDialogueMainManager.Instance.OnQuestUIUpdate?
+                                //     .Invoke(_questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
+                                //     .content[_MAIN_QUEST_COMMON_INDEX], _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX]);
                             }
                             else
                             {
@@ -233,6 +245,10 @@ namespace CurseOfNaga.QuestSystem
                                 _activeQuestIndexes.RemoveAt(i);      //Remove from active Quests
                             }
                             TestDialogueMainManager.Instance.OnQuestCompleted?.Invoke(_questTemplate.quest_groups[gpIndex].content[qtIndex].reward, i);
+
+                            // Make Dialogue choices available for NPCs with new quests unlocked
+                            TestDialogueMainManager.Instance.OnDialogueUpdateRequested?.Invoke(_questTemplate
+                                .quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[_MAIN_QUEST_COMMON_INDEX].uid);
                         }
                     }
 
@@ -259,6 +275,11 @@ namespace CurseOfNaga.QuestSystem
                 //Player accepts the Sub-Main Quest, Side-Quest and Main Quest
                 case QuestStatus.ACCEPTED:
                     _activeQuestIndexes.Add(_requestedQuestIndex);
+
+                    break;
+
+                case QuestStatus.COMPLETED:
+
 
                     break;
 

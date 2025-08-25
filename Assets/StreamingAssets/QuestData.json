@@ -76,7 +76,9 @@
                 },
                 {
                     "uid": "01001_CO_OB1",
-                    "prerequisites": "00000_FI_VL",
+                    "prerequisites": [
+                        "00000_FI_VL"
+                    ],
                     "name": "Gather resources",
                     "description": "I want you to collect 3 objects for me",
                     "status": 1,
