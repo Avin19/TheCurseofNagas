@@ -31,7 +31,6 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         public Action<InteractionType, int, int> OnPlayerInteraction;
         public Action<string, bool> OnShowDialogue;
-        public Action<string> OnDialogueUpdateRequested;
 
         //================================== QUEST =================================
         /// <summary>
@@ -46,5 +45,13 @@ namespace CurseOfNaga.DialogueSystem.Test
         /// </summary>
         public Action<Quest, int> OnQuestUIUpdate;
         public Action<Reward, int> OnQuestCompleted;
+
+
+        //============================================> TODO: Optimize <============================================
+        public Action<string, QuestType> OnDialogueUpdateRequested;
+        public Action<int> OnRequestAvailableQuestForNPC;
+        public Action OnRequestShowQuestChoiceBt;
+        public Action<string, int> OnRequestUpdateQuestChoice;
+        //============================================> TODO: Optimize <============================================
     }
 }

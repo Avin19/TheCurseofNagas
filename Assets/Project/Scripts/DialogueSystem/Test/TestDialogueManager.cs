@@ -39,6 +39,15 @@ namespace CurseOfNaga.DialogueSystem.Test
         private int _currCharUID, _invokedNpcObjUID, _currNpcObjUID;      //For tracking the dialogueNodes
         private List<string> _targetNodeIds;
 
+        //==============================================> TODO: Optimize <==============================================
+        [System.Serializable]
+        internal class AvailableDialogues
+        {
+            public string[] AvailableDialoguesArr;
+        }
+        [SerializeField] private AvailableDialogues[] _availableDialogueNPCData;            //Track available nodes for NPC
+        //==============================================> TODO: Optimize <==============================================
+
         private const string _FILENAME = "Dialogues_SerializeTest.json";
         private const string _EMPTY_STR = "";
         private const int _PLAYER_OFFSET = 1;
@@ -67,6 +76,14 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
             TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestDialogue;
             TestDialogueMainManager.Instance.OnDialogueUpdateRequested += CheckForAvailableQuests;
+
+            _availableDialogueNPCData = new AvailableDialogues[3];
+            for (int i = 0; i < 3; i++)
+            {
+                // Main | Sub-Main | Side Quests}
+                _availableDialogueNPCData[i] = new AvailableDialogues { AvailableDialoguesArr = new string[3] };
+                // _availableDialogueNPCData[i].AvailableDialoguesArr = new string[3];
+            }
         }
 
         public void Initialize(int totalNPCCount)
@@ -98,13 +115,27 @@ namespace CurseOfNaga.DialogueSystem.Test
             // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}"); return;         //TEST
         }
 
-        private void CheckForAvailableQuests(string completedQuestID)
+        private void CheckForAvailableQuests(string completedQuestID, QuestType type)
         {
             // Some Main Quest complete | Update the _dialogueTracker for all characters that unlocked new nodes
             // This will be to provide unlocked quest choices
-            for (int i = 1; i < _dialogueTemplate.characters.Count; i++)
+            int dialogueListCount = 0;
+            List<DialogueData> dialogueList;
+            for (int chIndex = 1; chIndex < _dialogueTemplate.characters.Count; chIndex++)
             {
+                dialogueList = _dialogueTemplate.characters[chIndex].dialogues_list;
+                dialogueListCount = dialogueList.Count;
+
                 // Search for dialogueNodes which can be unlocked by the character
+                for (int dgIndex = 1; dgIndex < dialogueListCount; dgIndex++)
+                {
+                    if ((dialogueList[dgIndex].type & (int)DialogueType.CHOICE) != 0 &&
+                        dialogueList[dgIndex].quest_uid.Equals(completedQuestID))
+                    {
+                        _availableDialogueNPCData[chIndex - 1].AvailableDialoguesArr[(int)type - 1]
+                            = dialogueList[dgIndex].quest_uid;
+                    }
+                }
             }
 
             // Some SubQuest/SideQuest got accepted | Update _dialogueTracker
@@ -268,6 +299,7 @@ namespace CurseOfNaga.DialogueSystem.Test
 
                 //We would have to iterate over every choice and check if the requirements are met or not
                 case (int)DialogueType.CHOICE:
+                case (int)(DialogueType.CHOICE | DialogueType.QUEST):
                     // TestDialogueMainManager.Instance.OnPlayerInteraction?
                     //     .Invoke(InteractionType.INTERACTING_WITH_NPC, UNSET_VAL, -(int)DialogueType.CHOICE);
                     // TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
@@ -290,7 +322,12 @@ namespace CurseOfNaga.DialogueSystem.Test
                                 .type == (int)DialogueType.QUEST_INFO)
                         {
                             //Check if the NPC has any quest available to give to Player
+                            TestDialogueMainManager.Instance.OnRequestAvailableQuestForNPC?.Invoke(_currNpcObjUID);
 
+                            TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt?.Invoke();
+
+
+                            continue;
                         }
                         // Check if the flags are empty or not
                         else if (!_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex]

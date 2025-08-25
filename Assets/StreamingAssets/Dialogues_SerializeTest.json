@@ -313,7 +313,7 @@
                     "flags": null,
                     "type": 0,
                     "nodeIndex": 14,
-                    "quest_uid": null,
+                    "quest_uid": "01001_CO_OB1",
                     "base_uid": "001SA_006",
                     "dialogue": "I have a new quest for you!",
                     "ports": [
@@ -330,7 +330,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 3,
+                    "type": 24,
                     "nodeIndex": 15,
                     "quest_uid": null,
                     "base_uid": "001SA_007",

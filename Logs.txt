@@ -1242,6 +1242,18 @@
         {+} Adding action OnDialogueUpdateRequested
 - Dialogues_SerializesTest.json
     [=] Adding Quest Selection Choice Node
+
+- Test Show QuestChoice logic
+- Scripts
+    [=] TestDialogueManager
+        {+} QuestChoices show/selection logic
+        {+} Combining flags for CHOICE + QUEST
+    [=] TestDialogueMainManager
+        {+} Action for available quest check | update quest choice text | show quest choice bt
+    [=] TestQuestManager
+        {+} Check available quest for npc logic
+    [=] UniversalConstant
+        {+} Turning DialogueType to bit-flags
 --------------------------------------------------------------------------------------------------------
 - [FIX] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete

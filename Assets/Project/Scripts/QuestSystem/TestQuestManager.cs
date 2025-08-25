@@ -248,7 +248,8 @@ namespace CurseOfNaga.QuestSystem
 
                             // Make Dialogue choices available for NPCs with new quests unlocked
                             TestDialogueMainManager.Instance.OnDialogueUpdateRequested?.Invoke(_questTemplate
-                                .quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[_MAIN_QUEST_COMMON_INDEX].uid);
+                                .quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[_MAIN_QUEST_COMMON_INDEX].uid,
+                                _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[_MAIN_QUEST_COMMON_INDEX].type);
                         }
                     }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,12 @@ namespace CurseOfNaga.DialogueSystem.Test
         [SerializeField] private Button[] _dialogueChoiceBts;
         [SerializeField] private TMPro.TMP_Text[] _dialogueChoicesTxt;
 
+        //==============================================> TODO: Optimize <==============================================
+        [SerializeField] private GameObject _questChoicesRect;
+        [SerializeField] private Button[] _questChoiceBts;              //0: Main Quest | 1: Sub-Main Quest | 2: Side Quest
+        [SerializeField] private TMPro.TMP_Text[] _questChoicesTxt;
+        //==============================================> TODO: Optimize <==============================================
+
         private int _currDialogueIndex;
         private InteractionType _prevInteractionType;
         private const int _SET_VAL = 1, _UNSET_VAL = 0, _DEFAULT_VALUE = -1;
@@ -23,6 +30,8 @@ namespace CurseOfNaga.DialogueSystem.Test
         {
             TestDialogueMainManager.Instance.OnPlayerInteraction -= UpdateUIForInteraction;
             TestDialogueMainManager.Instance.OnShowDialogue -= UpdateDialogueText;
+            TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt -= ShowQuestChoice;
+            TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice -= UpdateQuestChoice;
         }
 
         private void OnEnable()
@@ -34,12 +43,42 @@ namespace CurseOfNaga.DialogueSystem.Test
         {
             TestDialogueMainManager.Instance.OnPlayerInteraction += UpdateUIForInteraction;
             TestDialogueMainManager.Instance.OnShowDialogue += UpdateDialogueText;
+            TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt += ShowQuestChoice;
+            TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice += UpdateQuestChoice;
 
-            for (int i = 0; i < _dialogueChoiceBts.Length; i++)
+            for (int i = 0; i < _dialogueChoiceBts.Length - 1; i++)
             {
                 int tempIndex = i;
                 _dialogueChoiceBts[i].onClick.AddListener(() => ChoseDialogue(tempIndex));
             }
+            _dialogueChoiceBts[3].onClick.AddListener(ShowQuestRect);
+
+            for (int i = 0; i < _questChoiceBts.Length; i++)
+            {
+                int tempIndex = i;
+                _questChoiceBts[i].onClick.AddListener(() => ClickedOnQuestChoice(tempIndex));
+            }
+        }
+
+        private void ShowQuestChoice()
+        {
+            _dialogueChoiceBts[3].gameObject.SetActive(true);
+        }
+
+        private void ShowQuestRect()
+        {
+            _questChoicesRect.SetActive(true);
+        }
+
+        private void UpdateQuestChoice(string questTxt, int choiceBtIndex)
+        {
+            _questChoiceBts[choiceBtIndex].gameObject.SetActive(true);
+            _questChoicesTxt[choiceBtIndex].text = questTxt;
+        }
+
+        private void ClickedOnQuestChoice(int btIndex)
+        {
+
         }
 
         private void ChoseDialogue(int btIndex)
