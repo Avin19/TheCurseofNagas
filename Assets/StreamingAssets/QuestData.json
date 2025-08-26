@@ -12,7 +12,7 @@
                     "next_quest_uid": "01000_CO_IN",
                     "objectives": [
                         {
-                            "type": 5,
+                            "type": 15,
                             "description": "Find a way to the Village",
                             "target_id": "VL_00",
                             "required_count": 1,
@@ -20,7 +20,7 @@
                             "is_optional": false
                         },
                         {
-                            "type": 2,
+                            "type": 15,
                             "description": "Find someone to talk to",
                             "target_id": "SA_00",
                             "required_count": 1,
@@ -51,7 +51,7 @@
                     "next_quest_uid": "02000_TA_EL",
                     "objectives": [
                         {
-                            "type": 2,
+                            "type": 12,
                             "description": "Gather info from Garhal",
                             "target_id": "GA_00",
                             "required_count": 2,
@@ -59,7 +59,7 @@
                             "is_optional": false
                         },
                         {
-                            "type": 2,
+                            "type": 12,
                             "description": "Gather info from Medeh",
                             "target_id": "ME_00",
                             "required_count": 2,
@@ -67,7 +67,7 @@
                             "is_optional": false
                         },
                         {
-                            "type": 2,
+                            "type": 12,
                             "description": "(Optional) Gather info from Jaffar",
                             "target_id": "JA_00",
                             "required_count": 2,
@@ -94,7 +94,7 @@
                     "next_quest_uid": "02001_CO_IN",
                     "objectives": [
                         {
-                            "type": 1,
+                            "type": 11,
                             "description": "Collect 3 Objects",
                             "target_id": "OB_00",
                             "required_count": 3,
@@ -152,7 +152,7 @@
                     "next_quest_uid": null,
                     "objectives": [
                         {
-                            "type": 1,
+                            "type": 11,
                             "description": "Collect 2 Objects",
                             "target_id": "OB_00",
                             "required_count": 2,

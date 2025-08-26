@@ -9,7 +9,10 @@ namespace CurseOfNaga.Gameplay.NPC
     //TODO: Make this abstract
     public class BaseNPCController : MonoBehaviour, IInteractable
     {
-        [SerializeField] protected int _UID, _NpcID;                //UID : id by array | npcID : id by character
+        [Tooltip("This is the Unique ID, or also the Character ID in the Dialogue List")]
+        [SerializeField] protected int _UID;                // UID : id by array
+        [Tooltip("This is the Instantiated ID")]
+        [SerializeField] protected int _NpcID;                // npcID : id by character
         [SerializeField] protected string _Name;
         public int UID { get => _UID; }
 

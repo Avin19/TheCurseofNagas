@@ -104,7 +104,8 @@ namespace CurseOfNaga.Global
         public enum TriggeredEvent
         {
             DEFAULT = 0, EVENT_1, EVENT_2, EVENT_3, EVENT_4, EVENT_5,
-            EVENT_6, EVENT_7, EVENT_8, EVENT_9, EVENT_10
+            EVENT_6, EVENT_7, EVENT_8, EVENT_9, EVENT_10,
+            QUEST_1
         }
 
         public enum InteractionType
@@ -144,6 +145,8 @@ namespace CurseOfNaga.Global
 
         public const int CHARACTER_INDEX_START = 0, CHARACTER_INDEX_LENGTH = 3,
             DIALOGUE_INDEX_START = 6, DIALOGUE_INDEX_LENGTH = 3;
+
+        public const int OBJECTIVE_ID_START = 5;
 
         public enum TestConditionFlags { NOT_SET, COND_1, COND_2, COND_3, COND_4 }
 

@@ -36,7 +36,11 @@ namespace CurseOfNaga.QuestSystem
         public bool is_optional;
     }
 
-    public enum ObjectiveType { KILL, COLLECT, TALK, EXPLORE, PUZZLE, FIND }
+    public enum ObjectiveType
+    {
+        INACTIVE = 0, ACTIVE, CURRENT, COMPLETED,
+        KILL = 10, COLLECT, TALK, EXPLORE, PUZZLE, FIND
+    }
 
     [System.Serializable]
     public class Reward

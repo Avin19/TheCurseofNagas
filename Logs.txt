@@ -1277,6 +1277,17 @@
         {+} Removing (CHOICE | QUEST)
 - Dialogues_SerializesTest.json
     [=] Updating dialogue-type values
+
+- Trigger Quest through triggers test
+- Scripts
+    [=] QuestTemplate
+        {+} Adding UniversalConstant ObjectiveType to here
+    [=] TestQuestManager
+        {+} Quest Visual trigger code
+        {+} Taking last 2 characters of the gameobject as NPC id
+- QuestData.json
+    [=] Changing target_id for objectives
+
 --------------------------------------------------------------------------------------------------------
 - [FIX] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete

@@ -9,7 +9,6 @@ using CurseOfNaga.Utils;
 using static CurseOfNaga.Global.UniversalConstant;
 using System.Collections.Generic;
 using CurseOfNaga.QuestSystem;
-using System.Linq;
 
 namespace CurseOfNaga.DialogueSystem.Test
 {
@@ -48,6 +47,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         }
         [SerializeField] private AvailableDialogues[] _availableDialogueNPCData;            //Track available nodes for NPC
         //==============================================> TODO: Optimize <==============================================
+
 
         private const string _FILENAME = "Dialogues_SerializeTest.json";
         private const string _EMPTY_STR = "";

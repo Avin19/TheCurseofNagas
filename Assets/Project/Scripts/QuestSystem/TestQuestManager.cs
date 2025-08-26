@@ -19,6 +19,8 @@
 #define TEST_QUESTS_1
 // #define TO_JSON_TEST_1
 #define TEST_DISABLE_UPDATE_QUEST
+#define TEST_VISUAL_TRIGGER
+#define TEST_ENABLE_UPDATE
 
 using System.Collections.Generic;
 
@@ -43,6 +45,25 @@ namespace CurseOfNaga.QuestSystem
         [SerializeField] private int[] _questTracker;                    //For important characters
         //======================= Need to be saved =============================
         private int _requestedQuestIndex;
+
+
+#if TEST_VISUAL_TRIGGER
+        //==============================================> TODO: Optimize <==============================================
+        // TESTING VISUAL TRIGGERS | Code from MainGameplayManager
+
+        [System.Serializable]
+        internal class ObjectiveInfo
+        {
+            public int type;          //TODO: UniversalConstant alternative
+            public Transform transform;
+        }
+
+        [Space(10), Header("Test Objective Logic")]
+        [SerializeField] private List<ObjectiveInfo> _objectives;
+        [SerializeField] private Camera _mainCamera;
+        private const int _OBJ_TYPE_MOD = 1000;
+        //==============================================> TODO: Optimize <==============================================
+#endif
 
         private const string _FILENAME = "QuestData.json";
         private const string _MAIN_QUEST_ID = "000_FI_VL";
@@ -154,21 +175,31 @@ namespace CurseOfNaga.QuestSystem
 
         // private void SendQuestInfo(int questIndex) { }
 
-#if TEST_QUESTS_1
 
-        [SerializeField] private string _testQuestVal;
-        [SerializeField] private QuestStatus _testQuestStatus;
-        [SerializeField] private int _testQuestIndex;
-        [SerializeField] private bool _executeTestUpdateQuest;
-
+#if TEST_ENABLE_UPDATE
         private void Update()
         {
+#if TEST_QUESTS_1
             if (_executeTestUpdateQuest)
             {
                 _executeTestUpdateQuest = false;
                 TestUpdateQuestData();
             }
+#endif
+
+#if TEST_VISUAL_TRIGGER
+            CheckObjectivesVisibility();
+#endif
         }
+#endif
+
+
+#if TEST_QUESTS_1
+        [Space(10), Header("Test Quest Logic")]
+        [SerializeField] private string _testQuestVal;
+        [SerializeField] private QuestStatus _testQuestStatus;
+        [SerializeField] private int _testQuestIndex;
+        [SerializeField] private bool _executeTestUpdateQuest;
 
         private void TestUpdateQuestData()
         {
@@ -305,8 +336,99 @@ namespace CurseOfNaga.QuestSystem
                     .quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[contentIndex].uid,
                     _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[contentIndex].type);
             }
-
         }
+
+#if TEST_VISUAL_TRIGGER
+        private void CheckObjectivesVisibility()
+        {
+            Vector3 viewPointPos;
+
+            for (int i = 0; i < _objectives.Count; i++)
+            {
+                // if (_objectives[i] == null) continue;
+
+                viewPointPos = _mainCamera.WorldToViewportPoint(_objectives[i].transform.position);
+
+                //Skip those out of the view
+                if (Mathf.Min(viewPointPos.x, viewPointPos.y) < 0f          // For Objects out-of-camera and behind
+                    || Mathf.Max(viewPointPos.x, viewPointPos.y) > 1f       // For Objects out-of-camera and in-front
+                    || viewPointPos.z < 0f)                                 // For Objects behind-camera
+                    continue;
+
+                UpdateObjective(i);
+            }
+        }
+
+        private void UpdateObjective(in int index)
+        {
+            int objType = _objectives[index].type / _OBJ_TYPE_MOD;
+            int objStatus = _objectives[index].type % _OBJ_TYPE_MOD;
+
+            string tempStr;
+            switch (objType)
+            {
+                case (int)ObjectiveType.ACTIVE:
+                    //Check some conditions and process accordingly
+                    {
+                        switch (objStatus)
+                        {
+                            // This may be done on EnemySpawner / MainGameplay Instance
+                            case (int)ObjectiveType.KILL:
+                                break;
+
+                            // This will be on the Player
+                            case (int)ObjectiveType.COLLECT:
+                                break;
+
+                            // This will be on the DialogueManager
+                            case (int)ObjectiveType.TALK:
+                                break;
+
+                            //This will be on some other System
+                            case (int)ObjectiveType.PUZZLE:
+                                break;
+
+                            // May need to hit certain points | Can be here
+                            case (int)ObjectiveType.EXPLORE:
+                                break;
+
+                            // Proximity logic, so here
+                            case (int)ObjectiveType.FIND:
+                                tempStr = _objectives[index].transform.name[^OBJECTIVE_ID_START..].ToUpper();
+                                Debug.Log($"Found Objective: {tempStr}");
+
+                                //Inform that objective found
+                                TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);
+
+                                //Update Objective
+                                _objectives[index].type = (int)ObjectiveType.COMPLETED * _OBJ_TYPE_MOD + objType;
+                                UpdateObjective(index);
+
+                                break;
+                        }
+                    }
+
+                    break;
+
+                // Do Nothing
+                case (int)ObjectiveType.INACTIVE:
+                    return;
+
+                // case (int)ObjectiveType.CURRENT:
+                //     //Check some conditions and process accordingly
+                //     goto case (int)ObjectiveType.COMPLETED;
+
+                // Remove from active
+                case (int)ObjectiveType.COMPLETED:
+                    _objectives[index].type = (int)ObjectiveType.INACTIVE * _OBJ_TYPE_MOD + objType;
+                    // _inactiveObjectives.Add(_objectives[index]);
+                    _objectives.RemoveAt(index);
+
+                    return;
+            }
+        }
+
+#endif
 
         private void UpdateExistingQuest() { }
 
