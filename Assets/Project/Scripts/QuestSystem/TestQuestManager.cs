@@ -17,7 +17,7 @@
 */
 
 #define TEST_QUESTS_1
-#define TO_JSON_TEST_1
+// #define TO_JSON_TEST_1
 #define TEST_DISABLE_UPDATE_QUEST
 
 using System.Collections.Generic;
@@ -246,10 +246,8 @@ namespace CurseOfNaga.QuestSystem
                             }
                             TestDialogueMainManager.Instance.OnQuestCompleted?.Invoke(_questTemplate.quest_groups[gpIndex].content[qtIndex].reward, i);
 
-                            // Make Dialogue choices available for NPCs with new quests unlocked
-                            TestDialogueMainManager.Instance.OnDialogueUpdateRequested?.Invoke(_questTemplate
-                                .quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[_MAIN_QUEST_COMMON_INDEX].uid,
-                                _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[_MAIN_QUEST_COMMON_INDEX].type);
+                            //Check which quests have been unlocked by completing a main-quest
+                            CheckForUnlockedQuest();
                         }
                     }
 
@@ -295,6 +293,21 @@ namespace CurseOfNaga.QuestSystem
             }
         }
 #endif
+
+        private void CheckForUnlockedQuest()
+        {
+            // Loop through the group to check which content has been unlocked except the main-quest at 0th index
+            int contentCount = _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content.Count;
+            for (int contentIndex = 1; contentIndex < contentCount; contentIndex++)
+            {
+                // Make Dialogue choices available for NPCs with new quests unlocked
+                TestDialogueMainManager.Instance.OnDialogueUpdateRequested?.Invoke(_questTemplate
+                    .quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[contentIndex].uid,
+                    _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[contentIndex].type);
+            }
+
+        }
+
         private void UpdateExistingQuest() { }
 
         private void LoadQuest() { }

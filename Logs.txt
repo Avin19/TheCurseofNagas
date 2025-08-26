@@ -1254,6 +1254,20 @@
         {+} Check available quest for npc logic
     [=] UniversalConstant
         {+} Turning DialogueType to bit-flags
+
+--------------------------------------------------------------------------------------------------------
+                                                26 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] TestQuestManager
+        {+} Check which quests are unlocked after completing a main quest
+    [=] TestDialogueManager
+        {+} Updating Quest Choices
+    [=] TestDialogueSystemCanvas
+        {+} Enable/Disable Quest Choices
+- Dialogues_SerializesTest.json
+    [=] Changing type according to flags update
+
 --------------------------------------------------------------------------------------------------------
 - [FIX] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete

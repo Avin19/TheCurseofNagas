@@ -1393,7 +1393,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Dialogue 3
+  m_text: Quest Choices
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3548,6 +3548,8 @@ MonoBehaviour:
   - {fileID: 687563645}
   - {fileID: 653164224}
   - {fileID: 1876549665}
+  - {fileID: 408052269}
+  _dialogueChoiceRect: {fileID: 1446061834}
   _questChoicesRect: {fileID: 980878362}
   _questChoiceBts:
   - {fileID: 567770902}
@@ -4109,7 +4111,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &980878363
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7735,6 +7737,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dialogueTracker: 0000000000000000
   _dialogueTrackerPrev: 0000000000000000
+  _availableDialogueNPCData: []
 --- !u!4 &1881156781
 Transform:
   m_ObjectHideFlags: 0

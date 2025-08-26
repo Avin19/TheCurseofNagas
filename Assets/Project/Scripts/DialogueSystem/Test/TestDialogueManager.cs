@@ -9,6 +9,7 @@ using CurseOfNaga.Utils;
 using static CurseOfNaga.Global.UniversalConstant;
 using System.Collections.Generic;
 using CurseOfNaga.QuestSystem;
+using System.Linq;
 
 namespace CurseOfNaga.DialogueSystem.Test
 {
@@ -43,7 +44,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         [System.Serializable]
         internal class AvailableDialogues
         {
-            public string[] AvailableDialoguesArr;
+            public string[] AvailableDialoguesArr;          // Will only contain 1 of each Main | Sub-Main | Side Quests
         }
         [SerializeField] private AvailableDialogues[] _availableDialogueNPCData;            //Track available nodes for NPC
         //==============================================> TODO: Optimize <==============================================
@@ -127,13 +128,17 @@ namespace CurseOfNaga.DialogueSystem.Test
                 dialogueListCount = dialogueList.Count;
 
                 // Search for dialogueNodes which can be unlocked by the character
-                for (int dgIndex = 1; dgIndex < dialogueListCount; dgIndex++)
+                for (int dgIndex = 0; dgIndex < dialogueListCount; dgIndex++)
                 {
+                    // - Check if it is a Choice type (It will be Choice + Quest, so the flag check) 
+                    // - Also, dont update if there is already a side-quest value present
+                    //      [=] Since Main-Quest and Sub-Main Quest are unique and can only occur one at a time, they can be replaced
+                    //      [=] Side-Quest need to be checked,as they will follow an order and if precious isnt completed, then next cannot be accessed
                     if ((dialogueList[dgIndex].type & (int)DialogueType.CHOICE) != 0 &&
                         dialogueList[dgIndex].quest_uid.Equals(completedQuestID))
                     {
                         _availableDialogueNPCData[chIndex - 1].AvailableDialoguesArr[(int)type - 1]
-                            = dialogueList[dgIndex].quest_uid;
+                            = dialogueList[dgIndex].base_uid;
                     }
                 }
             }
@@ -221,8 +226,8 @@ namespace CurseOfNaga.DialogueSystem.Test
             {
                 //Get the current Player Dialogue Node
                 // _npcObjUID = PLAYER_ID;         //Player ID
-                int.TryParse(_targetNodeIds[uid].Substring(0, 3), out _currCharUID);
-                int.TryParse(_targetNodeIds[uid].Substring(6, 3), out nextDgIndex);
+                int.TryParse(_targetNodeIds[uid].Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out _currCharUID);
+                int.TryParse(_targetNodeIds[uid].Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out nextDgIndex);
 
                 // As the player has answered, there will be only 1 dialogue from the NPC side everytime, as they 
                 // do not have choices to make. 
@@ -241,8 +246,8 @@ namespace CurseOfNaga.DialogueSystem.Test
                     // Debug.Log($"_targetNodeIds: {_targetNodeIds[uid]} | _charUID: {_charUID} | _npcObjUID: {_npcObjUID}");
 
                     // Extract the Target Dialogue Node to display
-                    int.TryParse(tempString.Substring(0, 3), out _currCharUID);
-                    int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
+                    int.TryParse(tempString.Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out _currCharUID);
+                    int.TryParse(tempString.Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out nextDgIndex);
                     _dialogueTracker[PLAYER_ID] = nextDgIndex;              //FIXME: Is this really needed?
 #if DEBUG_1
                 Debug.Log($"_targetNodeIds: {_targetNodeIds[uid]} | _charUID: {_charUID} | _npcObjUID: {PLAYER_ID}");
@@ -315,17 +320,17 @@ namespace CurseOfNaga.DialogueSystem.Test
                     {
                         choiceFlags = null;
                         choiceString = dialogueData.ports[choiceIndex].target_uid;
-                        int.TryParse(choiceString.Substring(0, 3), out nextChIndex);
-                        int.TryParse(choiceString.Substring(6, 3), out nextDgIndex);
+                        int.TryParse(choiceString.Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out nextChIndex);
+                        int.TryParse(choiceString.Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out nextDgIndex);
 
                         if (_dialogueTemplate.characters[nextChIndex].dialogues_list[nextDgIndex]
                                 .type == (int)DialogueType.QUEST_INFO)
                         {
                             //Check if the NPC has any quest available to give to Player
-                            TestDialogueMainManager.Instance.OnRequestAvailableQuestForNPC?.Invoke(_currNpcObjUID);
+                            UpdateQuestChoicesIfAny();
+                            // TestDialogueMainManager.Instance.OnRequestAvailableQuestForNPC?.Invoke(_currNpcObjUID);
 
-                            TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt?.Invoke();
-
+                            // TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt?.Invoke();
 
                             continue;
                         }
@@ -425,22 +430,51 @@ namespace CurseOfNaga.DialogueSystem.Test
 
             //Get the Next Node ID
             //FIXME: JsonUtility does not returns null | Newtonsoft.Json will return null
-            // if (dialogueData.ports == null)     //Reached End Of Conversation
-            // if (dialogueData.ports.Count == 0)     //Reached End Of Conversation
-            // {
+            {
+                // if (dialogueData.ports == null)     //Reached End Of Conversation
+                // if (dialogueData.ports.Count == 0)     //Reached End Of Conversation
+                // {
 
-            //     _charUID = UNSET_VAL;
-            //     // TestDialogueMainManager.Instance.OnPlayerInteraction?
-            //     //     .Invoke(InteractionType.INTERACTING_WITH_NPC, UNSET_VAL, UNSET_VAL);
-            //     return;
-            // }
+                //     _charUID = UNSET_VAL;
+                //     // TestDialogueMainManager.Instance.OnPlayerInteraction?
+                //     //     .Invoke(InteractionType.INTERACTING_WITH_NPC, UNSET_VAL, UNSET_VAL);
+                //     return;
+                // }
+            }
 
             tempString = dialogueData.ports[0].target_uid;
-            int.TryParse(tempString.Substring(0, 3), out _currCharUID);
-            int.TryParse(tempString.Substring(6, 3), out nextDgIndex);
+            int.TryParse(tempString.Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out _currCharUID);
+            int.TryParse(tempString.Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out nextDgIndex);
 
             // Update tracker value
             _dialogueTracker[_currNpcObjUID] = nextDgIndex;
+        }
+
+        private void UpdateQuestChoicesIfAny()
+        {
+            int dialogueCount = _availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr.Length;
+            int foundDialogues = 0;
+            // string questChoiceTxt;
+            int chIndex, dgIndex;
+            for (int i = 0; i < dialogueCount; i++)
+            {
+                if (_availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr[i] != null
+                    && !_availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr[i].Equals(string.Empty))
+                {
+                    foundDialogues++;
+                    int.TryParse(_availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr[i]
+                        .Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out chIndex);
+                    int.TryParse(_availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr[i]
+                        .Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out dgIndex);
+
+                    // questChoiceTxt = _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].dialogue;
+                    TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice?
+                        .Invoke(_dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].dialogue, i);
+                }
+            }
+
+            if (foundDialogues > 0)
+                TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt?.Invoke();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         [SerializeField] private TMPro.TMP_Text[] _dialogueChoicesTxt;
 
         //==============================================> TODO: Optimize <==============================================
-        [SerializeField] private GameObject _questChoicesRect;
+        [SerializeField] private GameObject _dialogueChoiceRect, _questChoicesRect;
         [SerializeField] private Button[] _questChoiceBts;              //0: Main Quest | 1: Sub-Main Quest | 2: Side Quest
         [SerializeField] private TMPro.TMP_Text[] _questChoicesTxt;
         //==============================================> TODO: Optimize <==============================================
@@ -51,7 +51,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                 int tempIndex = i;
                 _dialogueChoiceBts[i].onClick.AddListener(() => ChoseDialogue(tempIndex));
             }
-            _dialogueChoiceBts[3].onClick.AddListener(ShowQuestRect);
+            _dialogueChoiceBts[3].onClick.AddListener(() => ShowQuestRect(true));
 
             for (int i = 0; i < _questChoiceBts.Length; i++)
             {
@@ -65,9 +65,10 @@ namespace CurseOfNaga.DialogueSystem.Test
             _dialogueChoiceBts[3].gameObject.SetActive(true);
         }
 
-        private void ShowQuestRect()
+        private void ShowQuestRect(bool status)
         {
-            _questChoicesRect.SetActive(true);
+            _questChoicesRect.SetActive(status);
+            _dialogueChoiceRect.SetActive(!status);
         }
 
         private void UpdateQuestChoice(string questTxt, int choiceBtIndex)
@@ -102,13 +103,17 @@ namespace CurseOfNaga.DialogueSystem.Test
                         _currDialogueIndex = 0;
                         // _dialogueTxt.gameObject.SetActive(true);
 
+                        //Disable every Dialogue Choice
                         for (int i = 0; i < _dialogueChoiceBts.Length; i++)
                             _dialogueChoiceBts[i].gameObject.SetActive(false);
+
+                        //Disable every Quest Choice
+                        for (int i = 0; i < _questChoiceBts.Length; i++)
+                            _questChoiceBts[i].gameObject.SetActive(false);
                     }
                     break;
 
                 case InteractionType.INTERACTING_WITH_NPC:
-
                     // if (value != -1 && _prevInteractionType != InteractionType.FINISHING_INTERACTION)
                     _dialogueRect.SetActive(true);
                     // else
@@ -118,6 +123,8 @@ namespace CurseOfNaga.DialogueSystem.Test
 
                 case InteractionType.FINISHING_INTERACTION:
                     _dialogueRect.SetActive(false);
+                    ShowQuestRect(false);
+
                     goto case InteractionType.MADE_CHOICE;          //Disable Multiple choices also if enabled
             }
             _prevInteractionType = interactionType;
