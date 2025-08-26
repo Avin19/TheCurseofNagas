@@ -247,7 +247,7 @@ namespace CurseOfNaga.QuestSystem
                                 if (questObjectives[j].current_count == questObjectives[j].required_count)
                                     objCompletedCount++;
 
-                                break;
+                                // break;
                             }
                         }
 

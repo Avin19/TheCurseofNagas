@@ -1288,6 +1288,9 @@
 - QuestData.json
     [=] Changing target_id for objectives
 
+- Scripts
+    [=] TestQuestManager
+        {+} Fixing Reward not showing | Fix Objective Skip
 --------------------------------------------------------------------------------------------------------
 - [FIX] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete
