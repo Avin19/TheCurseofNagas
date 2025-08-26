@@ -1291,6 +1291,11 @@
 - Scripts
     [=] TestQuestManager
         {+} Fixing Reward not showing | Fix Objective Skip
+
+- Scripts
+    [=] TestQuestManager
+        {+} Adding objectives logic
+        {+} Keeping a list of transforms
 --------------------------------------------------------------------------------------------------------
 - [FIX] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete

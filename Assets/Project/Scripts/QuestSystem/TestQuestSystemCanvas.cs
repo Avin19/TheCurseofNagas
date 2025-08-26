@@ -186,7 +186,7 @@ namespace CurseOfNaga.QuestSystem.Test
 
                 // Add a strikethrough if objective completed
                 if (questInfo.objectives[i].current_count == questInfo.objectives[i].required_count)
-                    stringBuilder.Append("<s>" + questInfo.objectives[i].description + "</s>");
+                    stringBuilder.Append("<b><s>" + questInfo.objectives[i].description + "</s></b>");
                 else
                     stringBuilder.Append(questInfo.objectives[i].description);
 

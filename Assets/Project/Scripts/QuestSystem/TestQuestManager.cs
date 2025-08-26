@@ -18,9 +18,9 @@
 
 #define TEST_QUESTS_1
 // #define TO_JSON_TEST_1
-#define TEST_DISABLE_UPDATE_QUEST
 #define TEST_VISUAL_TRIGGER
 #define TEST_ENABLE_UPDATE
+#define TEST_OBJECTIVE_ADD
 
 using System.Collections.Generic;
 
@@ -61,6 +61,7 @@ namespace CurseOfNaga.QuestSystem
         [Space(10), Header("Test Objective Logic")]
         [SerializeField] private List<ObjectiveInfo> _objectives;
         [SerializeField] private Camera _mainCamera;
+        [SerializeField] private Transform[] _npcTransforms;        //TODO: This list should be in some other Script
         private const int _OBJ_TYPE_MOD = 1000;
         //==============================================> TODO: Optimize <==============================================
 #endif
@@ -72,9 +73,7 @@ namespace CurseOfNaga.QuestSystem
 
         private void OnDisable()
         {
-#if TEST_DISABLE_UPDATE_QUEST
             TestDialogueMainManager.Instance.OnQuestUpdate -= UpdateQuestData;
-#endif
             // TestDialogueMainManager.Instance.OnQuestInfoRequest -= SendQuestInfo;
         }
 
@@ -89,9 +88,7 @@ namespace CurseOfNaga.QuestSystem
 
         public void Initialize()
         {
-#if TEST_DISABLE_UPDATE_QUEST
             TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestData;
-#endif
             // TestDialogueMainManager.Instance.OnQuestInfoRequest += SendQuestInfo;
 
             //Load the Saved Data back to game
@@ -113,7 +110,9 @@ namespace CurseOfNaga.QuestSystem
             _completedQuestIndexes = new List<int>();
             // UpdateQuestData(_questTemplate.quests_data[0].uid, QuestStatus.REQUESTED);
 
-#if TEST_DISABLE_UPDATE_QUEST
+#if TEST_OBJECTIVE_ADD
+            CheckForUnlockedQuest();
+#else
             UpdateQuestData(_MAIN_QUEST_ID, QuestStatus.REQUESTED);
 #endif
         }
@@ -207,7 +206,6 @@ namespace CurseOfNaga.QuestSystem
         }
 #endif
 
-#if TEST_DISABLE_UPDATE_QUEST
         private void UpdateQuestData(string idVal, QuestStatus questStatus, int questIndex = 0)
         {
             int gpIndex, qtIndex, tempPowerRaised;
@@ -323,19 +321,55 @@ namespace CurseOfNaga.QuestSystem
                     break;
             }
         }
-#endif
 
         private void CheckForUnlockedQuest()
         {
             // Loop through the group to check which content has been unlocked except the main-quest at 0th index
             int contentCount = _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content.Count;
+            int objIndex = 0;
+            List<QuestObjective> questObjectives;
+
+#if TEST_OBJECTIVE_ADD
+            for (int contentIndex = 0; contentIndex < contentCount; contentIndex++)
+#else
             for (int contentIndex = 1; contentIndex < contentCount; contentIndex++)
+#endif
             {
                 // Make Dialogue choices available for NPCs with new quests unlocked
                 TestDialogueMainManager.Instance.OnDialogueUpdateRequested?.Invoke(_questTemplate
                     .quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[contentIndex].uid,
                     _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[contentIndex].type);
+
+                questObjectives = _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
+                    .content[contentIndex].objectives;
+
+                for (objIndex = 0; objIndex < questObjectives.Count; objIndex++)
+                {
+                    //Get all the objectives that are of FIND type and add to list
+                    if (questObjectives[objIndex].type == ObjectiveType.FIND)
+                    {
+                        ObjectiveInfo objective = new ObjectiveInfo
+                        {
+                            type = 1 * _OBJ_TYPE_MOD + (int)ObjectiveType.FIND,
+                            transform = _npcTransforms[GetTransformIndex(questObjectives[objIndex].target_id)]
+                        };
+                        _objectives.Add(objective);
+                    }
+                }
             }
+        }
+
+        private int GetTransformIndex(string objID)
+        {
+            int transformIndex = 0;
+            for (; transformIndex < _npcTransforms.Length; transformIndex++)
+            {
+                // Check which transform is the objective
+                if (_npcTransforms[transformIndex].name[^OBJECTIVE_ID_START..].Equals(objID))
+                    break;
+            }
+
+            return transformIndex;
         }
 
 #if TEST_VISUAL_TRIGGER
@@ -372,18 +406,6 @@ namespace CurseOfNaga.QuestSystem
                     {
                         switch (objStatus)
                         {
-                            // This may be done on EnemySpawner / MainGameplay Instance
-                            case (int)ObjectiveType.KILL:
-                                break;
-
-                            // This will be on the Player
-                            case (int)ObjectiveType.COLLECT:
-                                break;
-
-                            // This will be on the DialogueManager
-                            case (int)ObjectiveType.TALK:
-                                break;
-
                             //This will be on some other System
                             case (int)ObjectiveType.PUZZLE:
                                 break;
@@ -402,7 +424,7 @@ namespace CurseOfNaga.QuestSystem
 
                                 //Update Objective
                                 _objectives[index].type = (int)ObjectiveType.COMPLETED * _OBJ_TYPE_MOD + objType;
-                                UpdateObjective(index);
+                                // UpdateObjective(index);      // Qill automatically get removed in the next iteration
 
                                 break;
                         }

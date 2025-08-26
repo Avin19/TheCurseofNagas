@@ -2874,6 +2874,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 567770900}
   m_CullTransparentMesh: 1
+--- !u!1 &570185895
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 570185896}
+  m_Layer: 0
+  m_Name: QuestTrigger_VL_00
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &570185896
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570185895}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.5, y: 0, z: -0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1246301868}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &581583983
 GameObject:
   m_ObjectHideFlags: 0
@@ -3240,6 +3271,10 @@ MonoBehaviour:
   - type: 1015
     transform: {fileID: 764502638}
   _mainCamera: {fileID: 495229218}
+  _npcTransforms:
+  - {fileID: 570185896}
+  - {fileID: 1602793173}
+  - {fileID: 764502638}
   _testQuestVal: VL_00
   _testQuestStatus: 3
   _testQuestIndex: 0
@@ -4343,7 +4378,7 @@ GameObject:
   - component: {fileID: 764502638}
   - component: {fileID: 764502637}
   m_Layer: 7
-  m_Name: Salem_NPCTest
+  m_Name: Salem_NPCTest_SA_00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6232,14 +6267,13 @@ GameObject:
   - component: {fileID: 1246301868}
   - component: {fileID: 1246301871}
   - component: {fileID: 1246301870}
-  - component: {fileID: 1246301869}
   m_Layer: 0
-  m_Name: QuestTrigger_1
+  m_Name: VillageTest_VL_00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1246301868
 Transform:
   m_ObjectHideFlags: 0
@@ -6249,33 +6283,13 @@ Transform:
   m_GameObject: {fileID: 1246301867}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.46, y: 1.5, z: 6.97}
+  m_LocalPosition: {x: 11.21, y: 1.5, z: 14.65}
   m_LocalScale: {x: 5, y: 3, z: 5}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 570185896}
   m_Father: {fileID: 690588601}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1246301869
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246301867}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1246301870
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8165,7 +8179,7 @@ GameObject:
   - component: {fileID: 1602793173}
   - component: {fileID: 1602793174}
   m_Layer: 7
-  m_Name: Garhal_NPCTest
+  m_Name: Garhal_NPCTest_GA_00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
