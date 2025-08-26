@@ -134,7 +134,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                     // - Also, dont update if there is already a side-quest value present
                     //      [=] Since Main-Quest and Sub-Main Quest are unique and can only occur one at a time, they can be replaced
                     //      [=] Side-Quest need to be checked,as they will follow an order and if precious isnt completed, then next cannot be accessed
-                    if ((dialogueList[dgIndex].type & (int)DialogueType.CHOICE) != 0 &&
+                    if ((dialogueList[dgIndex].type & (int)DialogueType.QUEST) != 0 &&
                         dialogueList[dgIndex].quest_uid.Equals(completedQuestID))
                     {
                         _availableDialogueNPCData[chIndex - 1].AvailableDialoguesArr[(int)type - 1]
@@ -304,7 +304,7 @@ namespace CurseOfNaga.DialogueSystem.Test
 
                 //We would have to iterate over every choice and check if the requirements are met or not
                 case (int)DialogueType.CHOICE:
-                case (int)(DialogueType.CHOICE | DialogueType.QUEST):
+                    // case (int)(DialogueType.CHOICE | DialogueType.QUEST):
                     // TestDialogueMainManager.Instance.OnPlayerInteraction?
                     //     .Invoke(InteractionType.INTERACTING_WITH_NPC, UNSET_VAL, -(int)DialogueType.CHOICE);
                     // TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);

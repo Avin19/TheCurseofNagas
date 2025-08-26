@@ -129,8 +129,8 @@ namespace CurseOfNaga.Global
 
         public enum DialogueType
         {
-            SPEECH = 0, QUESTION = 1 << 0, ANSWER = 1 << 1, CHOICE = 1 << 2,
-            QUEST = 1 << 3, QUEST_INFO = 1 << 4, END = 1 << 5
+            DEFAULT = 0, SPEECH = 1 << 0, QUESTION = 1 << 1, ANSWER = 1 << 2,
+            CHOICE = 1 << 3, QUEST = 1 << 4, QUEST_INFO = 1 << 5, END = 1 << 6
         }
 
         public const string NOT_SET_STR = "NOT_SET", JSON_EXTENSION = ".json",

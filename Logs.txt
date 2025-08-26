@@ -1268,6 +1268,15 @@
 - Dialogues_SerializesTest.json
     [=] Changing type according to flags update
 
+- Scripts
+    [=] TestQuestSystemCanvas
+        {+} Showing COMPLETED for every Quest
+    [=] UniversalConstant
+        {+} Adding DEFAULT to DialogueType and re-arranging values
+    [=] TestDialogueManager
+        {+} Removing (CHOICE | QUEST)
+- Dialogues_SerializesTest.json
+    [=] Updating dialogue-type values
 --------------------------------------------------------------------------------------------------------
 - [FIX] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete

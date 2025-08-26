@@ -6,7 +6,7 @@
             "dialogues_list": [
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 0,
                     "quest_uid": null,
                     "base_uid": "000PL_000",
@@ -25,7 +25,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 1,
                     "quest_uid": null,
                     "base_uid": "000PL_001",
@@ -44,7 +44,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 2,
                     "quest_uid": null,
                     "base_uid": "000PL_002",
@@ -63,7 +63,7 @@
                 },
                 {
                     "flags": "000_FI_VL|001_FI_OB1",
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 3,
                     "quest_uid": null,
                     "base_uid": "000PL_003",
@@ -82,7 +82,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 4,
                     "quest_uid": null,
                     "base_uid": "000PL_004",
@@ -101,7 +101,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 5,
                     "quest_uid": null,
                     "base_uid": "000PL_005",
@@ -120,7 +120,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 8,
+                    "type": 16,
                     "nodeIndex": 6,
                     "quest_uid": "01001_CO_OB1",
                     "base_uid": "000PL_006",
@@ -139,7 +139,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 2,
+                    "type": 4,
                     "nodeIndex": 7,
                     "quest_uid": null,
                     "base_uid": "000PL_007",
@@ -158,7 +158,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 16,
+                    "type": 32,
                     "nodeIndex": 7,
                     "quest_uid": null,
                     "base_uid": "000PL_008",
@@ -177,7 +177,7 @@
             "dialogues_list": [
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 8,
                     "quest_uid": null,
                     "base_uid": "001SA_000",
@@ -196,7 +196,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 4,
+                    "type": 8,
                     "nodeIndex": 9,
                     "quest_uid": null,
                     "base_uid": "001SA_001",
@@ -220,7 +220,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 10,
                     "quest_uid": null,
                     "base_uid": "001SA_002",
@@ -239,7 +239,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 11,
                     "quest_uid": null,
                     "base_uid": "001SA_003",
@@ -258,7 +258,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 12,
                     "quest_uid": null,
                     "base_uid": "001SA_004",
@@ -277,7 +277,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 4,
+                    "type": 8,
                     "nodeIndex": 13,
                     "quest_uid": null,
                     "base_uid": "001SA_005",
@@ -311,11 +311,11 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 17,
                     "nodeIndex": 14,
-                    "quest_uid": null,
+                    "quest_uid": "01001_CO_OB1",
                     "base_uid": "001SA_006",
-                    "dialogue": "I have a new quest for you!",
+                    "dialogue": "I need help with Quest !01001_CO_OB1",
                     "ports": [
                         {
                             "base_uid": "001SA_006",
@@ -330,9 +330,9 @@
                 },
                 {
                     "flags": null,
-                    "type": 12,
+                    "type": 8,
                     "nodeIndex": 15,
-                    "quest_uid": "01001_CO_OB1",
+                    "quest_uid": null,
                     "base_uid": "001SA_007",
                     "dialogue": "Briefly explain quest 01001_CO_OB1",
                     "ports": [
@@ -354,7 +354,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 16,
                     "quest_uid": null,
                     "base_uid": "001SA_008",
@@ -373,7 +373,7 @@
                 },
                 {
                     "flags": null,
-                    "type": 0,
+                    "type": 1,
                     "nodeIndex": 17,
                     "quest_uid": null,
                     "base_uid": "001SA_009",

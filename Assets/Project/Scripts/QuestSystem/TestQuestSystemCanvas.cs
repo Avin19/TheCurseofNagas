@@ -124,15 +124,19 @@ namespace CurseOfNaga.QuestSystem.Test
                     //Move to the next slot of button-indexes
                     _currentBtIndex = ((_currentBtIndex + 1) >= _TOTAL_QUEST_BTS) ? 1 : ++_currentBtIndex;
                 }
-                // _currentBtIndex++;
+                else
+                    _checkQuestBts[0].gameObject.SetActive(true);
+
                 _questTitleTxt.text += _IN_PROGRESS;
                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(null, QuestStatus.ACCEPTED, _DEFAULT_VAL);
                 _acceptQuestBt.gameObject.SetActive(false);
                 _backBt.gameObject.SetActive(true);             // For main quest
             }
-            else if (_currentQuestType >= QuestType.SUB_MAIN_QUEST)
+            // else if (_currentQuestType >= QuestType.SUB_MAIN_QUEST)
+            else
             {
-                _questTitleTxt.text += _COMPLETED;
+                _questTitleTxt.text = _questTitleTxt.text[..^(_IN_PROGRESS.Length)] + _COMPLETED;
+                // _questTitleTxt.text += _COMPLETED;
             }
         }
 
@@ -210,12 +214,12 @@ namespace CurseOfNaga.QuestSystem.Test
 
         private void UpdateRewardTexts(Reward questReward, int btIndex)
         {
+            //Disable the respective CheckQuest button
+            _checkQuestBts[btIndex].gameObject.SetActive(false);
+
             // Avoid if main quest 
             if (btIndex != 0)
             {
-                //Disable the respective CheckQuest button
-                _checkQuestBts[btIndex].gameObject.SetActive(false);
-
                 //Re-arrange the list to correct the index
                 for (int i = btIndex; (i + 1) < _TOTAL_QUEST_BTS; i++)
                 {

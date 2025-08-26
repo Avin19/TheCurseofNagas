@@ -18,6 +18,14 @@
                             "required_count": 1,
                             "current_count": 0,
                             "is_optional": false
+                        },
+                        {
+                            "type": 2,
+                            "description": "Find someone to talk to",
+                            "target_id": "SA_00",
+                            "required_count": 1,
+                            "current_count": 0,
+                            "is_optional": false
                         }
                     ],
                     "reward": {
@@ -44,8 +52,8 @@
                     "objectives": [
                         {
                             "type": 2,
-                            "description": "Gather info from Salem",
-                            "target_id": "SA_00",
+                            "description": "Gather info from Garhal",
+                            "target_id": "GA_00",
                             "required_count": 2,
                             "current_count": 0,
                             "is_optional": false
