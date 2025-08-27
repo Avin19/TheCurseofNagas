@@ -1334,6 +1334,11 @@
 - Dialogues_SerializesTest.json
     [=] Adding quest related nodes
 
+- Scripts
+    [=] TestDialogueManager
+        {+} Receive Quest Choice callback and show dialogue respectively
+    [=] TestDialogueSystemCanvas
+        {+} Turning off Quest Choices|Buttons after Selection
 --------------------------------------------------------------------------------------------------------
 - [FIXED FOR NOW] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete

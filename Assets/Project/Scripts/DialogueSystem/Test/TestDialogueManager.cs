@@ -61,6 +61,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction -= EvaluateAndLoadDialogue;
             TestDialogueMainManager.Instance.OnQuestUpdate -= UpdateQuestDialogue;
             TestDialogueMainManager.Instance.OnDialogueUpdateRequested -= CheckForAvailableQuests;
+            TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice -= SendQuestChoiceUpdate;
         }
 
         private void OnEnable()
@@ -78,6 +79,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
             TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestDialogue;
             TestDialogueMainManager.Instance.OnDialogueUpdateRequested += CheckForAvailableQuests;
+            TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice += SendQuestChoiceUpdate;
 
             _availableDialogueNPCData = new AvailableDialogues[3];
             for (int i = 0; i < _DIALOGUE_TYPES_LENGTH; i++)
@@ -486,6 +488,39 @@ namespace CurseOfNaga.DialogueSystem.Test
 
             if (foundDialogues > 0)
                 TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt?.Invoke();
+        }
+
+        private void SendQuestChoiceUpdate(string dialogueVal, int questInfo, string questID)
+        {
+            int chIndex, dgIndex, portIndex = -1;
+            string tempString;
+            const int FINAL_NODE = 420;
+            switch (questInfo / _STATUS_OFFSET)
+            {
+                case (int)QuestStatus.ACCEPTED:
+                    portIndex = 0;
+                    goto case FINAL_NODE;
+
+                case (int)QuestStatus.DECLINED:
+                    portIndex = 1;
+                    goto case FINAL_NODE;
+
+                case FINAL_NODE:
+                    //Extract the base UID of the Quest-Choice
+                    int.TryParse(questID.Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out chIndex);
+                    int.TryParse(questID.Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out dgIndex);
+
+                    tempString = _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].ports[portIndex].target_uid;
+                    int.TryParse(tempString.Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out chIndex);
+                    int.TryParse(tempString.Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out dgIndex);
+
+                    _currCharUID = chIndex;
+                    _dialogueTracker[_currNpcObjUID] = dgIndex;
+
+                    EvaluateAndLoadDialogue(InteractionType.INTERACTING_WITH_NPC, _SET_VAL, _DEFAULT_VAL);
+
+                    break;
+            }
         }
     }
 }

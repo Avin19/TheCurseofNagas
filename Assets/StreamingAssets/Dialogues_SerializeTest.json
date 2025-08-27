@@ -148,7 +148,7 @@
                         {
                             "base_uid": "000PL_007",
                             "name": "Choice 1",
-                            "target_uid": "001SA_008"
+                            "target_uid": "001SA_006"
                         }
                     ],
                     "position": {
@@ -167,7 +167,7 @@
                         {
                             "base_uid": "000PL_008",
                             "name": "Choice 1",
-                            "target_uid": "001SA_009"
+                            "target_uid": "001SA_007"
                         }
                     ],
                     "position": {
