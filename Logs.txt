@@ -1296,6 +1296,14 @@
     [=] TestQuestManager
         {+} Adding objectives logic
         {+} Keeping a list of transforms
+
+--------------------------------------------------------------------------------------------------------
+                                                27 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Scripts
+    [=] TestQuestManager
+        {+} Explore area logic
+
 --------------------------------------------------------------------------------------------------------
 - [FIX] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete

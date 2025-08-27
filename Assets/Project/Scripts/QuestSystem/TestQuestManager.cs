@@ -1,9 +1,6 @@
 /*
 *   - Will follow the Diloagues.json setting
 *   - Main Quests | Sub-Main Quests
-*       [=] [OLD] First 1 digit - Index of Quest type | MAIN_QUEST, SUB_MAIN_QUEST, SIDE_QUEST 
-*       [=] [OLD] Next 3 digits - Index of Actual Quest 
-
 *       [=] [NEW] First 2 digit - Quest Group | Directly/Indirectly Related to Main Quest | Can be unlocked if main-quest of that group is unlocked
 *       [=] [NEW] Next 3 digits - Quest Index
 *       [=] [NEW] 1st quest will always be the main quest
@@ -18,9 +15,8 @@
 
 #define TEST_QUESTS_1
 // #define TO_JSON_TEST_1
-#define TEST_VISUAL_TRIGGER
+#define TEST_QUEST_TRIGGERS
 #define TEST_ENABLE_UPDATE
-#define TEST_OBJECTIVE_ADD
 
 using System.Collections.Generic;
 
@@ -47,9 +43,10 @@ namespace CurseOfNaga.QuestSystem
         private int _requestedQuestIndex;
 
 
-#if TEST_VISUAL_TRIGGER
+#if TEST_QUEST_TRIGGERS
         //==============================================> TODO: Optimize <==============================================
         // TESTING VISUAL TRIGGERS | Code from MainGameplayManager
+        //TODO: Transfer this logic to some other system
 
         [System.Serializable]
         internal class ObjectiveInfo
@@ -59,11 +56,24 @@ namespace CurseOfNaga.QuestSystem
         }
 
         [Space(10), Header("Test Objective Logic")]
-        [SerializeField] private List<ObjectiveInfo> _objectives;
+        [SerializeField] private List<ObjectiveInfo> _questObjectives;
+        // [SerializeField] private List<ObjectiveInfo> _exploreObjectives;
         [SerializeField] private Camera _mainCamera;
         [SerializeField] private Transform[] _npcTransforms;        //TODO: This list should be in some other Script
+        [Tooltip("Make sure to group same explore transforms together one-after-another")]
+        [SerializeField] private Transform[] _exploreTransforms;
+        [SerializeField] private Transform _playerTransform;
         private const int _OBJ_TYPE_MOD = 1000;
+        private const float _MAGNITUDE_MIN_DIFF = 1f;
         //==============================================> TODO: Optimize <==============================================
+#endif
+
+#if TEST_QUESTS_1
+        [Space(10), Header("Test Quest Logic")]
+        [SerializeField] private string _testQuestVal;
+        [SerializeField] private QuestStatus _testQuestStatus;
+        [SerializeField] private int _testQuestIndex;
+        [SerializeField] private bool _executeTestUpdateQuest;
 #endif
 
         private const string _FILENAME = "QuestData.json";
@@ -110,11 +120,8 @@ namespace CurseOfNaga.QuestSystem
             _completedQuestIndexes = new List<int>();
             // UpdateQuestData(_questTemplate.quests_data[0].uid, QuestStatus.REQUESTED);
 
-#if TEST_OBJECTIVE_ADD
-            CheckForUnlockedQuest();
-#else
             UpdateQuestData(_MAIN_QUEST_ID, QuestStatus.REQUESTED);
-#endif
+            CheckForUnlockedQuest();
         }
 
 #if TO_JSON_TEST_1
@@ -182,27 +189,13 @@ namespace CurseOfNaga.QuestSystem
             if (_executeTestUpdateQuest)
             {
                 _executeTestUpdateQuest = false;
-                TestUpdateQuestData();
+                UpdateQuestData(_testQuestVal, _testQuestStatus, _testQuestIndex);
             }
 #endif
 
-#if TEST_VISUAL_TRIGGER
-            CheckObjectivesVisibility();
+#if TEST_QUEST_TRIGGERS
+            CheckObjectivesConditions();
 #endif
-        }
-#endif
-
-
-#if TEST_QUESTS_1
-        [Space(10), Header("Test Quest Logic")]
-        [SerializeField] private string _testQuestVal;
-        [SerializeField] private QuestStatus _testQuestStatus;
-        [SerializeField] private int _testQuestIndex;
-        [SerializeField] private bool _executeTestUpdateQuest;
-
-        private void TestUpdateQuestData()
-        {
-            UpdateQuestData(_testQuestVal, _testQuestStatus, _testQuestIndex);
         }
 #endif
 
@@ -326,14 +319,10 @@ namespace CurseOfNaga.QuestSystem
         {
             // Loop through the group to check which content has been unlocked except the main-quest at 0th index
             int contentCount = _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content.Count;
-            int objIndex = 0;
+            int objIndex = 0, tIndex = 0;
             List<QuestObjective> questObjectives;
 
-#if TEST_OBJECTIVE_ADD
             for (int contentIndex = 0; contentIndex < contentCount; contentIndex++)
-#else
-            for (int contentIndex = 1; contentIndex < contentCount; contentIndex++)
-#endif
             {
                 // Make Dialogue choices available for NPCs with new quests unlocked
                 TestDialogueMainManager.Instance.OnDialogueUpdateRequested?.Invoke(_questTemplate
@@ -353,7 +342,20 @@ namespace CurseOfNaga.QuestSystem
                             type = 1 * _OBJ_TYPE_MOD + (int)ObjectiveType.FIND,
                             transform = _npcTransforms[GetTransformIndex(questObjectives[objIndex].target_id)]
                         };
-                        _objectives.Add(objective);
+                        _questObjectives.Add(objective);
+                    }
+                    else if (questObjectives[objIndex].type == ObjectiveType.EXPLORE)
+                    {
+                        List<int> transformIndexes = GetConcurrentTransformIndexes(questObjectives[objIndex].target_id);
+                        for (tIndex = 0; tIndex < transformIndexes.Count; tIndex++)
+                        {
+                            ObjectiveInfo objective = new ObjectiveInfo
+                            {
+                                type = 1 * _OBJ_TYPE_MOD + (int)ObjectiveType.EXPLORE,
+                                transform = _npcTransforms[transformIndexes[tIndex]]
+                            };
+                            _questObjectives.Add(objective);
+                        }
                     }
                 }
             }
@@ -372,39 +374,74 @@ namespace CurseOfNaga.QuestSystem
             return transformIndex;
         }
 
-#if TEST_VISUAL_TRIGGER
-        private void CheckObjectivesVisibility()
+        private List<int> GetConcurrentTransformIndexes(string objID)
+        {
+            List<int> tIndexes = new List<int>();
+            int transformIndex = 0;
+            int foundCount = 0, prevCount = 0;          // To prevent from traversing the whole list, to a certain point
+            for (; transformIndex < _exploreTransforms.Length || (foundCount != 0 && foundCount != prevCount);
+                transformIndex++)
+            {
+                prevCount = foundCount;
+                if (_exploreTransforms[transformIndex].name[^OBJECTIVE_ID_START..].Equals(objID))
+                {
+                    tIndexes.Add(transformIndex);
+                    foundCount++;
+                }
+            }
+            return tIndexes;
+        }
+
+#if TEST_QUEST_TRIGGERS
+        // This may be here or maybe in a separate System
+        private void CheckObjectivesConditions()
         {
             Vector3 viewPointPos;
+            int objType = 0;
 
-            for (int i = 0; i < _objectives.Count; i++)
+            for (int i = 0; i < _questObjectives.Count; i++)
             {
-                // if (_objectives[i] == null) continue;
+                objType = _questObjectives[i].type % _OBJ_TYPE_MOD;
 
-                viewPointPos = _mainCamera.WorldToViewportPoint(_objectives[i].transform.position);
+                switch (objType)
+                {
+                    // Check if the player has explored the area for the objective
+                    case (int)ObjectiveType.EXPLORE:
+                        if (Vector3.SqrMagnitude(_questObjectives[i].transform.position - _playerTransform.position)
+                            <= _MAGNITUDE_MIN_DIFF)
+                            continue;
 
-                //Skip those out of the view
-                if (Mathf.Min(viewPointPos.x, viewPointPos.y) < 0f          // For Objects out-of-camera and behind
-                    || Mathf.Max(viewPointPos.x, viewPointPos.y) > 1f       // For Objects out-of-camera and in-front
-                    || viewPointPos.z < 0f)                                 // For Objects behind-camera
-                    continue;
+                        break;
+
+                    case (int)ObjectiveType.FIND:
+                        viewPointPos = _mainCamera.WorldToViewportPoint(_questObjectives[i].transform.position);
+
+                        //Skip those out of the view
+                        if (Mathf.Min(viewPointPos.x, viewPointPos.y) < 0f          // For Objects out-of-camera and behind
+                            || Mathf.Max(viewPointPos.x, viewPointPos.y) > 1f       // For Objects out-of-camera and in-front
+                            || viewPointPos.z < 0f)                                 // For Objects behind-camera
+                            continue;
+
+                        break;
+                }
 
                 UpdateObjective(i);
             }
         }
 
+
         private void UpdateObjective(in int index)
         {
-            int objType = _objectives[index].type / _OBJ_TYPE_MOD;
-            int objStatus = _objectives[index].type % _OBJ_TYPE_MOD;
+            int objStatus = _questObjectives[index].type / _OBJ_TYPE_MOD;
+            int objType = _questObjectives[index].type % _OBJ_TYPE_MOD;
 
             string tempStr;
-            switch (objType)
+            switch (objStatus)
             {
                 case (int)ObjectiveType.ACTIVE:
                     //Check some conditions and process accordingly
                     {
-                        switch (objStatus)
+                        switch (objType)
                         {
                             //This will be on some other System
                             case (int)ObjectiveType.PUZZLE:
@@ -412,18 +449,27 @@ namespace CurseOfNaga.QuestSystem
 
                             // May need to hit certain points | Can be here
                             case (int)ObjectiveType.EXPLORE:
-                                break;
-
-                            // Proximity logic, so here
-                            case (int)ObjectiveType.FIND:
-                                tempStr = _objectives[index].transform.name[^OBJECTIVE_ID_START..].ToUpper();
+                                tempStr = _questObjectives[index].transform.name[^OBJECTIVE_ID_START..].ToUpper();
                                 Debug.Log($"Found Objective: {tempStr}");
 
                                 //Inform that objective found
                                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);
 
                                 //Update Objective
-                                _objectives[index].type = (int)ObjectiveType.COMPLETED * _OBJ_TYPE_MOD + objType;
+                                _questObjectives[index].type = (int)ObjectiveType.COMPLETED * _OBJ_TYPE_MOD + objType;
+
+                                break;
+
+                            // Proximity logic, so here
+                            case (int)ObjectiveType.FIND:
+                                tempStr = _questObjectives[index].transform.name[^OBJECTIVE_ID_START..].ToUpper();
+                                Debug.Log($"Found Objective: {tempStr}");
+
+                                //Inform that objective found
+                                TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);
+
+                                //Update Objective
+                                _questObjectives[index].type = (int)ObjectiveType.COMPLETED * _OBJ_TYPE_MOD + objType;
                                 // UpdateObjective(index);      // Qill automatically get removed in the next iteration
 
                                 break;
@@ -442,9 +488,9 @@ namespace CurseOfNaga.QuestSystem
 
                 // Remove from active
                 case (int)ObjectiveType.COMPLETED:
-                    _objectives[index].type = (int)ObjectiveType.INACTIVE * _OBJ_TYPE_MOD + objType;
+                    _questObjectives[index].type = (int)ObjectiveType.INACTIVE * _OBJ_TYPE_MOD + objStatus;
                     // _inactiveObjectives.Add(_objectives[index]);
-                    _objectives.RemoveAt(index);
+                    _questObjectives.RemoveAt(index);
 
                     return;
             }

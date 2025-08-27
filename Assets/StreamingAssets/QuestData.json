@@ -20,6 +20,14 @@
                             "is_optional": false
                         },
                         {
+                            "type": 13,
+                            "description": "Explore the village to find someone",
+                            "target_id": "VLE00",
+                            "required_count": 5,
+                            "current_count": 0,
+                            "is_optional": false
+                        },
+                        {
                             "type": 15,
                             "description": "Find someone to talk to",
                             "target_id": "SA_00",
