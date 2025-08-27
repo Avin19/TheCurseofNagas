@@ -352,7 +352,7 @@ namespace CurseOfNaga.QuestSystem
                             ObjectiveInfo objective = new ObjectiveInfo
                             {
                                 type = 1 * _OBJ_TYPE_MOD + (int)ObjectiveType.EXPLORE,
-                                transform = _npcTransforms[transformIndexes[tIndex]]
+                                transform = _exploreTransforms[transformIndexes[tIndex]]
                             };
                             _questObjectives.Add(objective);
                         }
@@ -378,8 +378,8 @@ namespace CurseOfNaga.QuestSystem
         {
             List<int> tIndexes = new List<int>();
             int transformIndex = 0;
-            int foundCount = 0, prevCount = 0;          // To prevent from traversing the whole list, to a certain point
-            for (; transformIndex < _exploreTransforms.Length || (foundCount != 0 && foundCount != prevCount);
+            int foundCount = 0, prevCount = -1;          // To prevent from traversing the whole list, to a certain point
+            for (; transformIndex < _exploreTransforms.Length && foundCount != prevCount;
                 transformIndex++)
             {
                 prevCount = foundCount;
@@ -407,8 +407,8 @@ namespace CurseOfNaga.QuestSystem
                 {
                     // Check if the player has explored the area for the objective
                     case (int)ObjectiveType.EXPLORE:
-                        if (Vector3.SqrMagnitude(_questObjectives[i].transform.position - _playerTransform.position)
-                            <= _MAGNITUDE_MIN_DIFF)
+                        float diffMagnitude = Vector3.SqrMagnitude(_questObjectives[i].transform.position - _playerTransform.position);
+                        if (diffMagnitude >= _MAGNITUDE_MIN_DIFF)
                             continue;
 
                         break;
@@ -450,7 +450,7 @@ namespace CurseOfNaga.QuestSystem
                             // May need to hit certain points | Can be here
                             case (int)ObjectiveType.EXPLORE:
                                 tempStr = _questObjectives[index].transform.name[^OBJECTIVE_ID_START..].ToUpper();
-                                Debug.Log($"Found Objective: {tempStr}");
+                                Debug.Log($"Explored Objective: {tempStr}");
 
                                 //Inform that objective found
                                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);
@@ -463,7 +463,7 @@ namespace CurseOfNaga.QuestSystem
                             // Proximity logic, so here
                             case (int)ObjectiveType.FIND:
                                 tempStr = _questObjectives[index].transform.name[^OBJECTIVE_ID_START..].ToUpper();
-                                Debug.Log($"Found Objective: {tempStr}");
+                                Debug.Log($"Found Objective: {tempStr} | name:{_questObjectives[index].transform.name}");
 
                                 //Inform that objective found
                                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);

@@ -1304,6 +1304,9 @@
     [=] TestQuestManager
         {+} Explore area logic
 
+- Scripts
+    [=] TestQuestManager
+        {+} Fixing explore logic
 --------------------------------------------------------------------------------------------------------
 - [FIX] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete
