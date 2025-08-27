@@ -120,6 +120,7 @@ namespace CurseOfNaga.QuestSystem
             _completedQuestIndexes = new List<int>();
             // UpdateQuestData(_questTemplate.quests_data[0].uid, QuestStatus.REQUESTED);
 
+            _activeQuestIndexes.Add(0);         //Add Main-Quest
             UpdateQuestData(_MAIN_QUEST_ID, QuestStatus.REQUESTED);
             CheckForUnlockedQuest();
         }
@@ -199,7 +200,7 @@ namespace CurseOfNaga.QuestSystem
         }
 #endif
 
-        private void UpdateQuestData(string idVal, QuestStatus questStatus, int questIndex = 0)
+        private void UpdateQuestData(string idVal, QuestStatus questStatus, int questIndex = _DEFAULT_VAL)
         {
             int gpIndex, qtIndex, tempPowerRaised;
             Debug.Log($"idVal: {idVal} | questStatus: {questStatus} | questIndex: {questIndex}");
@@ -250,16 +251,21 @@ namespace CurseOfNaga.QuestSystem
                             if (_questTemplate.quest_groups[gpIndex].content[qtIndex].type == QuestType.MAIN_QUEST)
                             {
                                 //Not being update properly
-                                _questTracker[_MAIN_QUEST_COMMON_INDEX]++;
+                                gpIndex++;
+                                // qtIndex = _MAIN_QUEST_COMMON_INDEX;
+                                _questTracker[_MAIN_QUEST_COMMON_INDEX] = gpIndex;
                                 //IMP | Keep the main Quest always in index 0
-                                _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX] = _questTracker[_MAIN_QUEST_COMMON_INDEX] * tempPowerRaised;
-                                _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
-                                    .content[_MAIN_QUEST_COMMON_INDEX].status = QuestStatus.IN_PROGRESS;
+                                _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX] = gpIndex * tempPowerRaised;
+                                _questTemplate.quest_groups[gpIndex].content[_MAIN_QUEST_COMMON_INDEX]
+                                    .status = QuestStatus.IN_PROGRESS;
 
-                                //FIXME: Dont initiate next main_quest | wait for the NPC to be interacted with
-                                // TestDialogueMainManager.Instance.OnQuestUIUpdate?
-                                //     .Invoke(_questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
-                                //     .content[_MAIN_QUEST_COMMON_INDEX], _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX]);
+                                // Initiate next main_quest
+                                // _requestedQuestIndex = gpIndex * (int)Mathf.Pow(10, QUEST_INDEX_LENGTH);
+                                // _requestedQuestIndex += _MAIN_QUEST_COMMON_INDEX;
+
+                                TestDialogueMainManager.Instance.OnQuestUIUpdate?
+                                    .Invoke(_questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
+                                    .content[_MAIN_QUEST_COMMON_INDEX], _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX]);
                             }
                             else
                             {
@@ -295,7 +301,8 @@ namespace CurseOfNaga.QuestSystem
 
                 //Player accepts the Sub-Main Quest, Side-Quest and Main Quest
                 case QuestStatus.ACCEPTED:
-                    _activeQuestIndexes.Add(_requestedQuestIndex);
+                    if (questIndex == _DEFAULT_VAL)            // Ignore main-quest
+                        _activeQuestIndexes.Add(_requestedQuestIndex);
 
                     break;
 
@@ -450,7 +457,7 @@ namespace CurseOfNaga.QuestSystem
                             // May need to hit certain points | Can be here
                             case (int)ObjectiveType.EXPLORE:
                                 tempStr = _questObjectives[index].transform.name[^OBJECTIVE_ID_START..].ToUpper();
-                                Debug.Log($"Explored Objective: {tempStr}");
+                                // Debug.Log($"Explored Objective: {tempStr} | name:{_questObjectives[index].transform.name}");
 
                                 //Inform that objective found
                                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);
@@ -463,7 +470,7 @@ namespace CurseOfNaga.QuestSystem
                             // Proximity logic, so here
                             case (int)ObjectiveType.FIND:
                                 tempStr = _questObjectives[index].transform.name[^OBJECTIVE_ID_START..].ToUpper();
-                                Debug.Log($"Found Objective: {tempStr} | name:{_questObjectives[index].transform.name}");
+                                // Debug.Log($"Found Objective: {tempStr} | name:{_questObjectives[index].transform.name}");
 
                                 //Inform that objective found
                                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);

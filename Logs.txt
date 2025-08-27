@@ -1307,11 +1307,18 @@
 - Scripts
     [=] TestQuestManager
         {+} Fixing explore logic
+
+- Scripts
+    [=] TestQuestManager/TestQuestSystemCanvas
+        {+} Fixing/Enabling Main-Quest accept logic
 --------------------------------------------------------------------------------------------------------
-- [FIX] Quest System
+- [FIXED FOR NOW] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete
-        {+} GTA-style missions | Would have to approach someone to trigger the mission
+        {+} [NOT DONE] GTA-style missions | Would have to approach someone/something to trigger the mission
+            <~> [DO] Following Skyrim quest progression | Next-Main quest will be triggered by completing the previous quest
         {+} Between this, it would be FREE_ROAM for the player
+        {+} [DONE] Camer-Visual/Proximity Trigger for quest objectives
+        {+} [DO] Certain area trigger quests
 - [MAKE] [FIX] NPC Dialogue | Test Case
     [=] The Sub-Quest for a particular NPCs are not done, so the _dialogueTracker for that particular NPC is still at the base
         {+} [FIX] Case 1
@@ -1320,10 +1327,12 @@
             <~> The DialogueManager would need to update the _dialogueTracker according to the ongoing quest
             <~> the _dialogueTracker would need to be updated according to the specific ongoing quest
 
-- [DO] NPC Dialogue | Quest Selection
-    [=] Separate Choice at the end to select from a list of choices for quests
+- [Do] NPC Dialogue | Quest Selection
+    [=] [DONE FOR NOW] Separate Choice at the end to select from a list of choices for quests
     [=] Clicking on choices to open the available quests?
         {+} Might/Would require ScrollView
+        {+} [DONE] 3 choices of Main | Sub-Main | Side Quests to choose from
+    [=] [DO] Add click listeners to these
 - [DO] Tracking Quests
     [=] Can track only the main quest
         {+} At startup compare all the quests on the quest list if they are available and not started
@@ -1333,7 +1342,7 @@
     [=] For NPC Dialogue, set a flag to check if any new dialogue option is available using the dialogueTracker
 - [Do] Store Quest Data once the NPC has told player about the new quest
     [=] Use the stored data then afterwards
-- [DO] Divide quests into main/sub-quests in json
+- [DONE FOR NOW] Divide quests into main/sub-quests in json
     [=] or divide it to have main quests and character quests
         {+} Can maybe then use an array and track the sub-quests index for each character
         {+} When an event is invoked, can then increase the index for the individual quests
@@ -1342,6 +1351,7 @@
         {+} Would be better to track it through other means
         {+} The Quest Manager can track the progress and check for conditions when something is finished or called for and invoke 
             some logic or action appropriately 
+    [=] [DONE] Divided quests into groups which progress depending on the Main-Quest line
 - [DO] Dont 
 - [DONE FOR NOW] Stop 'E' when choices are presented to player
 - [DONE FOR NOW] For Dialogue invoke quest

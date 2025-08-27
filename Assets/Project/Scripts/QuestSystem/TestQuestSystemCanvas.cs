@@ -123,12 +123,15 @@ namespace CurseOfNaga.QuestSystem.Test
                     _checkQuestBts[_currentBtIndex].gameObject.SetActive(true);
                     //Move to the next slot of button-indexes
                     _currentBtIndex = ((_currentBtIndex + 1) >= _TOTAL_QUEST_BTS) ? 1 : ++_currentBtIndex;
+                    TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(null, QuestStatus.ACCEPTED, _DEFAULT_VAL);
                 }
                 else
+                {
                     _checkQuestBts[0].gameObject.SetActive(true);
+                    TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(null, QuestStatus.ACCEPTED, _SET_VAL);
+                }
 
                 _questTitleTxt.text += _IN_PROGRESS;
-                TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(null, QuestStatus.ACCEPTED, _DEFAULT_VAL);
                 _acceptQuestBt.gameObject.SetActive(false);
                 _backBt.gameObject.SetActive(true);             // For main quest
             }
@@ -141,7 +144,7 @@ namespace CurseOfNaga.QuestSystem.Test
         }
 
         //TODO: Check if anything has changed and then change if possible as only objectives shoudl change for active quests
-        private void UpdateQuestUI(Quest questInfo, int btIndex)
+        private void UpdateQuestUI(Quest questInfo, int activeQuestIndex)
         {
             Debug.Log($"UpdateQuestUI | questInfo: {questInfo}");
             _paused = true;
@@ -154,7 +157,7 @@ namespace CurseOfNaga.QuestSystem.Test
             // _questTitleTxt.text += _IN_PROGRESS;
             _questDescTxt.text = questInfo.description;
 
-            if (btIndex != _DEFAULT_VAL)
+            if (activeQuestIndex != _DEFAULT_VAL)
             {
                 int tempBtIndex = _currentBtIndex;
 
@@ -165,7 +168,7 @@ namespace CurseOfNaga.QuestSystem.Test
                     tempBtIndex = 0;
                 }
 
-                _btQuestIndex[tempBtIndex] = btIndex;
+                _btQuestIndex[tempBtIndex] = activeQuestIndex;
                 _checkQuestTxts[tempBtIndex].text = questInfo.name;            //Update button name
                 _acceptQuestBt.gameObject.SetActive(true);
 
