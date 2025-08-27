@@ -19,7 +19,7 @@ namespace CurseOfNaga.QuestSystem.Test
 
         [SerializeField] private Button[] _checkQuestBts;           //Only upto 4 for now | 0 will always be Main Quest
         private TMPro.TMP_Text[] _checkQuestTxts;           //Only upto 4 for now
-        private int[] _btQuestIndex;                        // 0 will always be Main Quest
+        private int[] _btQuestIndexTracker;                        // 0 will always be Main Quest
         private int _currentBtIndex;
         private const int _TOTAL_QUEST_BTS = 4;
         private QuestType _currentQuestType;
@@ -50,7 +50,7 @@ namespace CurseOfNaga.QuestSystem.Test
             _acceptRewardBt.onClick.AddListener(() => UpdateQuestStatus(true));
             _backBt.onClick.AddListener(QuestRectClosed);
 
-            _btQuestIndex = new int[_TOTAL_QUEST_BTS];
+            _btQuestIndexTracker = new int[_TOTAL_QUEST_BTS];
             _checkQuestTxts = new TMPro.TMP_Text[_TOTAL_QUEST_BTS];
             for (int i = 0; i < _TOTAL_QUEST_BTS; i++)
             {
@@ -58,7 +58,7 @@ namespace CurseOfNaga.QuestSystem.Test
                 _checkQuestBts[i].onClick.AddListener(() => CheckQuestCalled(tempIndex));
                 _checkQuestBts[i].gameObject.SetActive(false);
                 _checkQuestTxts[i] = _checkQuestBts[i].transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
-                _btQuestIndex[i] = -1;
+                _btQuestIndexTracker[i] = -1;
             }
             _checkQuestBts[0].gameObject.SetActive(true);
         }
@@ -91,10 +91,10 @@ namespace CurseOfNaga.QuestSystem.Test
 
         private void CheckQuestCalled(int checkIndex)
         {
-            if (_btQuestIndex[checkIndex] == -1) return;
+            if (_btQuestIndexTracker[checkIndex] == -1) return;
 
             TestDialogueMainManager.Instance.OnQuestUpdate
-                ?.Invoke("", QuestStatus.REQUESTED_INFO, _btQuestIndex[checkIndex]);
+                ?.Invoke("", QuestStatus.REQUESTED_INFO, _btQuestIndexTracker[checkIndex]);
             _questChoicesRect.SetActive(false);
             _questContentRect.SetActive(true);
         }
@@ -168,7 +168,7 @@ namespace CurseOfNaga.QuestSystem.Test
                     tempBtIndex = 0;
                 }
 
-                _btQuestIndex[tempBtIndex] = activeQuestIndex;
+                _btQuestIndexTracker[tempBtIndex] = activeQuestIndex;
                 _checkQuestTxts[tempBtIndex].text = questInfo.name;            //Update button name
                 _acceptQuestBt.gameObject.SetActive(true);
 
@@ -202,7 +202,7 @@ namespace CurseOfNaga.QuestSystem.Test
         private void TestUpdateRewardTexts()
         {
             for (int i = 1; i < _TOTAL_QUEST_BTS; i++)
-                _btQuestIndex[i] = i;
+                _btQuestIndexTracker[i] = i;
 
             Reward testReward = new Reward()
             {
@@ -226,14 +226,14 @@ namespace CurseOfNaga.QuestSystem.Test
                 //Re-arrange the list to correct the index
                 for (int i = btIndex; (i + 1) < _TOTAL_QUEST_BTS; i++)
                 {
-                    _btQuestIndex[i] = _btQuestIndex[i + 1];
+                    _btQuestIndexTracker[i] = _btQuestIndexTracker[i + 1];
                 }
 
                 //Reset last index 
                 if (btIndex != _TOTAL_QUEST_BTS - 1)
-                    _btQuestIndex[_TOTAL_QUEST_BTS - 1] = -1;
+                    _btQuestIndexTracker[_TOTAL_QUEST_BTS - 1] = -1;
                 else
-                    _btQuestIndex[btIndex] = -1;
+                    _btQuestIndexTracker[btIndex] = -1;
                 //Reduce current index
                 _currentBtIndex = (_currentBtIndex - 1) == 0 ? _TOTAL_QUEST_BTS - 1 : _currentBtIndex--;
             }

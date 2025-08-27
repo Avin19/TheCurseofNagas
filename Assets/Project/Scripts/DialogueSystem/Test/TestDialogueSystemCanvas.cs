@@ -1,4 +1,5 @@
 using System.Linq;
+using CurseOfNaga.QuestSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,11 +20,14 @@ namespace CurseOfNaga.DialogueSystem.Test
         [SerializeField] private GameObject _dialogueChoiceRect, _questChoicesRect;
         [SerializeField] private Button[] _questChoiceBts;              //0: Main Quest | 1: Sub-Main Quest | 2: Side Quest
         [SerializeField] private TMPro.TMP_Text[] _questChoicesTxt;
+        private string[] _btQuestChoiceTracker;        // Main | Sub-Main | Side Quests
+        private string[] _playerChoicesStr;
+        private int _currDgChoiceIndex;
         //==============================================> TODO: Optimize <==============================================
 
         private int _currDialogueIndex;
         private InteractionType _prevInteractionType;
-        private const int _SET_VAL = 1, _UNSET_VAL = 0, _DEFAULT_VALUE = -1;
+        // private const int _SET_VAL = 1, _UNSET_VAL = 0, _DEFAULT_VALUE = -1;
         private const string _EMPTY_STR = "";
 
         private void OnDisable()
@@ -53,6 +57,8 @@ namespace CurseOfNaga.DialogueSystem.Test
             }
             _dialogueChoiceBts[3].onClick.AddListener(() => ShowQuestRect(true));
 
+            _btQuestChoiceTracker = new string[_questChoiceBts.Length];
+            _currDgChoiceIndex = _DEFAULT_VAL;
             for (int i = 0; i < _questChoiceBts.Length; i++)
             {
                 int tempIndex = i;
@@ -71,14 +77,58 @@ namespace CurseOfNaga.DialogueSystem.Test
             _dialogueChoiceRect.SetActive(!status);
         }
 
-        private void UpdateQuestChoice(string questTxt, int choiceBtIndex)
+        private void UpdateQuestChoice(string questTxt, int questInfo, string baseId)
         {
-            _questChoiceBts[choiceBtIndex].gameObject.SetActive(true);
-            _questChoicesTxt[choiceBtIndex].text = questTxt;
+            //Only update if the choice is requested to show available quests
+            if ((questInfo / _STATUS_OFFSET) != (int)QuestStatus.AVAILABLE) return;
+
+            _questChoiceBts[questInfo % _STATUS_OFFSET].gameObject.SetActive(true);
+            _questChoicesTxt[questInfo % _STATUS_OFFSET].text = questTxt;
+            _btQuestChoiceTracker[questInfo % _STATUS_OFFSET] = baseId;
         }
 
+        //This can receive Main | Sub-Main | Side Quests
+        //TODO: Replace index with constants | Change QuestStatus enum values
         private void ClickedOnQuestChoice(int btIndex)
         {
+            //Check whether [Tell More] / [Not Now] is selected
+            if (_currDgChoiceIndex != _DEFAULT_VAL)
+            {
+                int questStatus;
+
+                //FIXME: This is not fully accepted
+                if (btIndex == 1)           //Player Accepted to tell more                
+                    questStatus = (int)QuestStatus.ACCEPTED * _STATUS_OFFSET;
+                else
+                    questStatus = (int)QuestStatus.DECLINED * _STATUS_OFFSET;
+
+                TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice?
+                    .Invoke(_btQuestChoiceTracker[_currDgChoiceIndex], questStatus, null);
+
+                return;
+            }
+
+            // This is for the main-quest
+            if (btIndex == 0)
+            {
+
+            }
+            //Show Tell me more about it / Not Now option for Player
+            else
+            {
+                _currDgChoiceIndex = btIndex;
+
+                //TODO: Replace with this FOR loop
+                // for (int i = 0; i < 2; i++)
+                _questChoiceBts[1].gameObject.SetActive(true);              //For Yes
+                _questChoicesTxt[1].text = _playerChoicesStr[0];
+
+                _questChoiceBts[2].gameObject.SetActive(true);              //For No
+                _questChoicesTxt[2].text = _playerChoicesStr[1];
+            }
+
+
+            // Send action to show Dialogue
 
         }
 

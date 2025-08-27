@@ -46,6 +46,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             public string[] AvailableDialoguesArr;          // Will only contain 1 of each Main | Sub-Main | Side Quests
         }
         [SerializeField] private AvailableDialogues[] _availableDialogueNPCData;            //Track available nodes for NPC
+        private const int _DIALOGUE_TYPES_LENGTH = 3;
         //==============================================> TODO: Optimize <==============================================
 
 
@@ -79,10 +80,13 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnDialogueUpdateRequested += CheckForAvailableQuests;
 
             _availableDialogueNPCData = new AvailableDialogues[3];
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < _DIALOGUE_TYPES_LENGTH; i++)
             {
                 // Main | Sub-Main | Side Quests}
-                _availableDialogueNPCData[i] = new AvailableDialogues { AvailableDialoguesArr = new string[3] };
+                _availableDialogueNPCData[i] = new AvailableDialogues
+                {
+                    AvailableDialoguesArr = new string[_DIALOGUE_TYPES_LENGTH]
+                };
                 // _availableDialogueNPCData[i].AvailableDialoguesArr = new string[3];
             }
         }
@@ -130,7 +134,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                 // Search for dialogueNodes which can be unlocked by the character
                 for (int dgIndex = 0; dgIndex < dialogueListCount; dgIndex++)
                 {
-                    // - Check if it is a Choice type (It will be Choice + Quest, so the flag check) 
+                    // - Check if it is a Quest type (It will be Speech + Quest, so the flag check) 
                     // - Also, dont update if there is already a side-quest value present
                     //      [=] Since Main-Quest and Sub-Main Quest are unique and can only occur one at a time, they can be replaced
                     //      [=] Side-Quest need to be checked,as they will follow an order and if precious isnt completed, then next cannot be accessed
@@ -143,6 +147,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                 }
             }
 
+            //TODO: Dont think so that this will be needed
             // Some SubQuest/SideQuest got accepted | Update _dialogueTracker
             // This will be to say dialogue relevant to ongoing quest
 
@@ -304,7 +309,7 @@ namespace CurseOfNaga.DialogueSystem.Test
 
                 //We would have to iterate over every choice and check if the requirements are met or not
                 case (int)DialogueType.CHOICE:
-                    // case (int)(DialogueType.CHOICE | DialogueType.QUEST):
+                case (int)(DialogueType.CHOICE | DialogueType.QUEST):
                     // TestDialogueMainManager.Instance.OnPlayerInteraction?
                     //     .Invoke(InteractionType.INTERACTING_WITH_NPC, UNSET_VAL, -(int)DialogueType.CHOICE);
                     // TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
@@ -452,11 +457,11 @@ namespace CurseOfNaga.DialogueSystem.Test
 
         private void UpdateQuestChoicesIfAny()
         {
-            int dialogueCount = _availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr.Length;
+            // int dialogueCount = _availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr.Length;
             int foundDialogues = 0;
-            // string questChoiceTxt;
-            int chIndex, dgIndex;
-            for (int i = 0; i < dialogueCount; i++)
+            string questChoiceTargetIds;
+            int chIndex, dgIndex, questInfo;
+            for (int i = 0; i < _DIALOGUE_TYPES_LENGTH; i++)
             {
                 if (_availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr[i] != null
                     && !_availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr[i].Equals(string.Empty))
@@ -467,9 +472,15 @@ namespace CurseOfNaga.DialogueSystem.Test
                     int.TryParse(_availableDialogueNPCData[_currNpcObjUID - 1].AvailableDialoguesArr[i]
                         .Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out dgIndex);
 
-                    // questChoiceTxt = _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].dialogue;
+                    //Combine both the target-ids to use after player's choice
+                    // questChoiceTargetIds = _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].ports[0].target_uid
+                    //     + "|" + _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].ports[1].target_uid;
+
+                    questChoiceTargetIds = _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].ports[0].base_uid;
+                    questInfo = (int)QuestStatus.AVAILABLE * _STATUS_OFFSET + i;
+
                     TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice?
-                        .Invoke(_dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].dialogue, i);
+                        .Invoke(_dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].dialogue, questInfo, questChoiceTargetIds);
                 }
             }
 

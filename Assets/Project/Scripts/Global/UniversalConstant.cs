@@ -128,6 +128,7 @@ namespace CurseOfNaga.Global
             PLAYING, FINISHED, REACHED_HIT_POINT
         }
 
+        //QUEST_INFO is for UI, check objectives
         public enum DialogueType
         {
             DEFAULT = 0, SPEECH = 1 << 0, QUESTION = 1 << 1, ANSWER = 1 << 2,
@@ -147,6 +148,7 @@ namespace CurseOfNaga.Global
             DIALOGUE_INDEX_START = 6, DIALOGUE_INDEX_LENGTH = 3;
 
         public const int OBJECTIVE_ID_START = 5;
+        public const int _STATUS_OFFSET = 1000;
 
         public enum TestConditionFlags { NOT_SET, COND_1, COND_2, COND_3, COND_4 }
 

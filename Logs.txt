@@ -1311,11 +1311,34 @@
 - Scripts
     [=] TestQuestManager/TestQuestSystemCanvas
         {+} Fixing/Enabling Main-Quest accept logic
+
+- Dialogue during Quest logic / Quest acceptance through Dialogue
+- Side Quest acceptance logic
+- Scripts
+    [=] TestQuestManager
+        {+} Adding constant for length of AvailableDialogueData array | STATUS_OFFSET
+        {+} Sending base-id/quest info of dialogue-choice to Canvas
+    [=] TestDialogueMainManager
+        {+} Action OnRequestUpdateQuestChoice | extra string for sending Target-ids
+    [=] TestDialogueSystemCanvas
+        {+} Track Dialogue Choice base_uid's
+        {+} Quest Choice Selection logic
+    [=] TestQuestSystemCanvas
+        {+} Rename _btQuestIndex to _btQuestIndexTracker
+    [=] QuestTemplate
+        {+} Adding AVAILABLE to QuestStatus
+    [=] UniversalConstant
+        {+} Adding const _STATUS_OFFSET
+- TestDialogueSystem Scene
+    [=] Adding 2 additional buttons for Accepting / Declining choices for Player
+- Dialogues_SerializesTest.json
+    [=] Adding quest related nodes
+
 --------------------------------------------------------------------------------------------------------
 - [FIXED FOR NOW] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete
         {+} [NOT DONE] GTA-style missions | Would have to approach someone/something to trigger the mission
-            <~> [DO] Following Skyrim quest progression | Next-Main quest will be triggered by completing the previous quest
+            <~> [DONE] Following Skyrim quest progression | Next-Main quest will be triggered by completing the previous quest
         {+} Between this, it would be FREE_ROAM for the player
         {+} [DONE] Camer-Visual/Proximity Trigger for quest objectives
         {+} [DO] Certain area trigger quests
@@ -1326,6 +1349,24 @@
             <~> How to udpate the _dialogueTracker according to the Quest and then revert back to its old place?
             <~> The DialogueManager would need to update the _dialogueTracker according to the ongoing quest
             <~> the _dialogueTracker would need to be updated according to the specific ongoing quest
+            
+        {+} [DO] For quest-choice nodes, instead of pointing to player, point to next-quest
+            <~> 1st choice will always be [ACCEPT] and 2nd choice will always be [DECLINE]
+            <~> [NO] Can store these id's instead of Player options then
+            <~> [DO] Store the Base-ID of the dialogue choice
+            <~> [NO] After player confirms/denies, follow the next-quest id accordingly
+            <~> [DO] After player confirms/denies, request for the respective target-ids?
+        {+} [DO] For Main Quest, there will be no-option and just going through the dialogue
+        {+} [DO] After NPC asks the player with help intially node, confirm/decline be nodes with no port
+    [=] [DO] Suggested Flow
+        {+} As the normal dialogue will go to the choice-node
+        {+} [MAYBE] Replace the dialogueChoices in the choice-node with quest-related choices.
+        {+} NPC informs about quest -> NPC asks if Player wants to listen
+            <~> Player rejects -> Go to normal choice Node with Quest choices at the bottom
+            <~> Player accepts -> Dont start right-away | Let NPC explain breifly in 4-5 nodes as conversation
+                -> Player then chooses to Accept or Deny
+                [;] Player accepts -> Quest Start
+                [;] Player denies -> Normal Choice Node
 
 - [Do] NPC Dialogue | Quest Selection
     [=] [DONE FOR NOW] Separate Choice at the end to select from a list of choices for quests
@@ -1337,6 +1378,8 @@
     [=] Can track only the main quest
         {+} At startup compare all the quests on the quest list if they are available and not started
         {+} Invoke action for all the available quests by updating dialogue choice of NPC
+        {+} [DONE] Checking the active quest group when completed and calling DialogueManager
+        {+} [DONE] Storing all the dilaogues which can can be used when a quest-group is unlocked
     [=] Track every available quests
         {+} At startup, load all available quest and invoke action for the available quests
     [=] For NPC Dialogue, set a flag to check if any new dialogue option is available using the dialogueTracker

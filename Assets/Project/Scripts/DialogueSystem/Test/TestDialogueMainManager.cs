@@ -51,7 +51,10 @@ namespace CurseOfNaga.DialogueSystem.Test
         public Action<string, QuestType> OnDialogueUpdateRequested;
         public Action<int> OnRequestAvailableQuestForNPC;
         public Action OnRequestShowQuestChoiceBt;
-        public Action<string, int> OnRequestUpdateQuestChoice;
+        /// <summary> string - NPC Dialogue to show for the choice </br>
+        /// int - Quest Type for Dialogue + Quest Status </br>
+        /// string - Combination of target-ids for YES/NO choices </summary>
+        public Action<string, int, string> OnRequestUpdateQuestChoice;
         //============================================> TODO: Optimize <============================================
     }
 }

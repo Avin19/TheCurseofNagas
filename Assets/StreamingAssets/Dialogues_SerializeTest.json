@@ -120,11 +120,11 @@
                 },
                 {
                     "flags": null,
-                    "type": 16,
+                    "type": 1,
                     "nodeIndex": 6,
-                    "quest_uid": "01001_CO_OB1",
+                    "quest_uid": null,
                     "base_uid": "000PL_006",
-                    "dialogue": "I accept",
+                    "dialogue": "Tell me more about it",
                     "ports": [
                         {
                             "base_uid": "000PL_006",
@@ -139,14 +139,33 @@
                 },
                 {
                     "flags": null,
-                    "type": 4,
-                    "nodeIndex": 7,
-                    "quest_uid": null,
+                    "type": 16,
+                    "nodeIndex": 6,
+                    "quest_uid": "01001_CO_OB1",
                     "base_uid": "000PL_007",
-                    "dialogue": "Sorry not right now",
+                    "dialogue": "I accept",
                     "ports": [
                         {
                             "base_uid": "000PL_007",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_008"
+                        }
+                    ],
+                    "position": {
+                        "x": 2266.0,
+                        "y": 112.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 4,
+                    "nodeIndex": 7,
+                    "quest_uid": null,
+                    "base_uid": "000PL_008",
+                    "dialogue": "Sorry not right now",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_008",
                             "name": "Choice 1",
                             "target_uid": "001SA_009"
                         }
@@ -161,7 +180,7 @@
                     "type": 32,
                     "nodeIndex": 7,
                     "quest_uid": null,
-                    "base_uid": "000PL_008",
+                    "base_uid": "000PL_009",
                     "dialogue": "Quest Choices",
                     "ports": null,
                     "position": {
@@ -301,7 +320,7 @@
                         {
                             "base_uid": "001SA_005",
                             "name": "Choice 4",
-                            "target_uid": "000PL_008"
+                            "target_uid": "000PL_009"
                         }
                     ],
                     "position": {
@@ -311,57 +330,14 @@
                 },
                 {
                     "flags": null,
-                    "type": 17,
-                    "nodeIndex": 14,
-                    "quest_uid": "01001_CO_OB1",
-                    "base_uid": "001SA_006",
-                    "dialogue": "I need help with Quest !01001_CO_OB1",
-                    "ports": [
-                        {
-                            "base_uid": "001SA_006",
-                            "name": "Choice 1",
-                            "target_uid": "001SA_007"
-                        }
-                    ],
-                    "position": {
-                        "x": 1863.0,
-                        "y": 185.0
-                    }
-                },
-                {
-                    "flags": null,
-                    "type": 8,
-                    "nodeIndex": 15,
-                    "quest_uid": null,
-                    "base_uid": "001SA_007",
-                    "dialogue": "Briefly explain quest 01001_CO_OB1",
-                    "ports": [
-                        {
-                            "base_uid": "001SA_007",
-                            "name": "Choice 1",
-                            "target_uid": "000PL_006"
-                        },
-                        {
-                            "base_uid": "001SA_007",
-                            "name": "Choice 1",
-                            "target_uid": "000PL_007"
-                        }
-                    ],
-                    "position": {
-                        "x": 1863.0,
-                        "y": 185.0
-                    }
-                },
-                {
-                    "flags": null,
                     "type": 1,
-                    "nodeIndex": 16,
+                    "nodeIndex": 14,
                     "quest_uid": null,
-                    "base_uid": "001SA_008",
+                    "base_uid": "001SA_006",
                     "dialogue": "Thanks for the help",
                     "ports": [
                         {
-                            "base_uid": "001SA_008",
+                            "base_uid": "001SA_006",
                             "name": "Choice 1",
                             "target_uid": "001SA_005"
                         }
@@ -374,13 +350,13 @@
                 {
                     "flags": null,
                     "type": 1,
-                    "nodeIndex": 17,
+                    "nodeIndex": 15,
                     "quest_uid": null,
-                    "base_uid": "001SA_009",
+                    "base_uid": "001SA_007",
                     "dialogue": "Come back when you are free!",
                     "ports": [
                         {
-                            "base_uid": "001SA_009",
+                            "base_uid": "001SA_007",
                             "name": "Choice 1",
                             "target_uid": "001SA_005"
                         }
@@ -388,6 +364,111 @@
                     "position": {
                         "x": 1863.0,
                         "y": 225.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 24,
+                    "nodeIndex": 14,
+                    "quest_uid": "01001_CO_OB1",
+                    "base_uid": "001SA_008",
+                    "dialogue": "I need help with Quest! 01001_CO_OB1",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_008",
+                            "name": "Tell More",
+                            "target_uid": "001SA_009"
+                        },
+                        {
+                            "base_uid": "001SA_008",
+                            "name": "Not Now",
+                            "target_uid": "001SA_007"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 185.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 1,
+                    "nodeIndex": 17,
+                    "quest_uid": null,
+                    "base_uid": "001SA_009",
+                    "dialogue": "Tell about quest 01001_CO_OB1 - 1",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_009",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_010"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 185.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 1,
+                    "nodeIndex": 17,
+                    "quest_uid": null,
+                    "base_uid": "001SA_010",
+                    "dialogue": "Tell about quest 01001_CO_OB1 - 2",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_010",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_011"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 185.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 1,
+                    "nodeIndex": 17,
+                    "quest_uid": null,
+                    "base_uid": "001SA_011",
+                    "dialogue": "Tell about quest 01001_CO_OB1 - 3",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_011",
+                            "name": "Choice 1",
+                            "target_uid": "001SA_012"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 185.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 8,
+                    "nodeIndex": 17,
+                    "quest_uid": null,
+                    "base_uid": "001SA_012",
+                    "dialogue": "Will you accept 01001_CO_OB1?",
+                    "ports": [
+                        {
+                            "base_uid": "001SA_012",
+                            "name": "Accept",
+                            "target_uid": "000PL_007"
+                        },
+                        {
+                            "base_uid": "001SA_009",
+                            "name": "Deny",
+                            "target_uid": "000PL_008"
+                        }
+                    ],
+                    "position": {
+                        "x": 1863.0,
+                        "y": 185.0
                     }
                 }
             ]

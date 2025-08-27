@@ -63,7 +63,6 @@ namespace CurseOfNaga.QuestSystem
         [Tooltip("Make sure to group same explore transforms together one-after-another")]
         [SerializeField] private Transform[] _exploreTransforms;
         [SerializeField] private Transform _playerTransform;
-        private const int _OBJ_TYPE_MOD = 1000;
         private const float _MAGNITUDE_MIN_DIFF = 1f;
         //==============================================> TODO: Optimize <==============================================
 #endif
@@ -346,7 +345,7 @@ namespace CurseOfNaga.QuestSystem
                     {
                         ObjectiveInfo objective = new ObjectiveInfo
                         {
-                            type = 1 * _OBJ_TYPE_MOD + (int)ObjectiveType.FIND,
+                            type = 1 * _STATUS_OFFSET + (int)ObjectiveType.FIND,
                             transform = _npcTransforms[GetTransformIndex(questObjectives[objIndex].target_id)]
                         };
                         _questObjectives.Add(objective);
@@ -358,7 +357,7 @@ namespace CurseOfNaga.QuestSystem
                         {
                             ObjectiveInfo objective = new ObjectiveInfo
                             {
-                                type = 1 * _OBJ_TYPE_MOD + (int)ObjectiveType.EXPLORE,
+                                type = 1 * _STATUS_OFFSET + (int)ObjectiveType.EXPLORE,
                                 transform = _exploreTransforms[transformIndexes[tIndex]]
                             };
                             _questObjectives.Add(objective);
@@ -408,7 +407,7 @@ namespace CurseOfNaga.QuestSystem
 
             for (int i = 0; i < _questObjectives.Count; i++)
             {
-                objType = _questObjectives[i].type % _OBJ_TYPE_MOD;
+                objType = _questObjectives[i].type % _STATUS_OFFSET;
 
                 switch (objType)
                 {
@@ -439,8 +438,8 @@ namespace CurseOfNaga.QuestSystem
 
         private void UpdateObjective(in int index)
         {
-            int objStatus = _questObjectives[index].type / _OBJ_TYPE_MOD;
-            int objType = _questObjectives[index].type % _OBJ_TYPE_MOD;
+            int objStatus = _questObjectives[index].type / _STATUS_OFFSET;
+            int objType = _questObjectives[index].type % _STATUS_OFFSET;
 
             string tempStr;
             switch (objStatus)
@@ -463,7 +462,7 @@ namespace CurseOfNaga.QuestSystem
                                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);
 
                                 //Update Objective
-                                _questObjectives[index].type = (int)ObjectiveType.COMPLETED * _OBJ_TYPE_MOD + objType;
+                                _questObjectives[index].type = (int)ObjectiveType.COMPLETED * _STATUS_OFFSET + objType;
 
                                 break;
 
@@ -476,7 +475,7 @@ namespace CurseOfNaga.QuestSystem
                                 TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(tempStr, QuestStatus.IN_PROGRESS, _DEFAULT_VAL);
 
                                 //Update Objective
-                                _questObjectives[index].type = (int)ObjectiveType.COMPLETED * _OBJ_TYPE_MOD + objType;
+                                _questObjectives[index].type = (int)ObjectiveType.COMPLETED * _STATUS_OFFSET + objType;
                                 // UpdateObjective(index);      // Qill automatically get removed in the next iteration
 
                                 break;
@@ -495,7 +494,7 @@ namespace CurseOfNaga.QuestSystem
 
                 // Remove from active
                 case (int)ObjectiveType.COMPLETED:
-                    _questObjectives[index].type = (int)ObjectiveType.INACTIVE * _OBJ_TYPE_MOD + objStatus;
+                    _questObjectives[index].type = (int)ObjectiveType.INACTIVE * _STATUS_OFFSET + objStatus;
                     // _inactiveObjectives.Add(_objectives[index]);
                     _questObjectives.RemoveAt(index);
 
