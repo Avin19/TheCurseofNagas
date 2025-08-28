@@ -211,7 +211,7 @@ namespace CurseOfNaga.QuestSystem
 
         private void UpdateQuestData(string idVal, QuestStatus questStatus, int questIndex = _DEFAULT_VAL)
         {
-            int gpIndex, qtIndex, tempPowerRaised;
+            int gpIndex, qtIndex;
             Debug.Log($"idVal: {idVal} | questStatus: {questStatus} | questIndex: {questIndex}");
             switch (questStatus)
             {
@@ -224,9 +224,8 @@ namespace CurseOfNaga.QuestSystem
                     //Search through the active quests, which objective is being completed or has been completed
                     for (int i = 0; i < _activeQuestIndexes.Count && !foundObjective; i++)
                     {
-                        tempPowerRaised = (int)Mathf.Pow(10, QUEST_INDEX_LENGTH);
-                        qtIndex = _activeQuestIndexes[i] % tempPowerRaised;
-                        gpIndex = _activeQuestIndexes[i] / tempPowerRaised;
+                        qtIndex = _activeQuestIndexes[i] % _GROUP_OFFSET;
+                        gpIndex = _activeQuestIndexes[i] / _GROUP_OFFSET;
 
                         questObjectives = _questTemplate.quest_groups[gpIndex].content[qtIndex].objectives;
                         objCount = questObjectives.Count;
@@ -264,13 +263,9 @@ namespace CurseOfNaga.QuestSystem
                                 // qtIndex = _MAIN_QUEST_COMMON_INDEX;
                                 _questTracker[_MAIN_QUEST_COMMON_INDEX] = gpIndex;
                                 //IMP | Keep the main Quest always in index 0
-                                _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX] = gpIndex * tempPowerRaised;
+                                _activeQuestIndexes[_MAIN_QUEST_COMMON_INDEX] = gpIndex * _GROUP_OFFSET;
                                 _questTemplate.quest_groups[gpIndex].content[_MAIN_QUEST_COMMON_INDEX]
                                     .status = QuestStatus.IN_PROGRESS;
-
-                                // Initiate next main_quest
-                                // _requestedQuestIndex = gpIndex * (int)Mathf.Pow(10, QUEST_INDEX_LENGTH);
-                                // _requestedQuestIndex += _MAIN_QUEST_COMMON_INDEX;
 
                                 TestDialogueMainManager.Instance.OnQuestUIUpdate?
                                     .Invoke(_questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
@@ -299,7 +294,7 @@ namespace CurseOfNaga.QuestSystem
                     int.TryParse(idVal.Substring(GROUP_INDEX_START, GROUP_INDEX_LENGTH), out gpIndex);
                     int.TryParse(idVal.Substring(QUEST_INDEX_START, QUEST_INDEX_LENGTH), out qtIndex);
 
-                    _requestedQuestIndex = gpIndex * (int)Mathf.Pow(10, QUEST_INDEX_LENGTH);
+                    _requestedQuestIndex = gpIndex * _GROUP_OFFSET;
                     _requestedQuestIndex += qtIndex;
 
                     //Send Quest Data to UI for showing the player on screen
@@ -311,7 +306,14 @@ namespace CurseOfNaga.QuestSystem
                 //Player accepts the Sub-Main Quest, Side-Quest and Main Quest
                 case QuestStatus.ACCEPTED:
                     if (questIndex == _DEFAULT_VAL)            // Ignore main-quest
+                    {
                         _activeQuestIndexes.Add(_requestedQuestIndex);
+
+                        //Update objectives for Sub-Main/Side Quests
+                        Quest questToCheck = _questTemplate.quest_groups[_requestedQuestIndex / _GROUP_OFFSET]
+                            .content[_requestedQuestIndex % _GROUP_OFFSET];
+                        UpdateQuestObjectives(questToCheck);
+                    }
 
                     break;
 
@@ -321,9 +323,8 @@ namespace CurseOfNaga.QuestSystem
                     break;
 
                 case QuestStatus.REQUESTED_INFO:
-                    tempPowerRaised = (int)Mathf.Pow(10, QUEST_INDEX_LENGTH);
-                    qtIndex = questIndex % tempPowerRaised;
-                    gpIndex = questIndex / tempPowerRaised;
+                    qtIndex = questIndex % _GROUP_OFFSET;
+                    gpIndex = questIndex / _GROUP_OFFSET;
                     TestDialogueMainManager.Instance.OnQuestUIUpdate?
                         .Invoke(_questTemplate.quest_groups[gpIndex].content[qtIndex], _DEFAULT_VAL);
 
@@ -335,43 +336,50 @@ namespace CurseOfNaga.QuestSystem
         {
             // Loop through the group to check which content has been unlocked except the main-quest at 0th index
             int contentCount = _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content.Count;
-            int objIndex = 0, tIndex = 0;
-            List<QuestObjective> questObjectives;
+
+            Quest questToCheck;
 
             for (int contentIndex = 0; contentIndex < contentCount; contentIndex++)
             {
+                questToCheck = _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
+                    .content[contentIndex];
+
                 // Make Dialogue choices available for NPCs with new quests unlocked
-                TestDialogueMainManager.Instance.OnDialogueUpdateRequested?.Invoke(_questTemplate
-                    .quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[contentIndex].uid,
-                    _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]].content[contentIndex].type);
+                TestDialogueMainManager.Instance.OnDialogueUpdateRequested?.Invoke(questToCheck.uid, questToCheck.type);
 
-                questObjectives = _questTemplate.quest_groups[_questTracker[_MAIN_QUEST_COMMON_INDEX]]
-                    .content[contentIndex].objectives;
+                // Only continue for Main-Quest | Sub-Main/Side Quests will be started by the player
+                if (questToCheck.type == QuestType.MAIN_QUEST)
+                    UpdateQuestObjectives(questToCheck);
+            }
+        }
 
-                for (objIndex = 0; objIndex < questObjectives.Count; objIndex++)
+        private void UpdateQuestObjectives(Quest questToCheck)
+        {
+            int objIndex = 0, tIndex = 0;
+            for (objIndex = 0; objIndex < questToCheck.objectives.Count; objIndex++)
+            {
+                //Get all the objectives that are of FIND type and add to list
+                if (questToCheck.objectives[objIndex].type == ObjectiveType.FIND)
                 {
-                    //Get all the objectives that are of FIND type and add to list
-                    if (questObjectives[objIndex].type == ObjectiveType.FIND)
+                    ObjectiveInfo objective = new ObjectiveInfo
+                    {
+                        type = 1 * _STATUS_OFFSET + (int)ObjectiveType.FIND,
+                        transform = _npcTransforms[GetTransformIndex(questToCheck.objectives[objIndex].target_id)]
+                    };
+                    _questObjectives.Add(objective);
+                }
+                else if (questToCheck.objectives[objIndex].type == ObjectiveType.EXPLORE)
+                {
+                    List<int> transformIndexes = GetConcurrentTransformIndexes(
+                        questToCheck.objectives[objIndex].target_id);
+                    for (tIndex = 0; tIndex < transformIndexes.Count; tIndex++)
                     {
                         ObjectiveInfo objective = new ObjectiveInfo
                         {
-                            type = 1 * _STATUS_OFFSET + (int)ObjectiveType.FIND,
-                            transform = _npcTransforms[GetTransformIndex(questObjectives[objIndex].target_id)]
+                            type = 1 * _STATUS_OFFSET + (int)ObjectiveType.EXPLORE,
+                            transform = _exploreTransforms[transformIndexes[tIndex]]
                         };
                         _questObjectives.Add(objective);
-                    }
-                    else if (questObjectives[objIndex].type == ObjectiveType.EXPLORE)
-                    {
-                        List<int> transformIndexes = GetConcurrentTransformIndexes(questObjectives[objIndex].target_id);
-                        for (tIndex = 0; tIndex < transformIndexes.Count; tIndex++)
-                        {
-                            ObjectiveInfo objective = new ObjectiveInfo
-                            {
-                                type = 1 * _STATUS_OFFSET + (int)ObjectiveType.EXPLORE,
-                                transform = _exploreTransforms[transformIndexes[tIndex]]
-                            };
-                            _questObjectives.Add(objective);
-                        }
                     }
                 }
             }

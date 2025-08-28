@@ -1379,6 +1379,13 @@
         {+} Func for Getting Active-Quest info
 - Dialogues_SerializesTest.json
     [=] Updating Nodes
+
+- Scripts
+    [=] TestQuestManager
+        {+} Replacing tempPowerRaised with GROUP_OFFSET
+        {+} Separating logic for updating Quest Objectives
+    [=] UniversalConstant
+        {+} Adding GROUP_OFFSET const
 --------------------------------------------------------------------------------------------------------
 - [FIXED] Side-Quest overwrites Main-quest in objectives
 - [FIXED FOR NOW] Quest System
