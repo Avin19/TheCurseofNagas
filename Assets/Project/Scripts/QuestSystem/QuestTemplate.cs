@@ -22,7 +22,7 @@ namespace CurseOfNaga.QuestSystem
     public enum QuestStatus
     {
         LOCKED, UNLOCKED, NOT_STARTED, IN_PROGRESS, COMPLETED, FAILED,
-        REQUESTED, REQUESTED_INFO, ACCEPTED, DECLINED, AVAILABLE
+        REQUESTED, REQUESTED_INFO, ACCEPTED, DECLINED, AVAILABLE, LOAD_DEFAULT
     }
 
     [System.Serializable]

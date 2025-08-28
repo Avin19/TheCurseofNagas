@@ -1339,7 +1339,24 @@
         {+} Receive Quest Choice callback and show dialogue respectively
     [=] TestDialogueSystemCanvas
         {+} Turning off Quest Choices|Buttons after Selection
+
 --------------------------------------------------------------------------------------------------------
+                                                28 AUG, 2025
+--------------------------------------------------------------------------------------------------------
+- Quest related dialogue after quest confirmation
+- Scripts
+    [=] TestDialogueSystemCanvas
+        {+} Updating _playerChoices arr for defalut choices
+        {+} Disabling dialogues choices when quest choice accepted
+    [=] TestDialogueManager
+        {+} Loading default player choices
+    [=] QuestTemplate
+        {+} Adding LOAD_DEFAULT to QuestStatus
+    [=] UniversalConstant
+        {+} Adding ACCEPT|DECLINE to DialogueType
+
+--------------------------------------------------------------------------------------------------------
+- [FIX] Side-Quest overwrites Main-quest in objectives
 - [FIXED FOR NOW] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete
         {+} [NOT DONE] GTA-style missions | Would have to approach someone/something to trigger the mission
@@ -1376,7 +1393,7 @@
 - [Do] NPC Dialogue | Quest Selection
     [=] [DONE FOR NOW] Separate Choice at the end to select from a list of choices for quests
     [=] Clicking on choices to open the available quests?
-        {+} Might/Would require ScrollView
+        {+} [NO] Might/Would require ScrollView
         {+} [DONE] 3 choices of Main | Sub-Main | Side Quests to choose from
     [=] [DO] Add click listeners to these
 - [DO] Tracking Quests

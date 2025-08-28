@@ -23,6 +23,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         private string[] _btQuestChoiceTracker;        // Main | Sub-Main | Side Quests
         private string[] _playerChoicesStr;
         private int _currQtChoiceIndex;
+        private const int _PLAYER_CHOICES_COUNT = 3;
         //==============================================> TODO: Optimize <==============================================
 
         private int _currDialogueIndex;
@@ -59,6 +60,7 @@ namespace CurseOfNaga.DialogueSystem.Test
 
             _btQuestChoiceTracker = new string[_questChoiceBts.Length];
             _currQtChoiceIndex = _DEFAULT_VAL;
+            _playerChoicesStr = new string[_PLAYER_CHOICES_COUNT];
             for (int i = 0; i < _questChoiceBts.Length; i++)
             {
                 int tempIndex = i;
@@ -77,22 +79,23 @@ namespace CurseOfNaga.DialogueSystem.Test
             _dialogueChoiceRect.SetActive(!status);
         }
 
-        private void UpdateQuestChoice(string questTxt, int questInfo, string baseId)
+        private void UpdateQuestChoice(string dialogueTxt, int questInfo, string baseId)
         {
             //Only update if the choice is requested to show available quests
-            if ((questInfo / _STATUS_OFFSET) != (int)QuestStatus.AVAILABLE) return;
+            // if ((questInfo / _STATUS_OFFSET) != (int)QuestStatus.AVAILABLE) return;
 
             switch (questInfo / _STATUS_OFFSET)
             {
+                //Only update if the choice is requested to show available quests
                 case (int)QuestStatus.AVAILABLE:
                     _questChoiceBts[questInfo % _STATUS_OFFSET].gameObject.SetActive(true);
-                    _questChoicesTxt[questInfo % _STATUS_OFFSET].text = questTxt;
+                    _questChoicesTxt[questInfo % _STATUS_OFFSET].text = dialogueTxt;
                     _btQuestChoiceTracker[questInfo % _STATUS_OFFSET] = baseId;
 
                     break;
 
-                case (int)QuestStatus.REQUESTED_INFO:
-
+                case (int)QuestStatus.LOAD_DEFAULT:
+                    _playerChoicesStr[questInfo % _STATUS_OFFSET] = dialogueTxt;
 
                     break;
             }
@@ -116,6 +119,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                 TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice?
                     .Invoke(null, questStatus, _btQuestChoiceTracker[_currQtChoiceIndex]);
                 ShowQuestRect(false);
+                UpdateUIForInteraction(InteractionType.MADE_CHOICE);
 
                 //Disable both Quest-Choice buttons
                 _questChoiceBts[1].gameObject.SetActive(false);
@@ -141,7 +145,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                 _questChoicesTxt[1].text = _playerChoicesStr[0];
 
                 _questChoiceBts[2].gameObject.SetActive(true);              //For No
-                _questChoicesTxt[2].text = _playerChoicesStr[1];
+                _questChoicesTxt[2].text = _playerChoicesStr[2];
             }
 
 

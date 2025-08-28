@@ -47,6 +47,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         }
         [SerializeField] private AvailableDialogues[] _availableDialogueNPCData;            //Track available nodes for NPC
         private const int _DIALOGUE_TYPES_LENGTH = 3;
+        private readonly string[] _playerChoiceNodes = new string[] { "000PL_006", "000PL_007", "000PL_008" };
         //==============================================> TODO: Optimize <==============================================
 
 
@@ -91,6 +92,8 @@ namespace CurseOfNaga.DialogueSystem.Test
                 };
                 // _availableDialogueNPCData[i].AvailableDialoguesArr = new string[3];
             }
+
+            Invoke(nameof(LoadDefaultPlayerDialogues), 1f);
         }
 
         public void Initialize(int totalNPCCount)
@@ -120,6 +123,22 @@ namespace CurseOfNaga.DialogueSystem.Test
 
             _dialogueTemplate = JsonUtility.FromJson<DialogueTemplate>(jsonData);
             // Debug.Log($"Dialogue Template: \n{dialogueTemplate} | jsonData: {jsonData}"); return;         //TEST
+        }
+
+        private void LoadDefaultPlayerDialogues()
+        {
+            const int _PLAYER_INDEX = 0;
+            int dgIndex = -1;
+            int dialogueInfo = -1;
+            string tempString;
+            for (int i = 0; i < _playerChoiceNodes.Length; i++)
+            {
+                _ = int.TryParse(_playerChoiceNodes[i].Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out dgIndex);
+
+                tempString = _dialogueTemplate.characters[_PLAYER_INDEX].dialogues_list[dgIndex].dialogue;
+                dialogueInfo = (int)QuestStatus.LOAD_DEFAULT * _STATUS_OFFSET + i;
+                TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice?.Invoke(tempString, dialogueInfo, null);
+            }
         }
 
         private void CheckForAvailableQuests(string completedQuestID, QuestType type)
@@ -232,8 +251,8 @@ namespace CurseOfNaga.DialogueSystem.Test
             if (interactionType == InteractionType.MADE_CHOICE)
             {
                 //Get the current Player Dialogue Node
-                // _npcObjUID = PLAYER_ID;         //Player ID
-                int.TryParse(_targetNodeIds[uid].Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out _currCharUID);
+                _currCharUID = PLAYER_ID;         //Player ID
+                // int.TryParse(_targetNodeIds[uid].Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out _currCharUID);
                 int.TryParse(_targetNodeIds[uid].Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out nextDgIndex);
 
                 // As the player has answered, there will be only 1 dialogue from the NPC side everytime, as they 
@@ -478,6 +497,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                     // questChoiceTargetIds = _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].ports[0].target_uid
                     //     + "|" + _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].ports[1].target_uid;
 
+                    //FIXME: Change QuestStatus to DialogueType
                     questChoiceTargetIds = _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].ports[0].base_uid;
                     questInfo = (int)QuestStatus.AVAILABLE * _STATUS_OFFSET + i;
 
@@ -518,6 +538,8 @@ namespace CurseOfNaga.DialogueSystem.Test
                     _dialogueTracker[_currNpcObjUID] = dgIndex;
 
                     EvaluateAndLoadDialogue(InteractionType.INTERACTING_WITH_NPC, _SET_VAL, _DEFAULT_VAL);
+                    TestDialogueMainManager.Instance.CurrPlayerStatus &= ~PlayerStatus.MAKING_CHOICE;
+                    _targetNodeIds.Clear();
 
                     break;
             }
