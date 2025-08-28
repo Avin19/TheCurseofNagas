@@ -62,7 +62,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction -= EvaluateAndLoadDialogue;
             TestDialogueMainManager.Instance.OnQuestUpdate -= UpdateQuestDialogue;
             TestDialogueMainManager.Instance.OnDialogueUpdateRequested -= CheckForAvailableQuests;
-            TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice -= SendQuestChoiceUpdate;
+            TestDialogueMainManager.Instance.OnQuestChoiceUpdate -= UpdateDialogueFromQuestChoice;
         }
 
         private void OnEnable()
@@ -80,7 +80,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction += EvaluateAndLoadDialogue;
             TestDialogueMainManager.Instance.OnQuestUpdate += UpdateQuestDialogue;
             TestDialogueMainManager.Instance.OnDialogueUpdateRequested += CheckForAvailableQuests;
-            TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice += SendQuestChoiceUpdate;
+            TestDialogueMainManager.Instance.OnQuestChoiceUpdate += UpdateDialogueFromQuestChoice;
 
             _availableDialogueNPCData = new AvailableDialogues[3];
             for (int i = 0; i < _DIALOGUE_TYPES_LENGTH; i++)
@@ -136,8 +136,8 @@ namespace CurseOfNaga.DialogueSystem.Test
                 _ = int.TryParse(_playerChoiceNodes[i].Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out dgIndex);
 
                 tempString = _dialogueTemplate.characters[_PLAYER_INDEX].dialogues_list[dgIndex].dialogue;
-                dialogueInfo = (int)QuestStatus.LOAD_DEFAULT * _STATUS_OFFSET + i;
-                TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice?.Invoke(tempString, dialogueInfo, null);
+                dialogueInfo = (int)DialogueType.LOAD_DEFAULT * _STATUS_OFFSET + i;
+                TestDialogueMainManager.Instance.OnQuestChoiceUpdate?.Invoke(tempString, dialogueInfo, null);
             }
         }
 
@@ -499,10 +499,10 @@ namespace CurseOfNaga.DialogueSystem.Test
 
                     //FIXME: Change QuestStatus to DialogueType
                     questChoiceTargetIds = _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].ports[0].base_uid;
-                    questInfo = (int)QuestStatus.AVAILABLE * _STATUS_OFFSET + i;
+                    questInfo = (int)DialogueType.ANSWER * _STATUS_OFFSET + i;
 
-                    TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice?
-                        .Invoke(_dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].dialogue, questInfo, questChoiceTargetIds);
+                    TestDialogueMainManager.Instance.OnQuestChoiceUpdate?.Invoke(
+                        _dialogueTemplate.characters[chIndex].dialogues_list[dgIndex].dialogue, questInfo, questChoiceTargetIds);
                 }
             }
 
@@ -510,18 +510,18 @@ namespace CurseOfNaga.DialogueSystem.Test
                 TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt?.Invoke();
         }
 
-        private void SendQuestChoiceUpdate(string dialogueVal, int questInfo, string questID)
+        private void UpdateDialogueFromQuestChoice(string dialogueVal, int questInfo, string questID)
         {
             int chIndex, dgIndex, portIndex = -1;
             string tempString;
             const int FINAL_NODE = 420;
             switch (questInfo / _STATUS_OFFSET)
             {
-                case (int)QuestStatus.ACCEPTED:
+                case (int)DialogueType.ACCEPT:
                     portIndex = 0;
                     goto case FINAL_NODE;
 
-                case (int)QuestStatus.DECLINED:
+                case (int)DialogueType.DECLINE:
                     portIndex = 1;
                     goto case FINAL_NODE;
 

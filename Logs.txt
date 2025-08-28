@@ -1360,6 +1360,13 @@
         {+} Fixing Main Quest overwriting
 - TestDialogueSystem Scene
     [=] Adding Objetive points
+
+- Changing QuestStatus of QuestChoice to DialogueType
+- Script
+    [=] TestDialogueManager / TestDialogueSystemCanvas
+        {+} Changing QuestStatus to DialogueType
+    [=] TestDialogueMainManager
+        {+} Renaming action OnRequestUpdateQuestChoice to OnQuestChoiceAvailable
 --------------------------------------------------------------------------------------------------------
 - [FIXED] Side-Quest overwrites Main-quest in objectives
 - [FIXED FOR NOW] Quest System

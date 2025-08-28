@@ -24,6 +24,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         private string[] _playerChoicesStr;
         private int _currQtChoiceIndex;
         private const int _PLAYER_CHOICES_COUNT = 3;
+        private const int _QUEST_ACCEPTED = 1, _QUEST_REJECTED = 2;
         //==============================================> TODO: Optimize <==============================================
 
         private int _currDialogueIndex;
@@ -36,7 +37,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction -= UpdateUIForInteraction;
             TestDialogueMainManager.Instance.OnShowDialogue -= UpdateDialogueText;
             TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt -= ShowQuestChoice;
-            TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice -= UpdateQuestChoice;
+            TestDialogueMainManager.Instance.OnQuestChoiceUpdate -= UpdateQuestChoice;
         }
 
         private void OnEnable()
@@ -49,7 +50,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             TestDialogueMainManager.Instance.OnPlayerInteraction += UpdateUIForInteraction;
             TestDialogueMainManager.Instance.OnShowDialogue += UpdateDialogueText;
             TestDialogueMainManager.Instance.OnRequestShowQuestChoiceBt += ShowQuestChoice;
-            TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice += UpdateQuestChoice;
+            TestDialogueMainManager.Instance.OnQuestChoiceUpdate += UpdateQuestChoice;
 
             for (int i = 0; i < _dialogueChoiceBts.Length - 1; i++)
             {
@@ -87,14 +88,14 @@ namespace CurseOfNaga.DialogueSystem.Test
             switch (questInfo / _STATUS_OFFSET)
             {
                 //Only update if the choice is requested to show available quests
-                case (int)QuestStatus.AVAILABLE:
+                case (int)DialogueType.ANSWER:
                     _questChoiceBts[questInfo % _STATUS_OFFSET].gameObject.SetActive(true);
                     _questChoicesTxt[questInfo % _STATUS_OFFSET].text = dialogueTxt;
                     _btQuestChoiceTracker[questInfo % _STATUS_OFFSET] = baseId;
 
                     break;
 
-                case (int)QuestStatus.LOAD_DEFAULT:
+                case (int)DialogueType.LOAD_DEFAULT:
                     _playerChoicesStr[questInfo % _STATUS_OFFSET] = dialogueTxt;
 
                     break;
@@ -110,20 +111,19 @@ namespace CurseOfNaga.DialogueSystem.Test
             {
                 int questStatus;
 
-                //FIXME: This is not fully accepted
-                if (btIndex == 1)           //Player Accepted to tell more                
-                    questStatus = (int)QuestStatus.ACCEPTED * _STATUS_OFFSET;
+                if (btIndex == _QUEST_ACCEPTED)           //Player Accepted to tell more                
+                    questStatus = (int)DialogueType.ACCEPT * _STATUS_OFFSET;
                 else
-                    questStatus = (int)QuestStatus.DECLINED * _STATUS_OFFSET;
+                    questStatus = (int)DialogueType.DECLINE * _STATUS_OFFSET;
 
-                TestDialogueMainManager.Instance.OnRequestUpdateQuestChoice?
+                TestDialogueMainManager.Instance.OnQuestChoiceUpdate?
                     .Invoke(null, questStatus, _btQuestChoiceTracker[_currQtChoiceIndex]);
                 ShowQuestRect(false);
                 UpdateUIForInteraction(InteractionType.MADE_CHOICE);
 
                 //Disable both Quest-Choice buttons
-                _questChoiceBts[1].gameObject.SetActive(false);
-                _questChoiceBts[2].gameObject.SetActive(false);
+                _questChoiceBts[_QUEST_ACCEPTED].gameObject.SetActive(false);
+                _questChoiceBts[_QUEST_REJECTED].gameObject.SetActive(false);
                 _currQtChoiceIndex = _DEFAULT_VAL;
 
                 return;
@@ -141,11 +141,11 @@ namespace CurseOfNaga.DialogueSystem.Test
 
                 //TODO: Replace with this FOR loop
                 // for (int i = 0; i < 2; i++)
-                _questChoiceBts[1].gameObject.SetActive(true);              //For Yes
-                _questChoicesTxt[1].text = _playerChoicesStr[0];
+                _questChoiceBts[_QUEST_ACCEPTED].gameObject.SetActive(true);              //For Yes
+                _questChoicesTxt[_QUEST_ACCEPTED].text = _playerChoicesStr[0];
 
-                _questChoiceBts[2].gameObject.SetActive(true);              //For No
-                _questChoicesTxt[2].text = _playerChoicesStr[2];
+                _questChoiceBts[_QUEST_REJECTED].gameObject.SetActive(true);              //For No
+                _questChoicesTxt[_QUEST_REJECTED].text = _playerChoicesStr[_QUEST_REJECTED];
             }
 
 
