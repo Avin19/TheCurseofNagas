@@ -1386,6 +1386,15 @@
         {+} Separating logic for updating Quest Objectives
     [=] UniversalConstant
         {+} Adding GROUP_OFFSET const
+
+- Talk to NPC Objective Trigger
+- Scripts
+    [=] IInteractable/ NPCBaseController
+        {+} Adding Name field
+    [=] PlayerTest
+        {+} Sending NPC Name to check for QuestObjective
+- Dialogues_SerializesTest.json
+    [=] Adding nodes for 2nd NPC
 --------------------------------------------------------------------------------------------------------
 - [FIXED] Side-Quest overwrites Main-quest in objectives
 - [FIXED FOR NOW] Quest System

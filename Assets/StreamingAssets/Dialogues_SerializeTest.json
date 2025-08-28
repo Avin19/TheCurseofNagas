@@ -2,7 +2,7 @@
     "characters": [
         {
             "parent_id": "000",
-            "character_name": "000",
+            "character_name": "Player",
             "dialogues_list": [
                 {
                     "flags": null,
@@ -187,12 +187,50 @@
                         "x": 2266.0,
                         "y": 112.0
                     }
+                },
+                {
+                    "flags": null,
+                    "type": 1,
+                    "nodeIndex": 10,
+                    "quest_uid": null,
+                    "base_uid": "000PL_010",
+                    "dialogue": "I am fine, thanks for asking. How about you?",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_010",
+                            "name": "Choice 1",
+                            "target_uid": "002GA_002"
+                        }
+                    ],
+                    "position": {
+                        "x": 265.0,
+                        "y": 112.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 1,
+                    "nodeIndex": 11,
+                    "quest_uid": null,
+                    "base_uid": "000PL_011",
+                    "dialogue": "Doing well. How are you doing?",
+                    "ports": [
+                        {
+                            "base_uid": "000PL_011",
+                            "name": "Choice 1",
+                            "target_uid": "002GA_002"
+                        }
+                    ],
+                    "position": {
+                        "x": 265.0,
+                        "y": 348.0
+                    }
                 }
             ]
         },
         {
             "parent_id": "001",
-            "character_name": "001",
+            "character_name": "Salem",
             "dialogues_list": [
                 {
                     "flags": null,
@@ -474,6 +512,74 @@
                     "position": {
                         "x": 1863.0,
                         "y": 185.0
+                    }
+                }
+            ]
+        },
+        {
+            "parent_id": "002",
+            "character_name": "Garhal",
+            "dialogues_list": [
+                {
+                    "flags": null,
+                    "type": 1,
+                    "nodeIndex": 8,
+                    "quest_uid": null,
+                    "base_uid": "002GA_000",
+                    "dialogue": "Hello there!",
+                    "ports": [
+                        {
+                            "base_uid": "002GA_000",
+                            "name": "Choice 1",
+                            "target_uid": "002GA_001"
+                        }
+                    ],
+                    "position": {
+                        "x": -298.0,
+                        "y": -99.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 8,
+                    "nodeIndex": 9,
+                    "quest_uid": null,
+                    "base_uid": "002GA_001",
+                    "dialogue": "How arest thou Doin?",
+                    "ports": [
+                        {
+                            "base_uid": "002GA_001",
+                            "name": "Choice 1",
+                            "target_uid": "000PL_010"
+                        },
+                        {
+                            "base_uid": "002GA_001",
+                            "name": "Choice 2",
+                            "target_uid": "000PL_011"
+                        }
+                    ],
+                    "position": {
+                        "x": -56.0,
+                        "y": -34.0
+                    }
+                },
+                {
+                    "flags": null,
+                    "type": 1,
+                    "nodeIndex": 10,
+                    "quest_uid": null,
+                    "base_uid": "002GA_002",
+                    "dialogue": "Doing well I am.",
+                    "ports": [
+                        {
+                            "base_uid": "002GA_002",
+                            "name": "Choice 1",
+                            "target_uid": "002GA_001"
+                        }
+                    ],
+                    "position": {
+                        "x": 663.0,
+                        "y": -41.0
                     }
                 }
             ]

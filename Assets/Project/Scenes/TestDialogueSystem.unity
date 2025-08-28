@@ -4796,7 +4796,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _UID: 1
   _NpcID: 0
-  _Name: Salem
+  _Name: Salem_NPCTest_SA_00
 --- !u!4 &764502638
 Transform:
   m_ObjectHideFlags: 0
@@ -8812,7 +8812,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _UID: 2
   _NpcID: 1
-  _Name: Garhal
+  _Name: Garhal_NPCTest_GA_00
 --- !u!1 &1620108456
 GameObject:
   m_ObjectHideFlags: 0
@@ -10127,7 +10127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee3042c4d96bfa5419b6578f1fccc69c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dialogueTracker: 0000000000000000
+  _dialogueTracker: 000000000000000000000000
   _dialogueTrackerPrev: 0000000000000000
   _availableDialogueNPCData: []
 --- !u!4 &1881156781

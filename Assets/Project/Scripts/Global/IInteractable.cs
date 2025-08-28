@@ -6,6 +6,7 @@ namespace CurseOfNaga.Global
     {
         // void Interact(out InteractionType interactionType, out int interactalbeUID, out int otherID);
         int UID { get; }
+        string Name { get; }
         InteractionType Interact(InteractionType interactionType, out int otherID);
     }
 }

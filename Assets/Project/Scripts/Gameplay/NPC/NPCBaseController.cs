@@ -15,6 +15,7 @@ namespace CurseOfNaga.Gameplay.NPC
         [SerializeField] protected int _NpcID;                // npcID : id by character
         [SerializeField] protected string _Name;
         public int UID { get => _UID; }
+        public string Name { get => _Name; }
 
         private void Start()
         {

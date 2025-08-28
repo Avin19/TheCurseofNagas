@@ -77,6 +77,9 @@ namespace CurseOfNaga.Gameplay.Player.Test
 #if DIALOGUE_TEST
                 TestDialogueMainManager.Instance.OnPlayerInteraction?
                     .Invoke(_currInteractableType, _currentInteractable.UID, objID);
+
+                TestDialogueMainManager.Instance.OnQuestUpdate?.Invoke(_currentInteractable.Name[^OBJECTIVE_ID_START..].ToUpper(),
+                    QuestSystem.QuestStatus.IN_PROGRESS, _DEFAULT_VAL);
 #endif
             }
 #if DIALOGUE_TEST
