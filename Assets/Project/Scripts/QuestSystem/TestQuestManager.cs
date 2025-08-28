@@ -102,6 +102,8 @@ namespace CurseOfNaga.QuestSystem
 
             //Load the Saved Data back to game
             LoadSave();
+
+            TestDialogueMainManager.Instance.RequestQuestInfo = SendQuestInfo;
         }
 
         public void Initialize(int questGiverNPCCount)
@@ -198,6 +200,14 @@ namespace CurseOfNaga.QuestSystem
 #endif
         }
 #endif
+
+        private QuestStatus SendQuestInfo(int questID)
+        {
+            if (_activeQuestIndexes.Contains(questID))
+                return QuestStatus.ACCEPTED;
+
+            return QuestStatus.NOT_STARTED;
+        }
 
         private void UpdateQuestData(string idVal, QuestStatus questStatus, int questIndex = _DEFAULT_VAL)
         {

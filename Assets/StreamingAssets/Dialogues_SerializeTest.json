@@ -430,9 +430,9 @@
                 },
                 {
                     "flags": null,
-                    "type": 1,
+                    "type": 1024,
                     "nodeIndex": 17,
-                    "quest_uid": null,
+                    "quest_uid": "01001_CO_OB1",
                     "base_uid": "001SA_011",
                     "dialogue": "Tell about quest 01001_CO_OB1 - 3",
                     "ports": [
@@ -440,6 +440,11 @@
                             "base_uid": "001SA_011",
                             "name": "Choice 1",
                             "target_uid": "001SA_012"
+                        },
+                        {
+                            "base_uid": "001SA_011",
+                            "name": "EO_QI",
+                            "target_uid": "001SA_005"
                         }
                     ],
                     "position": {

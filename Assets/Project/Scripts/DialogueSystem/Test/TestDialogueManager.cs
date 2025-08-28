@@ -48,6 +48,8 @@ namespace CurseOfNaga.DialogueSystem.Test
         [SerializeField] private AvailableDialogues[] _availableDialogueNPCData;            //Track available nodes for NPC
         private const int _DIALOGUE_TYPES_LENGTH = 3;
         private readonly string[] _playerChoiceNodes = new string[] { "000PL_006", "000PL_007", "000PL_008" };
+        private const int _NPC_BASE_CHOICE_INDEX = 1, _NPC_DEFAULT_PORT = 0;
+        // private bool _sideOrSubMainQtSelected = false;
         //==============================================> TODO: Optimize <==============================================
 
 
@@ -55,7 +57,7 @@ namespace CurseOfNaga.DialogueSystem.Test
         private const string _EMPTY_STR = "";
         private const int _PLAYER_OFFSET = 1;
         private const int _SHOW_MAIN_DIALOGUE = 1000;
-        private const int _QUEST_QCCEPTED = 0, _QUEST_DECLINED = 1;
+        private const int _QUEST_ACCEPTED = 0, _QUEST_DECLINED = 1;
 
         private void OnDisable()
         {
@@ -193,8 +195,8 @@ namespace CurseOfNaga.DialogueSystem.Test
             if (status == QuestStatus.ACCEPTED)
             {
                 // Extract the Target Dialogue Node to display
-                int.TryParse(_targetNodeIds[_QUEST_QCCEPTED].Substring(0, 3), out _currCharUID);
-                int.TryParse(_targetNodeIds[_QUEST_QCCEPTED].Substring(6, 3), out nextDgIndex);
+                int.TryParse(_targetNodeIds[_QUEST_ACCEPTED].Substring(0, 3), out _currCharUID);
+                int.TryParse(_targetNodeIds[_QUEST_ACCEPTED].Substring(6, 3), out nextDgIndex);
             }
             else if (status == QuestStatus.DECLINED)
             {
@@ -244,6 +246,7 @@ namespace CurseOfNaga.DialogueSystem.Test
             DialogueData dialogueData;
             string tempString;
             int nextDgIndex, nextChIndex;
+            int nextPortForTarget = 0;
             bool showChoices = false;
 
             // Only the player will have choices to select from. For NPC->NPC, the dialogue flow will be in
@@ -313,6 +316,7 @@ namespace CurseOfNaga.DialogueSystem.Test
 
             //Get the dialogue
             tempString = dialogueData.dialogue;
+            nextPortForTarget = _NPC_DEFAULT_PORT;
             // TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
 #if DEBUG_1
             Debug.Log($"Shwoing Dialogue | tempString: {tempString} | Ports: {dialogueData.ports.Count}");
@@ -397,6 +401,23 @@ namespace CurseOfNaga.DialogueSystem.Test
                         QuestStatus.REQUESTED, _DEFAULT_VAL);
                     return;
 
+                case (int)DialogueType.END_OF_QUEST_INFO:
+                    TestDialogueMainManager.Instance.OnShowDialogue?.Invoke(tempString, showChoices);
+
+                    int activeQtIndex;
+                    QuestStatus requestedQtStatus;
+
+                    //Get the quest uid for which the dialogue is active                    
+                    int.TryParse(dialogueData.quest_uid.Substring(GROUP_INDEX_START,
+                        GROUP_INDEX_LENGTH + QUEST_INDEX_LENGTH), out activeQtIndex);
+
+                    //Check if the Sub-Main or Side-Quest is active
+                    requestedQtStatus = TestDialogueMainManager.Instance.RequestQuestInfo(activeQtIndex);
+                    if (requestedQtStatus == QuestStatus.ACCEPTED)
+                        nextPortForTarget = _NPC_BASE_CHOICE_INDEX;
+
+                    break;
+
                 //Shifting End logic here
                 case (int)DialogueType.END:
                     {
@@ -468,7 +489,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                 // }
             }
 
-            tempString = dialogueData.ports[0].target_uid;
+            tempString = dialogueData.ports[nextPortForTarget].target_uid;
             int.TryParse(tempString.Substring(CHARACTER_INDEX_START, CHARACTER_INDEX_LENGTH), out _currCharUID);
             int.TryParse(tempString.Substring(DIALOGUE_INDEX_START, DIALOGUE_INDEX_LENGTH), out nextDgIndex);
 
@@ -540,6 +561,7 @@ namespace CurseOfNaga.DialogueSystem.Test
                     EvaluateAndLoadDialogue(InteractionType.INTERACTING_WITH_NPC, _SET_VAL, _DEFAULT_VAL);
                     TestDialogueMainManager.Instance.CurrPlayerStatus &= ~PlayerStatus.MAKING_CHOICE;
                     _targetNodeIds.Clear();
+                    // _sideOrSubMainQtSelected = true;
 
                     break;
             }

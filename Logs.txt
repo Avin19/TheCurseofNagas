@@ -1367,6 +1367,18 @@
         {+} Changing QuestStatus to DialogueType
     [=] TestDialogueMainManager
         {+} Renaming action OnRequestUpdateQuestChoice to OnQuestChoiceAvailable
+
+- Dont show Accept/Decline once a sub-main/side quest is accepted
+- Script
+    [=] UniversalConstant
+        {+} Adding END_OF_QUEST_INFO to DialogueType
+    [=] TestDialogueManager
+        {+} END_OF_QUEST_INFO logic
+            <~> Redirect to Base Choice Node for that NPC
+    [=] TestDialogueMainManager
+        {+} Func for Getting Active-Quest info
+- Dialogues_SerializesTest.json
+    [=] Updating Nodes
 --------------------------------------------------------------------------------------------------------
 - [FIXED] Side-Quest overwrites Main-quest in objectives
 - [FIXED FOR NOW] Quest System
