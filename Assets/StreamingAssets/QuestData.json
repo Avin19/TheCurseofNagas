@@ -97,7 +97,7 @@
                     ],
                     "name": "Gather resources",
                     "description": "I want you to collect 3 objects for me",
-                    "status": 1,
+                    "status": 0,
                     "type": 2,
                     "next_quest_uid": "02001_CO_IN",
                     "objectives": [
@@ -155,7 +155,7 @@
                     ],
                     "name": "Gather resources",
                     "description": "I want you to collect 2 objects for me",
-                    "status": 1,
+                    "status": 0,
                     "type": 2,
                     "next_quest_uid": null,
                     "objectives": [

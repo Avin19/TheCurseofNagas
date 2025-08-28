@@ -1355,8 +1355,13 @@
     [=] UniversalConstant
         {+} Adding ACCEPT|DECLINE to DialogueType
 
+- Scripts
+    [=] TestQuestSystemCanvas
+        {+} Fixing Main Quest overwriting
+- TestDialogueSystem Scene
+    [=] Adding Objetive points
 --------------------------------------------------------------------------------------------------------
-- [FIX] Side-Quest overwrites Main-quest in objectives
+- [FIXED] Side-Quest overwrites Main-quest in objectives
 - [FIXED FOR NOW] Quest System
     [=] Dont trigger Main Quest as soon as preivous quest is complete
         {+} [NOT DONE] GTA-style missions | Would have to approach someone/something to trigger the mission

@@ -61,6 +61,7 @@ namespace CurseOfNaga.QuestSystem.Test
                 _btQuestIndexTracker[i] = -1;
             }
             _checkQuestBts[0].gameObject.SetActive(true);
+            _currentBtIndex = 1;            //AS Main-Quest will always be the same
         }
 
 #if PAUSE_TEST
@@ -221,7 +222,7 @@ namespace CurseOfNaga.QuestSystem.Test
             _checkQuestBts[btIndex].gameObject.SetActive(false);
 
             // Avoid if main quest 
-            if (btIndex != 0)
+            if (btIndex != (int)QuestType.MAIN_QUEST - 1)
             {
                 //Re-arrange the list to correct the index
                 for (int i = btIndex; (i + 1) < _TOTAL_QUEST_BTS; i++)
